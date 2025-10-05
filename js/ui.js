@@ -454,3 +454,126 @@ function renderBoonASIControls() {
     if (sel) sel.value = character.boonASI;
   }
 }
+function renderSpellsSection() {
+  const container = document.getElementById('spellsSection');
+  const title = document.getElementById('spellsTitle');
+  
+  initSpellTracking();
+  
+  let spellSources = [];
+  
+  // Check origin feat for spells
+  if (character.originFeat && SPELL_SOURCES[character.originFeat]) {
+    spellSources.push({
+      source: `Origin Feat: ${character.originFeat}`,
+      data: SPELL_SOURCES[character.originFeat],
+      storageKey: 'originFeat'
+    });
+  }
+  
+  // Check instincts for spells
+  character.selectedInstincts.forEach((instinct, idx) => {
+    if (instinct && SPELL_SOURCES[instinct]) {
+      spellSources.push({
+        source: `Instinct: ${instinct}`,
+        data: SPELL_SOURCES[instinct],
+        storageKey: `instinct_${idx}`
+      });
+    }
+  });
+  
+  // Check if Mystic or Wayfarer (spellcasting callings)
+  const isCaster = character.calling === 'mystic' || character.calling === 'wayfarer';
+  
+  if (spellSources.length === 0 && !isCaster) {
+    title.style.display = 'none';
+    container.style.display = 'none';
+    return;
+  }
+  
+  title.textContent = 'Adaptive Edge Casting';
+  title.style.display = 'block';
+  container.style.display = 'block';
+  
+  let html = '';
+  
+  // Render spell selections from feats/instincts
+  spellSources.forEach(src => {
+    html += `<div class="feature-item">
+      <div class="feature-title">${src.source}</div>
+      <div class="feature-description">`;
+    
+    // Cantrips
+    if (src.data.cantrips > 0) {
+      html += `<div style="margin-bottom: 12px;">
+        <strong>Cantrips (Choose ${src.data.cantrips}):</strong>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px;">`;
+      
+      for (let i = 0; i < src.data.cantrips; i++) {
+        const selectedCantrip = character.selectedSpells[src.storageKey]?.cantrips[i] || '';
+        html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'cantrips', ${i}, this.value)">
+          <option value="">-- Select Cantrip --</option>`;
+        
+        CANTRIPS[src.data.cantripList].forEach(spell => {
+          html += `<option value="${spell}" ${selectedCantrip === spell ? 'selected' : ''}>${spell}</option>`;
+        });
+        
+        html += `</select>`;
+      }
+      html += `</div></div>`;
+    }
+    
+    // Level 1 spells
+    if (src.data.level1 > 0) {
+      html += `<div style="margin-bottom: 12px;">
+        <strong>1st-Level Spells (Choose ${src.data.level1}):</strong>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px;">`;
+      
+      for (let i = 0; i < src.data.level1; i++) {
+        const selectedSpell = character.selectedSpells[src.storageKey]?.level1[i] || '';
+        html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'level1', ${i}, this.value)">
+          <option value="">-- Select Spell --</option>`;
+        
+        LEVEL1_SPELLS[src.data.level1List].forEach(spell => {
+          html += `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`;
+        });
+        
+        html += `</select>`;
+      }
+      html += `</div></div>`;
+    }
+    
+    html += `<div class="feat-note">These spells can be cast once per long rest without using a slot, or by expending Adaptive Edge slots.</div>
+      </div>
+    </div>`;
+  });
+  
+  // Mystic and Wayfarer casting section
+  if (isCaster) {
+    const callingName = character.calling === 'mystic' ? 'Mystic' : 'Wayfarer';
+    html += `<div class="feature-item">
+      <div class="feature-title">${callingName} Spellcasting</div>
+      <div class="feature-description">
+        <p style="margin-bottom: 12px;">As a ${callingName}, you know spells from the Ranger spell list. You can prepare a number of spells equal to your WIS modifier + your Ranger level.</p>
+        <div class="feat-note">Spell selection and preparation for ${callingName} spellcasting should be tracked separately on your character sheet. Use the Adaptive Edge Slots above to track spell slot usage.</div>
+      </div>
+    </div>`;
+  }
+  
+  container.innerHTML = html;
+}
+
+function setSpellChoice(storageKey, level, index, value) {
+  initSpellTracking();
+  
+  if (!character.selectedSpells[storageKey]) {
+    character.selectedSpells[storageKey] = { cantrips: [], level1: [] };
+  }
+  
+  if (!character.selectedSpells[storageKey][level]) {
+    character.selectedSpells[storageKey][level] = [];
+  }
+  
+  character.selectedSpells[storageKey][level][index] = value;
+  renderSpellsSection();
+}
