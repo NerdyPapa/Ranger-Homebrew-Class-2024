@@ -38,6 +38,7 @@ function updateCharacter() {
   renderFeaturesAndTraits();
   renderActions();
   renderEquipment();
+  renderSpellsSection();
 }
 
 // ========================================
