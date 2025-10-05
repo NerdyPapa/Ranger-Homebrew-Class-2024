@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ranger Character Sheet Builder</title>
+  <!-- Link to our stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1 style="text-align: center; color: #8B0000; margin-bottom: 30px;">RANGER CHARACTER SHEET BUILDER</h1>
+    
+    <!-- Character Builder Options -->
+    <div class="builder-section">
+      <h2 style="margin-bottom: 15px; color: #856404;">Character Builder</h2>
+      <div class="builder-grid">
+        <div class="field-group">
+          <label>Ability Score Method</label>
+          <select id="abilityMethod" onchange="changeAbilityMethod()">
+            <option value="standard">Standard Array</option>
+            <option value="manual">Manual Entry</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>HP Method</label>
+          <select id="hpMethod" onchange="character.hpMethod=this.value; updateCharacter()">
+            <option value="fixed">Fixed (6 per level)</option>
+            <option value="manual">Manual/Rolled</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Character Level</label>
+          <select id="levelSelect" onchange="updateLevel()"></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Basic Character Info -->
+    <div class="header">
+      <div class="field-group">
+        <label>Character Name</label>
+        <input type="text" id="charName" value="New Character" oninput="character.name=this.value">
+      </div>
+      <div class="field-group">
+        <label>Species</label>
+        <select id="speciesSelect" onchange="character.species=this.value; updateCharacter()"></select>
+      </div>
+      <div class="field-group">
+        <label>Background</label>
+        <select id="backgroundSelect" onchange="setBackground(this.value)"></select>
+      </div>
+      <div class="field-group">
+        <label>Player Name</label>
+        <input type="text" id="playerName" oninput="character.player=this.value">
+      </div>
+    </div>
+
+    <!-- Calling and Subclass Selection -->
+    <div class="builder-grid" style="margin-bottom:20px;">
+      <div class="field-group">
+        <label>Select Calling</label>
+        <select id="callingSelect" onchange="handleCallingChange()">
+          <option value="">-- Choose Calling --</option>
+          <option value="warden">Warden</option>
+          <option value="marksman">Marksman</option>
+          <option value="mystic">Mystic</option>
+          <option value="prowler">Prowler</option>
+          <option value="excavator">Excavator</option>
+          <option value="wayfarer">Wayfarer</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Select Subclass</label>
+        <select id="subclassSelect" onchange="handleSubclassChange()">
+          <option value="">-- Choose Subclass --</option>
+          <option value="hunter">Hunter</option>
+          <option value="beastmaster">Beast Master</option>
+          <option value="gloomstalker">Gloom Stalker</option>
+          <option value="horizonwalker">Horizon Walker</option>
+          <option value="lunarsentinel">Lunar Sentinel</option>
+          <option value="feywanderer">Fey Wanderer</option>
+          <option value="swarmkeeper">Swarmkeeper</option>
+        </select>
+        <span class="feat-note" id="subclassNote" style="display:none; color:#856404;">Subclass available at 3rd level.</span>
+      </div>
+    </div>
+
+    <!-- Armor & Shield Selection -->
+    <h2 class="section-title">Armor & Shield</h2>
+    <div class="builder-grid" style="margin-bottom:20px;">
+      <div class="field-group">
+        <label>Select Armor</label>
+        <select id="armorSelect" onchange="setArmor(this.value)">
+          <option value="None">None (Unarmored)</option>
+          <optgroup label="Light Armor">
+            <option value="Padded Armor">Padded Armor (AC 11 + Dex)</option>
+            <option value="Leather Armor">Leather Armor (AC 11 + Dex)</option>
+            <option value="Studded Leather Armor">Studded Leather (AC 12 + Dex)</option>
+          </optgroup>
+          <optgroup label="Medium Armor">
+            <option value="Hide Armor">Hide Armor (AC 12 + Dex max 2)</option>
+            <option value="Chain Shirt">Chain Shirt (AC 13 + Dex max 2)</option>
+            <option value="Scale Mail">Scale Mail (AC 14 + Dex max 2)</option>
+            <option value="Breastplate">Breastplate (AC 14 + Dex max 2)</option>
+            <option value="Half Plate Armor">Half Plate (AC 15 + Dex max 2)</option>
+          </optgroup>
+          <optgroup label="Heavy Armor (Requires Heavily Armored Feat)" id="heavyArmorGroup">
+            <option value="Ring Mail">Ring Mail (AC 14)</option>
+            <option value="Chain Mail">Chain Mail (AC 16, Str 13)</option>
+            <option value="Splint Armor">Splint Armor (AC 17, Str 15)</option>
+            <option value="Plate Armor">Plate Armor (AC 18, Str 15)</option>
+          </optgroup>
+        </select>
+        <div style="margin-top:4px; font-size:11px; color:#666;">Currently equipped: <span id="currentArmor" style="font-weight:bold;">None</span></div>
+        <div id="armorWarnings" style="margin-top:6px;"></div>
+      </div>
+      <div class="field-group">
+        <label>Equip Shield? (+2 AC)</label>
+        <select id="shieldSelect" onchange="character.shield=this.value==='yes'; updateCharacter()">
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Ability Scores -->
+    <h2 class="section-title" id="abilityScoresTitle">Ability Scores - Standard Array (15, 14, 13, 12, 10, 8)</h2>
+    <div class="stats-section" id="abilityScores"></div>
+
+    <!-- Combat Statistics -->
+    <h2 class="section-title">Combat Statistics</h2>
+    <div class="combat-stats" id="combatStats"></div>
+
+    <!-- Skills -->
+    <h2 class="section-title">Skills <span style="font-size: 12px; font-weight: normal;">(Left = Proficient, Right = Expertise)</span></h2>
+    <div class="skills-section" id="skillsList"></div>
+
+    <!-- Adaptive Edge Slots -->
+    <h2 class="section-title" id="slotsTitle">Adaptive Edge Slots</h2>
+    <div class="slots-section" id="adaptiveEdgeSlots"></div>
+
+    <!-- Weapon Attacks -->
+    <div class="weapons-editor">
+      <h3>Weapon Attacks (Quick Entry)</h3>
+      <div class="weapon-row">
+        <input type="text" placeholder="Weapon #1 (e.g., Longsword)" oninput="setWeapon(0,'name',this.value)">
+        <input type="number" placeholder="Mod (e.g., 5)" oninput="setWeapon(0,'mod',this.value)">
+        <input type="text" placeholder="Damage (e.g., 1d8+3)" oninput="setWeapon(0,'dmg',this.value)">
+      </div>
+      <div class="weapon-row">
+        <input type="text" placeholder="Weapon #2" oninput="setWeapon(1,'name',this.value)">
+        <input type="number" placeholder="Mod" oninput="setWeapon(1,'mod',this.value)">
+        <input type="text" placeholder="Damage" oninput="setWeapon(1,'dmg',this.value)">
+      </div>
+      <div class="weapon-row">
+        <input type="text" placeholder="Weapon #3" oninput="setWeapon(2,'name',this.value)">
+        <input type="number" placeholder="Mod" oninput="setWeapon(2,'mod',this.value)">
+        <input type="text" placeholder="Damage" oninput="setWeapon(2,'dmg',this.value)">
+      </div>
+    </div>
+
+    <!-- Actions, Bonus Actions, & Reactions -->
+    <h2 class="section-title">Actions, Bonus Actions, & Reactions</h2>
+    <div class="action-sections">
+      <div class="action-section">
+        <h3>ACTIONS</h3>
+        <div id="actionsList" class="action-list"></div>
+      </div>
+      <div class="action-section">
+        <h3>BONUS ACTIONS</h3>
+        <div id="bonusActionsList" class="action-list"></div>
+      </div>
+      <div class="action-section">
+        <h3>REACTIONS</h3>
+        <div id="reactionsList" class="action-list"></div>
+      </div>
+    </div>
+
+    <!-- Instincts Selection -->
+    <h2 class="section-title">Select Instincts</h2>
+    <div id="instinctsSelection"></div>
+
+    <!-- Features & Traits -->
+    <h2 class="section-title">Features & Traits</h2>
+    <div id="featuresAndTraits">
+      <h3 style="color: #8B0000; margin-top: 10px; margin-bottom: 10px;">Species Features</h3>
+      <div id="speciesFeatures" class="feature-item">
+        <div class="feature-title" id="speciesTitle">—</div>
+        <div class="feature-description" id="speciesDesc">Select a species to view its traits.</div>
+      </div>
+
+      <h3 style="color: #8B0000; margin-top: 20px; margin-bottom: 15px;">Calling Features</h3>
+      <div id="callingFeatures"></div>
+
+      <h3 style="color: #8B0000; margin-top: 30px; margin-bottom: 15px;">Subclass Features</h3>
+      <div id="subclassFeatures"></div>
+
+      <h3 style="color: #8B0000; margin-top: 30px; margin-bottom: 15px;">Feats</h3>
+      <div id="featsSection">
+        <div class="feature-item">
+          <div class="feature-title">Origin Feat (from Background)</div>
+          <div class="feature-description">
+            <div><strong>Background:</strong> <span id="featBgName">—</span></div>
+            <div><strong>Origin Feat:</strong> <span id="originFeatName">—</span></div>
+            <div id="originFeatDesc" style="margin-top:6px; color:#333;"></div>
+            <div class="field-group" style="margin-top:12px;">
+              <label>Background Ability Increases</label>
+              <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px;">
+                <select id="bgPlus2" class="feat-select" onchange="setBgASI('plus2', this.value)"></select>
+                <select id="bgPlus1" class="feat-select" onchange="setBgASI('plus1', this.value)"></select>
+              </div>
+              <div class="feat-note">Choose distinct abilities for <strong>+2</strong> and <strong>+1</strong>. These bonuses apply everywhere.</div>
+            </div>
+            <div class="feat-note" style="margin-top:6px;">Origin Feats are set by your background selection.</div>
+          </div>
+        </div>
+
+        <div class="feature-item" id="feat4" style="display:none;">
+          <div class="feature-title">Level 4: ASI or General Feat</div>
+          <select class="feat-select" id="featPick4" onchange="pickGeneralFeat(4,this.value)"></select>
+          <div id="featDesc4" class="feature-description" style="margin-top:6px;"></div>
+          <div id="featASIControls4" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="feature-item" id="feat8" style="display:none;">
+          <div class="feature-title">Level 8: ASI or General Feat</div>
+          <select class="feat-select" id="featPick8" onchange="pickGeneralFeat(8,this.value)"></select>
+          <div id="featDesc8" class="feature-description" style="margin-top:6px;"></div>
+          <div id="featASIControls8" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="feature-item" id="feat12" style="display:none;">
+          <div class="feature-title">Level 12: ASI or General Feat</div>
+          <select class="feat-select" id="featPick12" onchange="pickGeneralFeat(12,this.value)"></select>
+          <div id="featDesc12" class="feature-description" style="margin-top:6px;"></div>
+          <div id="featASIControls12" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="feature-item" id="feat16" style="display:none;">
+          <div class="feature-title">Level 16: ASI or General Feat</div>
+          <select class="feat-select" id="featPick16" onchange="pickGeneralFeat(16,this.value)"></select>
+          <div id="featDesc16" class="feature-description" style="margin-top:6px;"></div>
+          <div id="featASIControls16" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="feature-item" id="fsFeatBox" style="display:none;">
+          <div class="feature-title">Fighting Style Feats (unlocked by Instincts)</div>
+          <div id="fsFeatList"></div>
+          <div class="feat-note">Selecting <em>Defense</em> here will adjust AC if "Wearing Armor" is set to Yes.</div>
+        </div>
+
+        <div class="feature-item" id="feat19" style="display:none;">
+          <div class="feature-title">Level 19: Epic Boon</div>
+          <select class="feat-select" id="featPick19" onchange="character.epicBoon=this.value; renderEpicBoonDesc(); renderBoonASIControls(); updateCharacter()"></select>
+          <div id="boonDesc" class="feature-description" style="margin-top:6px;"></div>
+          <div id="boonASIControls" style="margin-top:6px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipment -->
+    <h2 class="section-title">Equipment</h2>
+    <div class="equipment-grid" id="equipmentGrid"></div>
+
+    <!-- Action Buttons -->
+    <button class="btn-primary" onclick="window.print()">Print Character Sheet</button>
+    <button class="btn-secondary" onclick="resetSlots()">Reset All Slots</button>
+  </div>
+
+  <!-- Load all JavaScript files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/character.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
