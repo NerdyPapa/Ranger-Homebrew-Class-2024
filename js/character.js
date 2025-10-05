@@ -54,6 +54,12 @@ let character = {
   },
   fsFeats: {},
   epicBoon: ""
+  epicBoon: "",
+  selectedSpells: {
+    originFeat: { cantrips: [], level1: [] },
+    instincts: {},
+    calling: { cantrips: [], level1: [] }
+  }
 };
 
 // Initialize all skills with proficiency/expertise tracking
