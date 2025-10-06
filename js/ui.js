@@ -178,7 +178,46 @@ function renderSlots() {
     </div>`;
   }).join('');
 }
-
+function getInstinctSpellSelector(instinctName, index) {
+  if (!instinctName || !SPELL_SOURCES[instinctName]) return '';
+  
+  const src = SPELL_SOURCES[instinctName];
+  const storageKey = `instinct_${index}`;
+  let html = '<div style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 4px;">';
+  
+  // Cantrips
+  if (src.cantrips > 0) {
+    html += `<div style="margin-bottom: 8px;"><strong>Choose ${src.cantrips} Cantrip(s):</strong></div>`;
+    for (let i = 0; i < src.cantrips; i++) {
+      const selected = character.selectedSpells[storageKey]?.cantrips[i] || '';
+      html += `<select class="feat-select" style="width: 100%; margin-bottom: 4px;" onchange="setSpellChoice('${storageKey}', 'cantrips', ${i}, this.value)">
+        <option value="">-- Select Cantrip --</option>`;
+      const cantripList = CANTRIPS[src.cantripList] || [];
+      cantripList.forEach(spell => {
+        html += `<option value="${spell}" ${selected === spell ? 'selected' : ''}>${spell}</option>`;
+      });
+      html += `</select>`;
+    }
+  }
+  
+  // Level 1 spells
+  if (src.level1 > 0 && !src.fixedSpells) {
+    html += `<div style="margin-bottom: 8px; margin-top: 8px;"><strong>Choose ${src.level1} Level 1 Spell(s):</strong></div>`;
+    for (let i = 0; i < src.level1; i++) {
+      const selected = character.selectedSpells[storageKey]?.level1[i] || '';
+      html += `<select class="feat-select" style="width: 100%; margin-bottom: 4px;" onchange="setSpellChoice('${storageKey}', 'level1', ${i}, this.value)">
+        <option value="">-- Select Spell --</option>`;
+      const spellList = LEVEL1_SPELLS[src.level1List] || [];
+      spellList.forEach(spell => {
+        html += `<option value="${spell}" ${selected === spell ? 'selected' : ''}>${spell}</option>`;
+      });
+      html += `</select>`;
+    }
+  }
+  
+  html += '</div>';
+  return html;
+}
 function renderInstinctSelectors() {
   const levelData = LEVEL_DATA[character.level];
   const instinctCount = levelData.instincts;
@@ -207,6 +246,7 @@ function renderInstinctSelectors() {
         ${available.map(i => `<option value="${i.name}" ${selected === i.name ? 'selected' : ''}>${i.name}</option>`).join('')}
       </select>
       <div class="instinct-description">${chosen ? chosen.desc : 'Select an instinct to see description'}</div>
+      ${getInstinctSpellSelector(selected, idx)}
       ${renderInstinctSpellSelector(selected, idx)}
     </div>`;
   }).join('');
