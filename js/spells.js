@@ -23,18 +23,41 @@ const LEVEL1_SPELLS = {
   bard: ["Bane", "Charm Person", "Comprehend Languages", "Cure Wounds", "Detect Magic", "Disguise Self", "Faerie Fire", "Feather Fall", "Healing Word", "Heroism", "Identify", "Illusory Script", "Silent Image", "Sleep", "Speak with Animals", "Tasha's Hideous Laughter", "Thunderwave", "Unseen Servant"],
   paladin: ["Bless", "Command", "Compelled Duel", "Cure Wounds", "Detect Evil and Good", "Detect Magic", "Detect Poison and Disease", "Divine Favor", "Heroism", "Protection from Evil and Good", "Purify Food and Drink", "Searing Smite", "Shield of Faith", "Thunderous Smite", "Wrathful Smite"]
 };
-
+// Special spell lists for feats
+const SPELL_LISTS = {
+  fey_touched: ["Misty Step", "Bane", "Bless", "Charm Person", "Command", "Compelled Duel", "Comprehend Languages", "Detect Magic", "Detect Poison and Disease", "Disguise Self", "Heroism", "Identify", "Sleep", "Speak with Animals", "Tasha's Hideous Laughter"],
+  shadow_touched: ["Invisibility", "Bane", "Cause Fear", "Charm Person", "Disguise Self", "False Life", "Inflict Wounds", "Ray of Sickness", "Silent Image"]
+};
 // Spell sources tracking - tracks which features grant spells
 const SPELL_SOURCES = {
+  // Origin Feats
   "Magic Initiate (Cleric)": { cantrips: 2, cantripList: "cleric", level1: 1, level1List: "cleric" },
   "Magic Initiate (Druid)": { cantrips: 2, cantripList: "druid", level1: 1, level1List: "druid" },
   "Magic Initiate (Wizard)": { cantrips: 2, cantripList: "wizard", level1: 1, level1List: "wizard" },
+  
+  // Instincts
   "Bloodmarked": { cantrips: 1, cantripList: "sorcerer", level1: 1, level1List: "sorcerer" },
   "Druidic Warrior": { cantrips: 2, cantripList: "druid", level1: 1, level1List: "druid" },
   "Sacred Oath": { cantrips: 1, cantripList: "paladin", level1: 1, level1List: "paladin" },
   "Spell Lore": { cantrips: 1, cantripList: "bard", level1: 1, level1List: "bard" },
   "Wild Charm": { cantrips: 0, cantripList: null, level1: 1, level1List: "druid" },
-  "Battle Hymn": { cantrips: 1, cantripList: "bard", level1: 0, level1List: null }
+  "Battle Hymn": { cantrips: 1, cantripList: "bard", level1: 0, level1List: null },
+  
+  // General Feats
+  "Fey Touched": { 
+    cantrips: 0, 
+    cantripList: null, 
+    level1: 2, 
+    level1List: "fey_touched",
+    fixedSpells: ["Misty Step"]
+  },
+  "Shadow Touched": { 
+    cantrips: 0, 
+    cantripList: null, 
+    level1: 2, 
+    level1List: "shadow_touched",
+    fixedSpells: ["Invisibility"]
+  }
 };
 
 // Track selected spells in character object
