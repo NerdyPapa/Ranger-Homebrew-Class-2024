@@ -45,8 +45,8 @@ let character = {
     12: [],
     16: []
   },
-  boonASI: '',
-generalFeats: {
+boonASI: '',
+  generalFeats: {
     4: "",
     8: "",
     12: "",
