@@ -454,6 +454,7 @@ function renderBoonASIControls() {
     if (sel) sel.value = character.boonASI;
   }
 }
+
 function renderSpellsSection() {
   const container = document.getElementById('spellsSection');
   const title = document.getElementById('spellsTitle');
