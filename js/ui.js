@@ -603,8 +603,8 @@ function renderSpellsSection() {
       html += `</div></div>`;
     }
     
-    html += `<div class="feat-note">These spells can be cast once per long rest without using a slot, or by expending Adaptive Edge slots.</div>
-      </div>
+const noteText = src.data.note || "These spells can be cast once per long rest without using a slot, or by expending Adaptive Edge slots.";
+    html += `<div class="feat-note">${noteText}</div>      </div>
     </div>`;
   });
   
