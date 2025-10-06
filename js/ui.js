@@ -481,7 +481,17 @@ function renderSpellsSection() {
       });
     }
   });
-  
+  // Check general feats for spells
+  [4, 8, 12, 16].forEach(level => {
+    const feat = character.generalFeats[level];
+    if (feat && SPELL_SOURCES[feat]) {
+      spellSources.push({
+        source: `Level ${level} Feat: ${feat}`,
+        data: SPELL_SOURCES[feat],
+        storageKey: `feat_${level}`
+      });
+    }
+  });
   // Check if Mystic or Wayfarer (spellcasting callings)
   const isCaster = character.calling === 'mystic' || character.calling === 'wayfarer';
   
@@ -514,9 +524,59 @@ function renderSpellsSection() {
         html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'cantrips', ${i}, this.value)">
           <option value="">-- Select Cantrip --</option>`;
         
-        CANTRIPS[src.data.cantripList].forEach(spell => {
+        CANTRIPS[src.data.cantripList].forEach(spfor (let i = 0; i < src.data.cantrips; i++) {
+        const selectedCantrip = character.selectedSpells[src.storageKey]?.cantrips[i] || '';
+        html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'cantrips', ${i}, this.value)">
+          <option value="">-- Select Cantrip --</option>`;
+        
+        const cantripList = CANTRIPS[src.data.cantripList] || [];
+        cantripList.forEach(spell => {
           html += `<option value="${spell}" ${selectedCantrip === spell ? 'selected' : ''}>${spell}</option>`;
         });
+        
+        html += `</select>`;
+      }
+      html += `</div></div>`;
+    }
+    
+    // Level 1 spells
+    if (src.data.level1 > 0) {
+      const fixedSpells = src.data.fixedSpells || [];
+      const choiceCount = src.data.level1 - fixedSpells.length;
+      
+      html += `<div style="margin-bottom: 12px;">
+        <strong>1st-Level Spells:</strong>`;
+      
+      // Show fixed spells
+      if (fixedSpells.length > 0) {
+        html += `<div style="margin-top: 6px; margin-bottom: 6px;">
+          <em>Always Known:</em> ${fixedSpells.join(', ')}
+        </div>`;
+      }
+      
+      // Show choice spells
+      if (choiceCount > 0) {
+        html += `<div style="margin-top: 6px;"><em>Choose ${choiceCount}:</em></div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px;">`;
+        
+        for (let i = 0; i < choiceCount; i++) {
+          const selectedSpell = character.selectedSpells[src.storageKey]?.level1[i] || '';
+          html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'level1', ${i}, this.value)">
+            <option value="">-- Select Spell --</option>`;
+          
+          const spellList = SPELL_LISTS[src.data.level1List] || LEVEL1_SPELLS[src.data.level1List] || [];
+          spellList.forEach(spell => {
+            // Don't show fixed spells in the choice dropdown
+            if (!fixedSpells.includes(spell)) {
+              html += `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`;
+            }
+          });
+          
+          html += `</select>`;
+        }
+        html += `</div>`;
+      }
+      html += `</div>`;
         
         html += `</select>`;
       }
