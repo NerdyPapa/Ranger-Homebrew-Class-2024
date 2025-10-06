@@ -608,13 +608,14 @@ function renderSpellsSection() {
     </div>`;
   });
   
-  // Mystic and Wayfarer casting section
+// Mystic and Wayfarer casting section
   if (isCaster) {
     const callingName = character.calling === 'mystic' ? 'Mystic' : 'Wayfarer';
+    const modifier = character.calling === 'warden' ? 'CHA' : 'WIS';
     html += `<div class="feature-item">
       <div class="feature-title">${callingName} Spellcasting</div>
       <div class="feature-description">
-        <p style="margin-bottom: 12px;">As a ${callingName}, you know spells from the Ranger spell list. You can prepare a number of spells equal to your WIS modifier + your Ranger level.</p>
+        <p style="margin-bottom: 12px;">As a ${callingName}, you know spells from the Ranger spell list. You can prepare a number of spells equal to your ${modifier} modifier + your Ranger level.</p>
         <div class="feat-note">Spell selection and preparation for ${callingName} spellcasting should be tracked separately on your character sheet. Use the Adaptive Edge Slots above to track spell slot usage.</div>
       </div>
     </div>`;
