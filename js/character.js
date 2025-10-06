@@ -46,14 +46,13 @@ let character = {
     16: []
   },
   boonASI: '',
-  generalFeats: {
+generalFeats: {
     4: "",
     8: "",
     12: "",
     16: ""
   },
   fsFeats: {},
-  epicBoon: ""
   epicBoon: "",
   selectedSpells: {
     originFeat: { cantrips: [], level1: [] },
@@ -61,7 +60,6 @@ let character = {
     calling: { cantrips: [], level1: [] }
   }
 };
-
 // Initialize all skills with proficiency/expertise tracking
 SKILLS.forEach(s => character.skills[s.name] = { prof: false, expert: false });
 
