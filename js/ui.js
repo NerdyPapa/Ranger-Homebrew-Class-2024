@@ -481,6 +481,7 @@ function renderSpellsSection() {
       });
     }
   });
+  
   // Check general feats for spells
   [4, 8, 12, 16].forEach(level => {
     const feat = character.generalFeats[level];
@@ -492,6 +493,7 @@ function renderSpellsSection() {
       });
     }
   });
+  
   // Check if Mystic or Wayfarer (spellcasting callings)
   const isCaster = character.calling === 'mystic' || character.calling === 'wayfarer';
   
@@ -520,11 +522,6 @@ function renderSpellsSection() {
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px;">`;
       
       for (let i = 0; i < src.data.cantrips; i++) {
-        const selectedCantrip = character.selectedSpells[src.storageKey]?.cantrips[i] || '';
-        html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'cantrips', ${i}, this.value)">
-          <option value="">-- Select Cantrip --</option>`;
-        
-        CANTRIPS[src.data.cantripList].forEach(spfor (let i = 0; i < src.data.cantrips; i++) {
         const selectedCantrip = character.selectedSpells[src.storageKey]?.cantrips[i] || '';
         html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'cantrips', ${i}, this.value)">
           <option value="">-- Select Cantrip --</option>`;
@@ -564,7 +561,7 @@ function renderSpellsSection() {
           html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'level1', ${i}, this.value)">
             <option value="">-- Select Spell --</option>`;
           
-          const spellList = SPELL_LISTS[src.data.level1List] || LEVEL1_SPELLS[src.data.level1List] || [];
+          const spellList = LEVEL1_SPELLS[src.data.level1List] || [];
           spellList.forEach(spell => {
             // Don't show fixed spells in the choice dropdown
             if (!fixedSpells.includes(spell)) {
@@ -577,38 +574,15 @@ function renderSpellsSection() {
         html += `</div>`;
       }
       html += `</div>`;
-        
-        html += `</select>`;
-      }
-      html += `</div></div>`;
     }
     
-    // Level 1 spells
-    if (src.data.level1 > 0) {
-      html += `<div style="margin-bottom: 12px;">
-        <strong>1st-Level Spells (Choose ${src.data.level1}):</strong>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px;">`;
-      
-      for (let i = 0; i < src.data.level1; i++) {
-        const selectedSpell = character.selectedSpells[src.storageKey]?.level1[i] || '';
-        html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'level1', ${i}, this.value)">
-          <option value="">-- Select Spell --</option>`;
-        
-        LEVEL1_SPELLS[src.data.level1List].forEach(spell => {
-          html += `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`;
-        });
-        
-        html += `</select>`;
-      }
-      html += `</div></div>`;
-    }
-    
-const noteText = src.data.note || "These spells can be cast once per long rest without using a slot, or by expending Adaptive Edge slots.";
-    html += `<div class="feat-note">${noteText}</div>      </div>
+    const noteText = src.data.note || "These spells can be cast once per long rest without using a slot, or by expending Adaptive Edge slots.";
+    html += `<div class="feat-note">${noteText}</div>
+      </div>
     </div>`;
   });
   
-// Mystic and Wayfarer casting section
+  // Mystic and Wayfarer casting section
   if (isCaster) {
     const callingName = character.calling === 'mystic' ? 'Mystic' : 'Wayfarer';
     const modifier = character.calling === 'warden' ? 'CHA' : 'WIS';
