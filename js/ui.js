@@ -252,7 +252,7 @@ function renderInstinctSelectors() {
   }).join('');
 }
 
-function renderInstinctSpellSelector(instinctName, index) {
+function getInstinctSpellSelector(instinctName, index) {
   if (!instinctName || !SPELL_SOURCES[instinctName]) return '';
   
   const src = SPELL_SOURCES[instinctName];
@@ -293,248 +293,37 @@ function renderInstinctSpellSelector(instinctName, index) {
   return html;
 }
 
-function renderSpeciesFeatures() {
-  const s = character.species;
-  const block = SPECIES_DATA[s];
-  setHTML('speciesTitle', block ? block.title : '—');
-  document.getElementById('speciesDesc').textContent = block ? block.desc : 'Select a species to view its traits.';
-}
-
-function renderFeaturesAndTraits() {
-  const callingKey = document.getElementById('callingSelect').value;
-  const subclassKey = document.getElementById('subclassSelect').value;
-  const lvl = character.level;
+function renderInstinctSelectors() {
+  const levelData = LEVEL_DATA[character.level];
+  const instinctCount = levelData.instincts;
+  const container = document.getElementById('instinctsSelection');
   
-  renderSpeciesFeatures();
-  
-  const callingContainer = document.getElementById('callingFeatures');
-  if (callingKey && DATABASE.callings[callingKey]) {
-    const calling = DATABASE.callings[callingKey];
-    const unlocked = calling.features.filter(f => f.level <= lvl);
-    callingContainer.innerHTML = unlocked.length ?
-      unlocked.map(f => `<div class="feature-item">
-        <div class="feature-title">${f.name} (${f.level}${getOrdinal(f.level)} Level)</div>
-        <div class="feature-description">${f.description}</div>
-      </div>`).join('') :
-      `<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">No Calling features unlocked yet.</p>`;
-  } else {
-    callingContainer.innerHTML = '<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">Select a Calling to see features.</p>';
-  }
-  
-  const subclassContainer = document.getElementById('subclassFeatures');
-  if (subclassKey && DATABASE.subclasses[subclassKey] && lvl >= 3) {
-    const sc = DATABASE.subclasses[subclassKey];
-    const unlocked = sc.features.filter(f => f.level <= lvl);
-    subclassContainer.innerHTML = unlocked.length ?
-      unlocked.map(f => `<div class="feature-item">
-        <div class="feature-title">${f.name} (${f.level}${getOrdinal(f.level)} Level)</div>
-        <div class="feature-description">${f.description}</div>
-      </div>`).join('') :
-      `<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">No Subclass features unlocked yet (requires level 3).</p>`;
-  } else if (lvl < 3) {
-    subclassContainer.innerHTML = '<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">Subclass features unlock at 3rd level.</p>';
-  } else {
-    subclassContainer.innerHTML = '<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">Select a Subclass to see features.</p>';
-  }
-  
-  document.getElementById('feat4').style.display = lvl >= 4 ? 'block' : 'none';
-  document.getElementById('feat8').style.display = lvl >= 8 ? 'block' : 'none';
-  document.getElementById('feat12').style.display = lvl >= 12 ? 'block' : 'none';
-  document.getElementById('feat16').style.display = lvl >= 16 ? 'block' : 'none';
-  document.getElementById('feat19').style.display = lvl >= 19 ? 'block' : 'none';
-  
-  setHTML('featBgName', character.background || '—');
-  setHTML('originFeatName', character.originFeat || '—');
-  renderOriginFeatDesc();
-  renderBgASISelectors();
-  
-  [4, 8, 12, 16].forEach(l => {
-    const sel = document.getElementById('featPick' + l);
-    if (sel) sel.value = character.generalFeats[l] || "Ability Score Improvement";
-    renderGeneralFeatDesc(l);
-    renderFeatASIControls(l);
-  });
-  
-  renderFSFeats();
-  
-  const boonSel = document.getElementById('featPick19');
-  if (boonSel) boonSel.value = character.epicBoon || "";
-  renderEpicBoonDesc();
-  renderBoonASIControls();
-}
-
-function renderActions() {
-  const actions = [];
-  const bonus = [];
-  const reacts = [];
-  
-  character.weapons.forEach((w) => {
-    const has = (w.name || "").trim() !== "" || (w.mod || "").toString().trim() !== "" || (w.dmg || "").trim() !== "";
-    if (has) {
-      const modTxt = (w.mod !== "" && !Number.isNaN(parseInt(w.mod, 10))) ?
-        (parseInt(w.mod, 10) >= 0 ? `+${parseInt(w.mod, 10)}` : `${parseInt(w.mod, 10)}`) : '';
-      const dmgTxt = (w.dmg || '').trim();
-      actions.push(`<div class="action-item"><strong>${w.name || 'Weapon'}</strong> — to hit ${modTxt || '+'} | dmg ${dmgTxt || '—'}</div>`);
-    }
-  });
-  
-  const pool = [...INSTINCTS_DB.base, ...INSTINCTS_DB.level6, ...INSTINCTS_DB.level9, ...INSTINCTS_DB.level13, ...INSTINCTS_DB.level17];
-  character.selectedInstincts.forEach(n => {
-    if (!n) return;
-    const inst = pool.find(i => i.name === n);
-    if (!inst) return;
-    if (inst.action === 'action') actions.push(`<div class="action-item"><strong>${inst.name}:</strong> ${inst.desc}</div>`);
-    else if (inst.action === 'bonus') bonus.push(`<div class="action-item"><strong>${inst.name}:</strong> ${inst.desc}</div>`);
-    else if (inst.action === 'reaction') reacts.push(`<div class="action-item"><strong>${inst.name}:</strong> ${inst.desc}</div>`);
-  });
-  
-  actions.push('<div class="action-item"><strong>Attack:</strong> Make weapon attack(s)</div>');
-  if (character.level >= 5) actions.push('<div class="action-item"><strong>Extra Attack:</strong> Attack twice when taking the Attack action</div>');
-  
-  document.getElementById('actionsList').innerHTML = actions.length ? actions.join('') : '<div class="action-item">No actions</div>';
-  document.getElementById('bonusActionsList').innerHTML = bonus.length ? bonus.join('') : '<div class="action-item">No bonus actions</div>';
-  document.getElementById('reactionsList').innerHTML = reacts.length ? reacts.join('') : '<div class="action-item">No reactions</div>';
-}
-
-function renderEquipment() {
-  const grid = document.getElementById('equipmentGrid');
-  grid.innerHTML = character.equipment.map((val, idx) =>
-    `<div class="equipment-slot">
-      <label style="font-size:12px; color:#666; width:26px;">${idx + 1}.</label>
-      <input type="text" placeholder="Item ${idx + 1}" value="${val}" oninput="setEquipment(${idx}, this.value)" />
-    </div>`
-  ).join('');
-}
-
-function renderGeneralFeatDesc(level) {
-  const key = character.generalFeats[level] || "Ability Score Improvement";
-  const text = GENERAL_FEAT_DESC[key] || "—";
-  setHTML('featDesc' + level, text);
-}
-
-function renderOriginFeatDesc() {
-  const name = character.originFeat;
-  document.getElementById('originFeatDesc').textContent = name ? (ORIGIN_FEAT_DESC[name] || "—") : "—";
-}
-
-function renderBgASISelectors() {
-  const plus2Sel = document.getElementById('bgPlus2');
-  const plus1Sel = document.getElementById('bgPlus1');
-  if (!plus2Sel || !plus1Sel) return;
-  
-  const opts = ['<option value="">+2 — choose</option>', ...ABILITIES.map(a => `<option value="${a}">${ABILITY_LABELS[a]} (+2)</option>`)].join('');
-  const opts1 = ['<option value="">+1 — choose</option>', ...ABILITIES.map(a => `<option value="${a}">${ABILITY_LABELS[a]} (+1)</option>`)].join('');
-  
-  plus2Sel.innerHTML = opts;
-  plus1Sel.innerHTML = opts1;
-  plus2Sel.value = character.backgroundASI.plus2 || '';
-  plus1Sel.value = character.backgroundASI.plus1 || '';
-}
-
-function renderFeatASIControls(level) {
-  const holder = document.getElementById('featASIControls' + level);
-  if (!holder) return;
-  
-  const feat = character.generalFeats[level] || "Ability Score Improvement";
-  const opt = FEAT_ASI_OPTIONS[feat];
-  
-  if (!opt) {
-    holder.innerHTML = '';
+  if (instinctCount === 0) {
+    container.innerHTML = '<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">No Instincts available at Level 1.</p>';
     return;
   }
   
-  const buildSelect = (id, abilities, placeholder) => {
-    const options = ['<option value="">' + placeholder + '</option>', ...abilities.map(a => `<option value="${a}">${ABILITY_LABELS[a]}</option>`)].join('');
-    return `<select id="${id}" class="feat-select" onchange="setFeatASI(${level})">${options}</select>`;
-  };
+  let available = [...INSTINCTS_DB.base];
+  if (character.level >= 6) available = [...available, ...INSTINCTS_DB.level6];
+  if (character.level >= 9) available = [...available, ...INSTINCTS_DB.level9];
+  if (character.level >= 13) available = [...available, ...INSTINCTS_DB.level13];
+  if (character.level >= 17) available = [...available, ...INSTINCTS_DB.level17];
   
-  if (opt === "ASI") {
-    const idA = `asi_${level}_a`, idB = `asi_${level}_b`;
-    holder.innerHTML = `<div class="feat-note" style="margin-bottom:6px;">Ability Increase: choose two picks (same ability = +2, different = +1/+1).</div>
-      <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px;">
-        ${buildSelect(idA, ABILITIES, "+1 pick A")}
-        ${buildSelect(idB, ABILITIES, "+1 pick B")}
-      </div>`;
-    const [a, b] = character.featASI[level] || [];
-    if (a) document.getElementById(idA).value = a;
-    if (b) document.getElementById(idB).value = b;
-  } else if (opt === "ANY_ONE") {
-    const id = `asi_${level}_one`;
-    holder.innerHTML = `<div class="feat-note" style="margin-bottom:6px;">Ability Increase: choose one ability for +1.</div>${buildSelect(id, ABILITIES, "+1 pick")}`;
-    const [a] = character.featASI[level] || [];
-    if (a) document.getElementById(id).value = a;
-  } else if (Array.isArray(opt)) {
-    const id = `asi_${level}_restricted`;
-    holder.innerHTML = `<div class="feat-note" style="margin-bottom:6px;">Ability Increase: choose one (${opt.map(o => ABILITY_LABELS[o]).join(' / ')}).</div>${buildSelect(id, opt, "+1 pick")}`;
-    const [a] = character.featASI[level] || [];
-    if (a) document.getElementById(id).value = a;
-  } else {
-    holder.innerHTML = '';
-  }
-}
-
-function renderFSFeats() {
-  const box = document.getElementById('fsFeatBox');
-  const list = document.getElementById('fsFeatList');
-  const styles = unlockedStylesFromInstincts();
+  while (character.selectedInstincts.length < instinctCount) character.selectedInstincts.push(null);
+  while (character.selectedInstincts.length > instinctCount) character.selectedInstincts.pop();
   
-  if (styles.length === 0) {
-    box.style.display = 'none';
-    list.innerHTML = '';
-    return;
-  }
-  
-  box.style.display = 'block';
-  list.innerHTML = styles.map(s => {
-    const matches = FIGHTING_STYLE_FEATS.filter(f => f.toLowerCase().startsWith(s.toLowerCase()));
-    const options = ['<option value="">-- Select --</option>', ...matches.map(f => `<option value="${f}" ${character.fsFeats[s] === f ? 'selected' : ''}>${f}</option>`)].join('');
-    const desc = character.fsFeats[s] ? (FS_FEAT_DESC[character.fsFeats[s]] || "—") : "—";
-    return `<div class="field-group" style="margin-top:8px;">
-      <label>${s} Fighting Style Feat</label>
-      <select onchange="character.fsFeats['${s}']=this.value; renderFSFeats(); renderCombatStats();">${options}</select>
-      <div class="feature-description" style="margin-top:6px;">${desc}</div>
+  container.innerHTML = character.selectedInstincts.map((selected, idx) => {
+    const chosen = selected ? available.find(i => i.name === selected) : null;
+    return `<div class="instinct-selector">
+      <label style="font-size: 12px; font-weight: bold; margin-bottom: 5px; display:block;">Instinct ${idx + 1}</label>
+      <select onchange="selectInstinct(${idx}, this.value)">
+        <option value="">-- Select Instinct --</option>
+        ${available.map(i => `<option value="${i.name}" ${selected === i.name ? 'selected' : ''}>${i.name}</option>`).join('')}
+      </select>
+      <div class="instinct-description">${chosen ? chosen.desc : 'Select an instinct to see description'}</div>
+      ${getInstinctSpellSelector(selected, idx)}
     </div>`;
   }).join('');
-}
-
-function renderEpicBoonDesc() {
-  const name = character.epicBoon;
-  document.getElementById('boonDesc').textContent = name ? (EPIC_BOON_DESC[name] || "—") : "—";
-}
-
-function renderBoonASIControls() {
-  const holder = document.getElementById('boonASIControls');
-  if (!holder) return;
-  
-  const boon = character.epicBoon;
-  if (!boon) {
-    holder.innerHTML = '';
-    return;
-  }
-  
-  const opt = EPIC_BOON_ASI_OPTIONS[boon];
-  if (!opt) {
-    holder.innerHTML = '';
-    return;
-  }
-  
-  const buildSelect = (id, abilities, placeholder) => {
-    const options = ['<option value="">' + placeholder + '</option>', ...abilities.map(a => `<option value="${a}">${ABILITY_LABELS[a]}</option>`)].join('');
-    return `<select id="${id}" class="feat-select" onchange="setBoonASI(this.value)">${options}</select>`;
-  };
-  
-  if (opt === "ANY_ONE") {
-    holder.innerHTML = `<div class="feat-note" style="margin-top:6px;">Epic Boon Ability Increase: choose one ability for +1.</div>${buildSelect('boon_asi', ABILITIES, "+1 pick")}`;
-  } else if (Array.isArray(opt)) {
-    holder.innerHTML = `<div class="feat-note" style="margin-top:6px;">Epic Boon Ability Increase: choose one (${opt.map(o => ABILITY_LABELS[o]).join(' / ')}).</div>${buildSelect('boon_asi', opt, "+1 pick")}`;
-  } else {
-    holder.innerHTML = '';
-  }
-  
-  if (character.boonASI) {
-    const sel = document.getElementById('boon_asi');
-    if (sel) sel.value = character.boonASI;
-  }
 }
 
 function renderSpellsSection() {
@@ -547,10 +336,15 @@ function renderSpellsSection() {
   
   // Collect origin feat spells
   if (character.originFeat && SPELL_SOURCES[character.originFeat]) {
-    const src = SPELL_SOURCES[character.originFeat];
     const stored = character.selectedSpells.originFeat;
     if (stored.cantrips) stored.cantrips.forEach(s => { if (s) allSpells.push({ name: s, level: 'Cantrip', source: character.originFeat }); });
     if (stored.level1) stored.level1.forEach(s => { if (s) allSpells.push({ name: s, level: '1st', source: character.originFeat }); });
+    
+    // Add fixed spells if they exist
+    const src = SPELL_SOURCES[character.originFeat];
+    if (src.fixedSpells) {
+      src.fixedSpells.forEach(s => allSpells.push({ name: s, level: '1st', source: character.originFeat }));
+    }
   }
   
   // Collect instinct spells
@@ -562,10 +356,9 @@ function renderSpellsSection() {
       
       if (src.fixedSpells) {
         src.fixedSpells.forEach(s => allSpells.push({ name: s, level: '1st', source: instinct }));
-      } else {
-        if (stored?.cantrips) stored.cantrips.forEach(s => { if (s) allSpells.push({ name: s, level: 'Cantrip', source: instinct }); });
-        if (stored?.level1) stored.level1.forEach(s => { if (s) allSpells.push({ name: s, level: '1st', source: instinct }); });
       }
+      if (stored?.cantrips) stored.cantrips.forEach(s => { if (s) allSpells.push({ name: s, level: 'Cantrip', source: instinct }); });
+      if (stored?.level1) stored.level1.forEach(s => { if (s) allSpells.push({ name: s, level: '1st', source: instinct }); });
     }
   });
   
@@ -638,164 +431,6 @@ function renderSpellsSection() {
       <div class="feature-description">
         <p style="margin-bottom: 12px;">As a ${callingName}, you prepare spells from the ${spellList} spell list. Number of prepared spells = WIS modifier + Ranger level.</p>
         <div class="feat-note">Track your prepared ${callingName} spells separately. Use the Adaptive Edge Slots above to track spell slot usage.</div>
-      </div>
-    </div>`;
-  }
-  
-  container.innerHTML = html;
-}
-
-function setSpellChoice(storageKey, level, index, value) {
-  initSpellTracking();
-  
-  if (!character.selectedSpells[storageKey]) {
-    character.selectedSpells[storageKey] = { cantrips: [], level1: [] };
-  }
-  
-  if (!character.selectedSpells[storageKey][level]) {
-    character.selectedSpells[storageKey][level] = [];
-  }
-  
-  character.selectedSpells[storageKey][level][index] = value;
-  renderSpellsSection();
-}
-function renderSpellsSection() {
-  const container = document.getElementById('spellsSection');
-  const title = document.getElementById('spellsTitle');
-  
-  initSpellTracking();
-  
-  let spellSources = [];
-  
-  // Check origin feat for spells
-  if (character.originFeat && SPELL_SOURCES[character.originFeat]) {
-    spellSources.push({
-      source: `Origin Feat: ${character.originFeat}`,
-      data: SPELL_SOURCES[character.originFeat],
-      storageKey: 'originFeat'
-    });
-  }
-  
-  // Check instincts for spells
-  character.selectedInstincts.forEach((instinct, idx) => {
-    if (instinct && SPELL_SOURCES[instinct]) {
-      spellSources.push({
-        source: `Instinct: ${instinct}`,
-        data: SPELL_SOURCES[instinct],
-        storageKey: `instinct_${idx}`
-      });
-    }
-  });
-  
-  // Check general feats for spells
-  [4, 8, 12, 16].forEach(level => {
-    const feat = character.generalFeats[level];
-    if (feat && SPELL_SOURCES[feat]) {
-      spellSources.push({
-        source: `Level ${level} Feat: ${feat}`,
-        data: SPELL_SOURCES[feat],
-        storageKey: `feat_${level}`
-      });
-    }
-  });
-  
-  // Check if Mystic or Wayfarer (spellcasting callings)
-  const isCaster = character.calling === 'mystic' || character.calling === 'wayfarer';
-  
-  if (spellSources.length === 0 && !isCaster) {
-    title.style.display = 'none';
-    container.style.display = 'none';
-    return;
-  }
-  
-  title.textContent = 'Adaptive Edge Casting';
-  title.style.display = 'block';
-  container.style.display = 'block';
-  
-  let html = '';
-  
-  // Render spell selections from feats/instincts
-  spellSources.forEach(src => {
-    html += `<div class="feature-item">
-      <div class="feature-title">${src.source}</div>
-      <div class="feature-description">`;
-    
-    // Cantrips
-    if (src.data.cantrips > 0) {
-      html += `<div style="margin-bottom: 12px;">
-        <strong>Cantrips (Choose ${src.data.cantrips}):</strong>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px;">`;
-      
-      for (let i = 0; i < src.data.cantrips; i++) {
-        const selectedCantrip = character.selectedSpells[src.storageKey]?.cantrips[i] || '';
-        html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'cantrips', ${i}, this.value)">
-          <option value="">-- Select Cantrip --</option>`;
-        
-        const cantripList = CANTRIPS[src.data.cantripList] || [];
-        cantripList.forEach(spell => {
-          html += `<option value="${spell}" ${selectedCantrip === spell ? 'selected' : ''}>${spell}</option>`;
-        });
-        
-        html += `</select>`;
-      }
-      html += `</div></div>`;
-    }
-    
-    // Level 1 spells
-    if (src.data.level1 > 0) {
-      const fixedSpells = src.data.fixedSpells || [];
-      const choiceCount = src.data.level1 - fixedSpells.length;
-      
-      html += `<div style="margin-bottom: 12px;">
-        <strong>1st-Level Spells:</strong>`;
-      
-      // Show fixed spells
-      if (fixedSpells.length > 0) {
-        html += `<div style="margin-top: 6px; margin-bottom: 6px;">
-          <em>Always Known:</em> ${fixedSpells.join(', ')}
-        </div>`;
-      }
-      
-      // Show choice spells
-      if (choiceCount > 0) {
-        html += `<div style="margin-top: 6px;"><em>Choose ${choiceCount}:</em></div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px;">`;
-        
-        for (let i = 0; i < choiceCount; i++) {
-          const selectedSpell = character.selectedSpells[src.storageKey]?.level1[i] || '';
-          html += `<select class="feat-select" onchange="setSpellChoice('${src.storageKey}', 'level1', ${i}, this.value)">
-            <option value="">-- Select Spell --</option>`;
-          
-          const spellList = LEVEL1_SPELLS[src.data.level1List] || [];
-          spellList.forEach(spell => {
-            // Don't show fixed spells in the choice dropdown
-            if (!fixedSpells.includes(spell)) {
-              html += `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`;
-            }
-          });
-          
-          html += `</select>`;
-        }
-        html += `</div>`;
-      }
-      html += `</div>`;
-    }
-    
-    const noteText = src.data.note || "These spells can be cast once per long rest without using a slot, or by expending Adaptive Edge slots.";
-    html += `<div class="feat-note">${noteText}</div>
-      </div>
-    </div>`;
-  });
-  
-  // Mystic and Wayfarer casting section
-  if (isCaster) {
-    const callingName = character.calling === 'mystic' ? 'Mystic' : 'Wayfarer';
-    const modifier = character.calling === 'warden' ? 'CHA' : 'WIS';
-    html += `<div class="feature-item">
-      <div class="feature-title">${callingName} Spellcasting</div>
-      <div class="feature-description">
-        <p style="margin-bottom: 12px;">As a ${callingName}, you know spells from the Ranger spell list. You can prepare a number of spells equal to your ${modifier} modifier + your Ranger level.</p>
-        <div class="feat-note">Spell selection and preparation for ${callingName} spellcasting should be tracked separately on your character sheet. Use the Adaptive Edge Slots above to track spell slot usage.</div>
       </div>
     </div>`;
   }
