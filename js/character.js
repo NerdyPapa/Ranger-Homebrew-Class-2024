@@ -39,13 +39,13 @@ let character = {
     plus2: '',
     plus1: ''
   },
-  featASI: {
+ featASI: {
     4: [],
     8: [],
     12: [],
     16: []
   },
-boonASI: '',
+  boonASI: '',
   generalFeats: {
     4: "",
     8: "",
