@@ -452,3 +452,246 @@ function setSpellChoice(storageKey, level, index, value) {
   character.selectedSpells[storageKey][level][index] = value;
   renderSpellsSection();
 }
+function renderSpeciesFeatures() {
+  const s = character.species;
+  const block = SPECIES_DATA[s];
+  setHTML('speciesTitle', block ? block.title : '—');
+  document.getElementById('speciesDesc').textContent = block ? block.desc : 'Select a species to view its traits.';
+}
+
+function renderFeaturesAndTraits() {
+  const callingKey = document.getElementById('callingSelect').value;
+  const subclassKey = document.getElementById('subclassSelect').value;
+  const lvl = character.level;
+  
+  renderSpeciesFeatures();
+  
+  const callingContainer = document.getElementById('callingFeatures');
+  if (callingKey && DATABASE.callings[callingKey]) {
+    const calling = DATABASE.callings[callingKey];
+    const unlocked = calling.features.filter(f => f.level <= lvl);
+    callingContainer.innerHTML = unlocked.length ?
+      unlocked.map(f => `<div class="feature-item">
+        <div class="feature-title">${f.name} (${f.level}${getOrdinal(f.level)} Level)</div>
+        <div class="feature-description">${f.description}</div>
+      </div>`).join('') :
+      `<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">No Calling features unlocked yet.</p>`;
+  } else {
+    callingContainer.innerHTML = '<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">Select a Calling to see features.</p>';
+  }
+  
+  const subclassContainer = document.getElementById('subclassFeatures');
+  if (subclassKey && DATABASE.subclasses[subclassKey] && lvl >= 3) {
+    const sc = DATABASE.subclasses[subclassKey];
+    const unlocked = sc.features.filter(f => f.level <= lvl);
+    subclassContainer.innerHTML = unlocked.length ?
+      unlocked.map(f => `<div class="feature-item">
+        <div class="feature-title">${f.name} (${f.level}${getOrdinal(f.level)} Level)</div>
+        <div class="feature-description">${f.description}</div>
+      </div>`).join('') :
+      `<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">No Subclass features unlocked yet (requires level 3).</p>`;
+  } else if (lvl < 3) {
+    subclassContainer.innerHTML = '<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">Subclass features unlock at 3rd level.</p>';
+  } else {
+    subclassContainer.innerHTML = '<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">Select a Subclass to see features.</p>';
+  }
+  
+  document.getElementById('feat4').style.display = lvl >= 4 ? 'block' : 'none';
+  document.getElementById('feat8').style.display = lvl >= 8 ? 'block' : 'none';
+  document.getElementById('feat12').style.display = lvl >= 12 ? 'block' : 'none';
+  document.getElementById('feat16').style.display = lvl >= 16 ? 'block' : 'none';
+  document.getElementById('feat19').style.display = lvl >= 19 ? 'block' : 'none';
+  
+  setHTML('featBgName', character.background || '—');
+  setHTML('originFeatName', character.originFeat || '—');
+  renderOriginFeatDesc();
+  renderBgASISelectors();
+  
+  [4, 8, 12, 16].forEach(l => {
+    const sel = document.getElementById('featPick' + l);
+    if (sel) sel.value = character.generalFeats[l] || "Ability Score Improvement";
+    renderGeneralFeatDesc(l);
+    renderFeatASIControls(l);
+  });
+  
+  renderFSFeats();
+  
+  const boonSel = document.getElementById('featPick19');
+  if (boonSel) boonSel.value = character.epicBoon || "";
+  renderEpicBoonDesc();
+  renderBoonASIControls();
+}
+
+function renderActions() {
+  const actions = [];
+  const bonus = [];
+  const reacts = [];
+  
+  character.weapons.forEach((w) => {
+    const has = (w.name || "").trim() !== "" || (w.mod || "").toString().trim() !== "" || (w.dmg || "").trim() !== "";
+    if (has) {
+      const modTxt = (w.mod !== "" && !Number.isNaN(parseInt(w.mod, 10))) ?
+        (parseInt(w.mod, 10) >= 0 ? `+${parseInt(w.mod, 10)}` : `${parseInt(w.mod, 10)}`) : '';
+      const dmgTxt = (w.dmg || '').trim();
+      actions.push(`<div class="action-item"><strong>${w.name || 'Weapon'}</strong> — to hit ${modTxt || '+'} | dmg ${dmgTxt || '—'}</div>`);
+    }
+  });
+  
+  const pool = [...INSTINCTS_DB.base, ...INSTINCTS_DB.level6, ...INSTINCTS_DB.level9, ...INSTINCTS_DB.level13, ...INSTINCTS_DB.level17];
+  character.selectedInstincts.forEach(n => {
+    if (!n) return;
+    const inst = pool.find(i => i.name === n);
+    if (!inst) return;
+    if (inst.action === 'action') actions.push(`<div class="action-item"><strong>${inst.name}:</strong> ${inst.desc}</div>`);
+    else if (inst.action === 'bonus') bonus.push(`<div class="action-item"><strong>${inst.name}:</strong> ${inst.desc}</div>`);
+    else if (inst.action === 'reaction') reacts.push(`<div class="action-item"><strong>${inst.name}:</strong> ${inst.desc}</div>`);
+  });
+  
+  actions.push('<div class="action-item"><strong>Attack:</strong> Make weapon attack(s)</div>');
+  if (character.level >= 5) actions.push('<div class="action-item"><strong>Extra Attack:</strong> Attack twice when taking the Attack action</div>');
+  
+  document.getElementById('actionsList').innerHTML = actions.length ? actions.join('') : '<div class="action-item">No actions</div>';
+  document.getElementById('bonusActionsList').innerHTML = bonus.length ? bonus.join('') : '<div class="action-item">No bonus actions</div>';
+  document.getElementById('reactionsList').innerHTML = reacts.length ? reacts.join('') : '<div class="action-item">No reactions</div>';
+}
+
+function renderEquipment() {
+  const grid = document.getElementById('equipmentGrid');
+  grid.innerHTML = character.equipment.map((val, idx) =>
+    `<div class="equipment-slot">
+      <label style="font-size:12px; color:#666; width:26px;">${idx + 1}.</label>
+      <input type="text" placeholder="Item ${idx + 1}" value="${val}" oninput="setEquipment(${idx}, this.value)" />
+    </div>`
+  ).join('');
+}
+
+function renderGeneralFeatDesc(level) {
+  const key = character.generalFeats[level] || "Ability Score Improvement";
+  const text = GENERAL_FEAT_DESC[key] || "—";
+  setHTML('featDesc' + level, text);
+}
+
+function renderOriginFeatDesc() {
+  const name = character.originFeat;
+  document.getElementById('originFeatDesc').textContent = name ? (ORIGIN_FEAT_DESC[name] || "—") : "—";
+}
+
+function renderBgASISelectors() {
+  const plus2Sel = document.getElementById('bgPlus2');
+  const plus1Sel = document.getElementById('bgPlus1');
+  if (!plus2Sel || !plus1Sel) return;
+  
+  const opts = ['<option value="">+2 — choose</option>', ...ABILITIES.map(a => `<option value="${a}">${ABILITY_LABELS[a]} (+2)</option>`)].join('');
+  const opts1 = ['<option value="">+1 — choose</option>', ...ABILITIES.map(a => `<option value="${a}">${ABILITY_LABELS[a]} (+1)</option>`)].join('');
+  
+  plus2Sel.innerHTML = opts;
+  plus1Sel.innerHTML = opts1;
+  plus2Sel.value = character.backgroundASI.plus2 || '';
+  plus1Sel.value = character.backgroundASI.plus1 || '';
+}
+
+function renderFeatASIControls(level) {
+  const holder = document.getElementById('featASIControls' + level);
+  if (!holder) return;
+  
+  const feat = character.generalFeats[level] || "Ability Score Improvement";
+  const opt = FEAT_ASI_OPTIONS[feat];
+  
+  if (!opt) {
+    holder.innerHTML = '';
+    return;
+  }
+  
+  const buildSelect = (id, abilities, placeholder) => {
+    const options = ['<option value="">' + placeholder + '</option>', ...abilities.map(a => `<option value="${a}">${ABILITY_LABELS[a]}</option>`)].join('');
+    return `<select id="${id}" class="feat-select" onchange="setFeatASI(${level})">${options}</select>`;
+  };
+  
+  if (opt === "ASI") {
+    const idA = `asi_${level}_a`, idB = `asi_${level}_b`;
+    holder.innerHTML = `<div class="feat-note" style="margin-bottom:6px;">Ability Increase: choose two picks (same ability = +2, different = +1/+1).</div>
+      <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px;">
+        ${buildSelect(idA, ABILITIES, "+1 pick A")}
+        ${buildSelect(idB, ABILITIES, "+1 pick B")}
+      </div>`;
+    const [a, b] = character.featASI[level] || [];
+    if (a) document.getElementById(idA).value = a;
+    if (b) document.getElementById(idB).value = b;
+  } else if (opt === "ANY_ONE") {
+    const id = `asi_${level}_one`;
+    holder.innerHTML = `<div class="feat-note" style="margin-bottom:6px;">Ability Increase: choose one ability for +1.</div>${buildSelect(id, ABILITIES, "+1 pick")}`;
+    const [a] = character.featASI[level] || [];
+    if (a) document.getElementById(id).value = a;
+  } else if (Array.isArray(opt)) {
+    const id = `asi_${level}_restricted`;
+    holder.innerHTML = `<div class="feat-note" style="margin-bottom:6px;">Ability Increase: choose one (${opt.map(o => ABILITY_LABELS[o]).join(' / ')}).</div>${buildSelect(id, opt, "+1 pick")}`;
+    const [a] = character.featASI[level] || [];
+    if (a) document.getElementById(id).value = a;
+  } else {
+    holder.innerHTML = '';
+  }
+}
+
+function renderFSFeats() {
+  const box = document.getElementById('fsFeatBox');
+  const list = document.getElementById('fsFeatList');
+  const styles = unlockedStylesFromInstincts();
+  
+  if (styles.length === 0) {
+    box.style.display = 'none';
+    list.innerHTML = '';
+    return;
+  }
+  
+  box.style.display = 'block';
+  list.innerHTML = styles.map(s => {
+    const matches = FIGHTING_STYLE_FEATS.filter(f => f.toLowerCase().startsWith(s.toLowerCase()));
+    const options = ['<option value="">-- Select --</option>', ...matches.map(f => `<option value="${f}" ${character.fsFeats[s] === f ? 'selected' : ''}>${f}</option>`)].join('');
+    const desc = character.fsFeats[s] ? (FS_FEAT_DESC[character.fsFeats[s]] || "—") : "—";
+    return `<div class="field-group" style="margin-top:8px;">
+      <label>${s} Fighting Style Feat</label>
+      <select onchange="character.fsFeats['${s}']=this.value; renderFSFeats(); renderCombatStats();">${options}</select>
+      <div class="feature-description" style="margin-top:6px;">${desc}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderEpicBoonDesc() {
+  const name = character.epicBoon;
+  document.getElementById('boonDesc').textContent = name ? (EPIC_BOON_DESC[name] || "—") : "—";
+}
+
+function renderBoonASIControls() {
+  const holder = document.getElementById('boonASIControls');
+  if (!holder) return;
+  
+  const boon = character.epicBoon;
+  if (!boon) {
+    holder.innerHTML = '';
+    return;
+  }
+  
+  const opt = EPIC_BOON_ASI_OPTIONS[boon];
+  if (!opt) {
+    holder.innerHTML = '';
+    return;
+  }
+  
+  const buildSelect = (id, abilities, placeholder) => {
+    const options = ['<option value="">' + placeholder + '</option>', ...abilities.map(a => `<option value="${a}">${ABILITY_LABELS[a]}</option>`)].join('');
+    return `<select id="${id}" class="feat-select" onchange="setBoonASI(this.value)">${options}</select>`;
+  };
+  
+  if (opt === "ANY_ONE") {
+    holder.innerHTML = `<div class="feat-note" style="margin-top:6px;">Epic Boon Ability Increase: choose one ability for +1.</div>${buildSelect('boon_asi', ABILITIES, "+1 pick")}`;
+  } else if (Array.isArray(opt)) {
+    holder.innerHTML = `<div class="feat-note" style="margin-top:6px;">Epic Boon Ability Increase: choose one (${opt.map(o => ABILITY_LABELS[o]).join(' / ')}).</div>${buildSelect('boon_asi', opt, "+1 pick")}`;
+  } else {
+    holder.innerHTML = '';
+  }
+  
+  if (character.boonASI) {
+    const sel = document.getElementById('boon_asi');
+    if (sel) sel.value = character.boonASI;
+  }
+}
