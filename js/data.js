@@ -334,7 +334,7 @@ const DATABASE = {
         },
         { 
           level: 6, 
-          name: "Trick Shot", 
+          name: "Precision Techniques", 
           description: "You hone your accuracy into high-skill maneuvers. When you take the Attack action, you may expend a 2nd-level Adaptive Edge slot to attempt one of the following techniques with one of your attacks. Some techniques can also be used as reactions to specific triggers.\nâ€¢ Stack: When you take the Attack action, you may also use your bonus action to shoot an additional projectile at the same target or a different target within range.\nâ€¢ Pin: You pin your target with a projectile, freezing their movement. The target must make a Strength saving throw against your spell save DC (8 + Prof + Wis). On a failure, the target is grappled and must use an action to attempt to break free.\nâ€¢ Disarm: When you take the Attack action, you may use one of your attacks to attempt to disarm a creature within range. Make a ranged weapon attack against the target's AC + 2. On a hit, the target takes damage equal to your Dexterity modifier and must make a Strength saving throw against your spell save DC. On a failed save, the target drops one object of your choice that it's holding.\nâ€¢ Deflect: When a creature makes a ranged weapon attack or melee weapon attack against you, you may use your reaction to deflect the incoming strike. Roll your weapon damage die and add that number to your AC until the end of the attacker's next turn." 
         },
         { 
