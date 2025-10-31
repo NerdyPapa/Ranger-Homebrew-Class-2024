@@ -318,8 +318,8 @@ function setBackground(name) {
   character.background = name;
   character.originFeat = BACKGROUNDS[name]?.originFeat || null;
   character.backgroundASI = { mode: 'twoPlusOne', plus2: '', plus1: '' };
-  setHTML('featBgName', name || 'â€”');
-  setHTML('originFeatName', character.originFeat || 'â€”');
+  setHTML('featBgName', name || '—');
+  setHTML('originFeatName', character.originFeat || '—');
   renderOriginFeatDesc();
   renderBgASISelectors();
   updateCharacter();
