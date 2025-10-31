@@ -918,3 +918,199 @@ const ARMOR_DATA = {
     cost: 1500
   }
 };
+
+// ========================================
+// INSTINCTS DATABASE
+// Organized by level prerequisite
+// ========================================
+
+const INSTINCTS_DB = {
+  // Base Instincts (available at level 2+)
+  base: [
+    {
+      name: "Ambusher",
+      desc: "When you roll initiative, you can expend a 1st-level Adaptive Edge slot to move up to half your speed.",
+      action: "free"
+    },
+    {
+      name: "Battle Hymn",
+      desc: "You gain proficiency in Performance. You also learn the vicious mockery cantrip.",
+      action: "passive"
+    },
+    {
+      name: "Beast Handler",
+      desc: "You have advantage on Animal Handling checks.",
+      action: "passive"
+    },
+    {
+      name: "Beast Speech",
+      desc: "You can cast speak with animals by expending a 1st-level Adaptive Edge slot. When you do so, the effect's duration is extended to 8 hours.",
+      action: "action"
+    },
+    {
+      name: "Bloodmarked",
+      desc: "You gain proficiency in Intimidation. You also learn one cantrip or one Level 1 spell from the Sorcerer or Warlock spell list.",
+      action: "passive"
+    },
+    {
+      name: "Cunning Linguist",
+      desc: "You learn two languages of your choice. You can take this Instinct multiple times.",
+      action: "passive",
+      repeatable: true
+    },
+    {
+      name: "Druidic Warrior",
+      desc: "You learn two cantrips or one level one spell from the Druid spell list. This Instinct can be taken multiple times.",
+      action: "passive",
+      repeatable: true
+    },
+    {
+      name: "Fleet of Foot",
+      desc: "Your walking speed increases by 10 feet.",
+      action: "passive"
+    },
+    {
+      name: "Forager",
+      desc: "When foraging in the wild, you find twice as much food and water as normal.",
+      action: "passive"
+    },
+    {
+      name: "Herbalist",
+      desc: "You add double your proficiency bonus to checks made with a Healer's Kit. The time needed to craft a healing potion is reduced to 6 hours.",
+      action: "passive"
+    },
+    {
+      name: "Hunter's Mark",
+      desc: "You learn the Hunter's Mark spell. It is always prepared and you can cast it once per day without expending an Adaptive Edge slot.",
+      action: "bonus"
+    },
+    {
+      name: "Lone Wolf",
+      desc: "When no ally is within 30 feet of you, you gain a +2 bonus to attack rolls.",
+      action: "passive"
+    },
+    {
+      name: "Natural Camouflage",
+      desc: "You can attempt to hide even when you are only lightly obscured by natural phenomena such as foliage, mist, or heavy rain.",
+      action: "passive"
+    },
+    {
+      name: "Nerves of Steel",
+      desc: "You have advantage on saving throws against the frightened condition.",
+      action: "passive"
+    },
+    {
+      name: "Pack Tactics",
+      desc: "When an ally is within 5 feet of a creature, you can expend a 1st-level Adaptive Edge slot as a bonus action to gain advantage on your next attack against that creature.",
+      action: "bonus"
+    },
+    {
+      name: "Predator's Poise",
+      desc: "When you reduce a creature to 0 hit points, you gain temporary hit points equal to your Wisdom modifier (Warden may use Charisma if that was their choice when taking the Calling).",
+      action: "passive"
+    },
+    {
+      name: "Warding Thorns",
+      desc: "You learn the Shield Spell.",
+      action: "reaction"
+    },
+    {
+      name: "Sacred Oath",
+      desc: "You gain proficiency in Religion. You also learn one cantrip or one Level 1 spell from the Cleric or Paladin spell list.",
+      action: "passive"
+    },
+    {
+      name: "Skilled Survivalist",
+      desc: "You gain proficiency in one additional skill of your choice from the Ranger skill list.",
+      action: "passive"
+    },
+    {
+      name: "Spell Lore",
+      desc: "You gain proficiency in Arcana. You also learn one cantrip or one Level 1 spell from the Wizard or Bard spell list.",
+      action: "passive"
+    },
+    {
+      name: "Sure Footing",
+      desc: "You have advantage on ability checks and saving throws made to resist being knocked prone or moved against your will.",
+      action: "passive"
+    },
+    {
+      name: "Trailblazer",
+      desc: "Difficult terrain doesn't cost you extra movement.",
+      action: "passive"
+    },
+    {
+      name: "Weapon Mastery",
+      desc: "Choose one weapon you are proficient with. You gain access to one Weapon Mastery property for that weapon. You can take this Instinct multiple times, applying it to a different weapon each time.",
+      action: "passive",
+      repeatable: true
+    },
+    {
+      name: "Wild Charm",
+      desc: "You gain proficiency in Animal Handling. You also learn one cantrip or one Level 1 spell from the Druid spell list.",
+      action: "passive"
+    }
+  ],
+
+  // 6th Level Instincts
+  level6: [
+    {
+      name: "Iron Grip",
+      desc: "You can't be disarmed of any items in your hands against your will.",
+      action: "passive"
+    },
+    {
+      name: "Silent Step",
+      desc: "You and allies within 30 feet can sneak while traveling at a normal pace.",
+      action: "passive"
+    },
+    {
+      name: "Nature's Denizen",
+      desc: "You can cast commune with nature without expending a spell slot once per long rest.",
+      action: "action"
+    },
+    {
+      name: "Keen-Eyed",
+      desc: "You can't have disadvantage on Wisdom (Perception) checks due to dim light or lightly obscured areas.",
+      action: "passive"
+    },
+    {
+      name: "Fighting Style",
+      desc: "You may choose one of the fighting style feats. This instinct can be taken multiple times.",
+      action: "passive",
+      repeatable: true
+    }
+  ],
+
+  // 9th Level Instincts
+  level9: [
+    {
+      name: "Unerring Aim",
+      desc: "When you make a ranged weapon attack roll and miss, you can add 1d4 to the roll. You can decide to use this feature after the die is rolled, but before the outcome is determined. You can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.",
+      action: "free"
+    },
+    {
+      name: "Twin Strike",
+      desc: "When you take the Attack action, you can expend a 3rd-level Adaptive Edge slot as a bonus action to make one additional weapon attack against that target as part of the same attack action.",
+      action: "bonus"
+    }
+  ],
+
+  // 13th Level Instincts
+  level13: [
+    {
+      name: "Elemental Strike",
+      desc: "Your weapon attacks deal a chosen elemental damage type (acid, cold, fire, lightning, or thunder) instead of their normal type. You can change the chosen type after a long rest.",
+      action: "passive"
+    }
+  ],
+
+  // 17th Level Instincts
+  level17: [
+    {
+      name: "Ability Surge",
+      desc: "Increase one ability score of your choice by 2, to a maximum of 22.",
+      action: "passive"
+    }
+  ]
+};
