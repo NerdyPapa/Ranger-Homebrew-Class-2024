@@ -7,7 +7,7 @@ const SPECIES_LIST = ["Aasimar", "Dragonborn", "Dwarf", "Elf", "Gnome", "Goliath
 const SPECIES_DATA = {
   "Aasimar": {
     title: "Aasimar (Humanoid, Small/Medium, Speed 30)",
-    desc: `• Celestial Resistance: Resistance to Necrotic & Radiant.
+    desc: `â€¢ Celestial Resistance: Resistance to Necrotic & Radiant.
 - Darkvision 60 ft.
 - Healing Hands: Magic action; heal PBd4; 1/Long Rest.
 - Light Bearer: Light cantrip (CHA).
@@ -18,7 +18,7 @@ const SPECIES_DATA = {
   },
   "Dragonborn": {
     title: "Dragonborn (Humanoid, Medium, Speed 30)",
-    desc: `• Draconic Ancestry: Pick damage type (Acid/Cold/Fire/Lightning/Poison).
+    desc: `â€¢ Draconic Ancestry: Pick damage type (Acid/Cold/Fire/Lightning/Poison).
 - Breath Weapon: Replace one attack: 15-ft cone or 30-ft line (Dex save). 1d10 scaling to 4d10 (5/11/17). Uses = PB/Long Rest.
 - Damage Resistance: To ancestry type.
 - Darkvision 60 ft.
@@ -26,14 +26,14 @@ const SPECIES_DATA = {
   },
   "Dwarf": {
     title: "Dwarf (Humanoid, Medium, Speed 30)",
-    desc: `• Darkvision 120 ft.
+    desc: `â€¢ Darkvision 120 ft.
 - Dwarven Resilience: Resistance to Poison; advantage vs. Poisoned.
 - Dwarven Toughness: +1 HP per level (starts +1).
 - Stonecunning: Bonus Action get Tremorsense 60 ft for 10 min while on stone; uses = PB/Long Rest.`
   },
   "Elf": {
     title: "Elf (Humanoid, Medium, Speed 30)",
-    desc: `• Darkvision 60 ft.
+    desc: `â€¢ Darkvision 60 ft.
 - Elven Lineage: choose Drow/High/Wood (grants cantrip & spells at 3rd/5th; 1/Long Rest, also by slots).
 - Fey Ancestry: Advantage vs. Charmed.
 - Keen Senses: Proficiency in Insight, Perception, or Survival.
@@ -41,7 +41,7 @@ const SPECIES_DATA = {
   },
   "Gnome": {
     title: "Gnome (Humanoid, Small, Speed 30)",
-    desc: `• Darkvision 60 ft.
+    desc: `â€¢ Darkvision 60 ft.
 - Gnomish Cunning: Advantage on INT, WIS, CHA saves.
 - Gnomish Lineage (Forest or Rock):
   - Forest: Minor Illusion; Speak with Animals prepared PB/day w/o slot.
@@ -49,39 +49,39 @@ const SPECIES_DATA = {
   },
   "Goliath": {
     title: "Goliath (Humanoid, Medium, Speed 35)",
-    desc: `• Giant Ancestry: PB/Long Rest choose ancestry effect (Cloud teleport; Fire +1d10; Frost +1d6 & slow; Hill prone; Stone reduce damage 1d12+CON; Storm 1d8 on attacker within 60 ft).
+    desc: `â€¢ Giant Ancestry: PB/Long Rest choose ancestry effect (Cloud teleport; Fire +1d10; Frost +1d6 & slow; Hill prone; Stone reduce damage 1d12+CON; Storm 1d8 on attacker within 60 ft).
 - Large Form (5th): Bonus Action become Large 10 min; +10 ft speed; adv STR checks; 1/Long Rest.
 - Powerful Build: Adv to end Grappled; count as one size larger for carry.`
   },
   "Halfling": {
     title: "Halfling (Humanoid, Small, Speed 30)",
-    desc: `• Brave: Advantage vs. Frightened.
+    desc: `â€¢ Brave: Advantage vs. Frightened.
 - Halfling Nimbleness: Move through larger creatures' spaces.
 - Luck: Reroll 1s on d20 tests (must use new).
 - Naturally Stealthy: Can Hide when obscured by larger creature.`
   },
   "Human": {
     title: "Human (Humanoid, Small/Medium, Speed 30)",
-    desc: `• Resourceful: Gain Heroic Inspiration after each Long Rest.
+    desc: `â€¢ Resourceful: Gain Heroic Inspiration after each Long Rest.
 - Skillful: Gain proficiency in one skill of your choice.
 - Versatile: Gain one Origin feat (Skilled recommended).`
   },
   "Kenku": {
     title: "Kenku (Humanoid, Small/Medium, Speed 30)",
-    desc: `• Expert Duplication: When copying writing or craftwork you've seen (including your own), you have Advantage on checks to produce an exact duplicate.
+    desc: `â€¢ Expert Duplication: When copying writing or craftwork you've seen (including your own), you have Advantage on checks to produce an exact duplicate.
 - Kenku Recall: Gain proficiency in two skills of your choice. When you make an ability check using a skill you're proficient in, you can give yourself Advantage before you roll. Uses = your Proficiency Bonus per Long Rest.
 - Mimicry: You can accurately mimic sounds and voices you've heard. A listener can tell they're imitations only with a Wisdom (Insight) check vs. DC (8 + your Proficiency Bonus + your Charisma modifier).
 - Size Choice: Small or Medium (choose on selection).`
   },
   "Orc": {
     title: "Orc (Humanoid, Medium, Speed 30)",
-    desc: `• Adrenaline Rush: Bonus Action Dash; gain temp HP = PB; uses = PB/Short or Long Rest.
+    desc: `â€¢ Adrenaline Rush: Bonus Action Dash; gain temp HP = PB; uses = PB/Short or Long Rest.
 - Darkvision 120 ft.
 - Relentless Endurance: 1/Long Rest drop to 1 HP instead of 0.`
   },
   "Tiefling": {
     title: "Tiefling (Humanoid, Small/Medium, Speed 30)",
-    desc: `• Darkvision 60 ft.
+    desc: `â€¢ Darkvision 60 ft.
 - Fiendish Legacy: choose Abyssal (Poison resist + Poison Spray; Ray of Sickness/Hold Person), Chthonic (Necrotic resist + Chill Touch; False Life/Ray of Enfeeblement), or Infernal (Fire resist + Fire Bolt; Hellish Rebuke/Darkness). Each spell 1/Long Rest, also via slots.
 - Otherworldly Presence: Thaumaturgy cantrip.`
   }
@@ -107,18 +107,18 @@ const BACKGROUNDS = {
 };
 
 const ORIGIN_FEAT_DESC = {
-  "Alert": "• Add Proficiency Bonus to Initiative.\n• After you roll initiative, you may swap initiative with a willing ally; cannot if either is Incapacitated.",
-  "Crafter": "• Gain proficiency with 3 Artisan's Tools of your choice.\n• 20% discount on nonmagical items.\n• Fast Crafting: after a Long Rest, craft one item from Fast Crafting table (requires tools & proficiency); lasts until next Long Rest.",
-  "Healer": "• Battle Medic: Use Healer's Kit (Utilize) to let a creature spend a Hit Die; you roll it; heal result + PB.\n• Healing Rerolls: Reroll 1s on HP restoration dice from spells or this feat (must use new roll).",
-  "Lucky": "• Luck Points equal to PB; refresh on Long Rest.\n• Spend 1 point to gain Advantage on your d20 test, or impose Disadvantage on a creature's attack against you.",
-  "Magic Initiate (Cleric)": "• Learn 2 cantrips from Cleric list.\n• Learn 1 level 1 Cleric spell; always prepared; 1/day cast without slot; may also cast with slots. Spellcasting ability = INT/WIS/CHA (pick). Replace one chosen spell each level.",
-  "Magic Initiate (Druid)": "• As Magic Initiate (Cleric) but Druid list.",
-  "Magic Initiate (Wizard)": "• As Magic Initiate (Cleric) but Wizard list.",
-  "Musician": "• Proficiency with 3 instruments.\n• Encouraging Song: after a Short/Long Rest, grant Heroic Inspiration to up to PB allies who hear your song.",
-  "Savage Attacker": "• Once per turn when you hit with a weapon, roll its damage dice twice and use either result.",
-  "Skilled": "• Gain proficiency in any combination of three skills or tools.\n• Repeatable.",
-  "Tavern Brawler": "• Unarmed Strike deals 1d4 + STR (bludgeoning) instead of normal.\n• Reroll 1s on unarmed damage.\n• Proficiency with improvised weapons.\n• Push 5 ft when you hit with Unarmed Strike as part of Attack (1/turn).",
-  "Tough": "• Increase max HP by 2 × character level when taken; +2 HP per level thereafter."
+  "Alert": "â€¢ Add Proficiency Bonus to Initiative.\nâ€¢ After you roll initiative, you may swap initiative with a willing ally; cannot if either is Incapacitated.",
+  "Crafter": "â€¢ Gain proficiency with 3 Artisan's Tools of your choice.\nâ€¢ 20% discount on nonmagical items.\nâ€¢ Fast Crafting: after a Long Rest, craft one item from Fast Crafting table (requires tools & proficiency); lasts until next Long Rest.",
+  "Healer": "â€¢ Battle Medic: Use Healer's Kit (Utilize) to let a creature spend a Hit Die; you roll it; heal result + PB.\nâ€¢ Healing Rerolls: Reroll 1s on HP restoration dice from spells or this feat (must use new roll).",
+  "Lucky": "â€¢ Luck Points equal to PB; refresh on Long Rest.\nâ€¢ Spend 1 point to gain Advantage on your d20 test, or impose Disadvantage on a creature's attack against you.",
+  "Magic Initiate (Cleric)": "â€¢ Learn 2 cantrips from Cleric list.\nâ€¢ Learn 1 level 1 Cleric spell; always prepared; 1/day cast without slot; may also cast with slots. Spellcasting ability = INT/WIS/CHA (pick). Replace one chosen spell each level.",
+  "Magic Initiate (Druid)": "â€¢ As Magic Initiate (Cleric) but Druid list.",
+  "Magic Initiate (Wizard)": "â€¢ As Magic Initiate (Cleric) but Wizard list.",
+  "Musician": "â€¢ Proficiency with 3 instruments.\nâ€¢ Encouraging Song: after a Short/Long Rest, grant Heroic Inspiration to up to PB allies who hear your song.",
+  "Savage Attacker": "â€¢ Once per turn when you hit with a weapon, roll its damage dice twice and use either result.",
+  "Skilled": "â€¢ Gain proficiency in any combination of three skills or tools.\nâ€¢ Repeatable.",
+  "Tavern Brawler": "â€¢ Unarmed Strike deals 1d4 + STR (bludgeoning) instead of normal.\nâ€¢ Reroll 1s on unarmed damage.\nâ€¢ Proficiency with improvised weapons.\nâ€¢ Push 5 ft when you hit with Unarmed Strike as part of Attack (1/turn).",
+  "Tough": "â€¢ Increase max HP by 2 Ã— character level when taken; +2 HP per level thereafter."
 };
 
 const GENERAL_FEATS = [
@@ -136,133 +136,75 @@ const GENERAL_FEATS = [
 ];
 
 const GENERAL_FEAT_DESC = {
-  "Ability Score Improvement": "• Increase one ability by +2 or two abilities by +1 (max 20).",
-  "Actor": "• +1 CHA (max 20).\n• Advantage to pass as someone while disguised (Deception/Performance).\n• Mimicry of voices/creatures; DC = 8 + CHA mod + PB to detect.",
-  "Athlete": "• +1 STR or DEX.\n• Gain Climb Speed = Speed; stand from Prone costs 5 ft; shorter run-up for jumps.",
-  "Charger": "• +1 STR or DEX.\n• Dash then Bonus Action: melee attack or Shove. If you move 10+ ft first, +5 damage or push 10 ft + knock Prone.",
-  "Chef": "• +1 CON or WIS.\n• Proficiency with Cook's Utensils. During Short Rest (1 hour), make treats for PB creatures; each regains additional 1d8 HP. During Long Rest, cook for up to 6 creatures; each gains temp HP = PB + your level.",
-  "Crossbow Expert": "• +1 DEX.\n• Ignore Loading; Being within 5 ft of hostile doesn't impose Disadvantage on ranged attacks; Bonus Action attack with Hand Crossbow after one-handed attack.",
-  "Crusher": "• +1 STR or CON.\n• Once per turn: Bludgeoning hit moves target 5 ft. Critical with Bludgeoning: attacks vs. target have Advantage until start of your next turn.",
-  "Defensive Duelist": "• +1 DEX.\n• Reaction when hit with melee while wielding Finesse weapon: add PB to AC; may turn hit into miss.",
-  "Dual Wielder": "• +1 STR or DEX.\n• Two-Weapon Fighting with any one-handed weapons (not just Light). +1 AC while wielding weapons in each hand. Draw/stow two weapons at once.",
-  "Durable": "• +1 CON.\n• When you roll Hit Dice to regain HP, minimum HP = 2 × CON mod (min 2).",
-  "Elemental Adept": "• +1 INT, WIS, or CHA.\n• Choose Acid/Cold/Fire/Lightning/Thunder: Spells ignore resistance; treat 1s on damage as 2s.",
-  "Fey Touched": "• +1 INT, WIS, or CHA.\n• Learn Misty Step + one 1st-level Divination/Enchantment spell. Cast each 1/Long Rest without slot. Use spell slots to cast. Chosen ability for spellcasting.",
-  "Grappler": "• +1 STR or DEX.\n• Advantage on attacks vs. grappled creature. Bonus Action to pin (both Restrained until grapple ends).",
-  "Great Weapon Master": "• +1 STR.\n• Extra Attack (level 5): make extra attack as Bonus Action if you crit or reduce to 0. Power Attack: -5 to hit, +10 damage with Heavy melee weapon.",
-  "Heavily Armored": "• +1 STR or CON.\n• Proficiency with Heavy armor.",
-  "Heavy Armor Master": "• +1 STR or CON.\n• Heavy Armor reduces Nonmagical Bludgeoning/Piercing/Slashing by 3.",
-  "Inspiring Leader": "• +1 WIS or CHA.\n• After Short/Long Rest, 10-min speech grants temp HP = your level + CHA mod to up to 6 allies (including you).",
-  "Keen Mind": "• +1 INT.\n• Advantage on Initiative. Can accurately recall anything seen/heard in past month.",
-  "Lightly Armored": "• +1 STR or DEX.\n• Proficiency with Light armor.",
-  "Mage Slayer": "• +1 STR or DEX.\n• Advantage on saves vs. spells cast by creature within 5 ft. Reaction to attack caster within 5 ft after they cast. Concentration checks for hit from your attacks have Disadvantage.",
-  "Martial Weapon Training": "• +1 STR or DEX.\n• Proficiency with Martial weapons.",
-  "Medium Armor Master": "• +1 STR or DEX.\n• No Disadvantage on Stealth in Medium armor; Medium armor Dex cap = +3.",
-  "Moderately Armored": "• +1 STR or DEX.\n• Proficiency with Medium armor and Shields.",
-  "Mounted Combatant": "• +1 STR, DEX, or WIS.\n• Advantage on melee attacks vs. unmounted smaller than mount. Redirect attacks on mount to you. Mount takes no damage on successful Dex save (half on fail).",
-  "Observant": "• +1 INT or WIS.\n• +5 to passive Perception and Investigation. Read lips in known language.",
-  "Piercer": "• +1 STR or DEX.\n• Reroll one damage die per turn with Piercing damage; must use new. Critical with Piercing: extra damage die.",
-  "Poisoner": "• +1 DEX or INT.\n• Ignore poison resistance; restore hit points as Bonus Action to poisoned target removes Poisoned. Proficiency with Poisoner's Kit; craft contact/ingested/inhaled/injury poison (cost/time halved).",
-  "Polearm Master": "• +1 STR or DEX.\n• Bonus Action attack (1d4 + STR) with opposite end of Glaive/Halberd/Pike/Quarterstaff/Spear. Reaction Opportunity Attack when creature enters your reach with those weapons.",
-  "Resilient": "• +1 to chosen ability (max 20).\n• Proficiency in saves for that ability.",
-  "Ritual Caster": "• +1 INT, WIS, or CHA.\n• Choose Cleric/Druid/Wizard. Learn 2 1st-level rituals from that list. Find/copy more ritual spells (50 gp + 1 hour per level). Cast as rituals only; use chosen ability.",
-  "Sentinel": "• +1 STR or DEX.\n• Opportunity Attack reduces target's speed to 0. Opportunity Attack even if Disengage. Reaction attack if adjacent enemy attacks someone else.",
-  "Shadow Touched": "• +1 INT, WIS, or CHA.\n• Learn Invisibility + one 1st-level Illusion/Necromancy spell. Cast each 1/Long Rest without slot. Use spell slots to cast. Chosen ability for spellcasting.",
-  "Sharpshooter": "• +1 DEX.\n• Attacks at long range don't have Disadvantage. Ignore half/three-quarters cover. Power Attack: -5 to hit, +10 damage with ranged weapon.",
-  "Shield Master": "• +1 STR.\n• Bonus Action Shove after Attack action. Add shield's AC to Dex saves vs. single-target effects. Reaction: no damage on successful Dex save (half on fail) if using shield.",
-  "Skill Expert": "• +1 to any ability.\n• Proficiency in one skill. Expertise in one proficient skill.",
-  "Skulker": "• +1 DEX.\n• Bonus Action to Hide if Lightly Obscured. Missing with ranged attack while hidden doesn't reveal position. No Disadvantage on Perception in dim light.",
-  "Slasher": "• +1 STR or DEX.\n• Once per turn: Slashing hit reduces target's speed by 10 ft. Critical with Slashing: target has Disadvantage on attacks until start of your next turn.",
-  "Speedy": "• +1 DEX or CON.\n• +10 ft Speed. Dash as Bonus Action PB times per Long Rest.",
-  "Spell Sniper": "• +1 INT, WIS, or CHA.\n• Learn one attack-roll cantrip. Attacking spell ranges doubled. Ignore half/three-quarters cover with spell attacks.",
-  "Telekinetic": "• +1 INT, WIS, or CHA.\n• Learn Mage Hand; can cast invisibly; Bonus Action to shove creature 5 ft (STR/DEX save vs. 8 + PB + ability mod).",
-  "Telepathic": "• +1 INT, WIS, or CHA.\n• Telepathy 60 ft. Detect Thoughts 1/Long Rest or via spell slot (chosen ability for DC).",
-  "War Caster": "• +1 INT, WIS, or CHA.\n• Advantage on Concentration saves. Cast spells as Opportunity Attacks. Perform Somatic components while holding weapons/shield.",
-  "Weapon Master": "• +1 STR or DEX.\n• Proficiency with 4 weapons of your choice. Gain Weapon Mastery with those weapons."
+  "Ability Score Improvement": "â€¢ Increase one ability by +2 or two abilities by +1 (max 20).",
+  "Actor": "â€¢ +1 CHA (max 20).\nâ€¢ Advantage to pass as someone while disguised (Deception/Performance).\nâ€¢ Mimicry of voices/creatures; DC = 8 + CHA mod + PB to detect.",
+  "Athlete": "â€¢ +1 STR or DEX.\nâ€¢ Gain Climb Speed = Speed; stand from Prone costs 5 ft; shorter run-up for jumps.",
+  "Charger": "â€¢ +1 STR or DEX.\nâ€¢ Dash adds +10 ft that action; after straight 10-ft move then hit, add +1d8 damage or push 10 ft (1/turn).",
+  "Chef": "â€¢ +1 CON or WIS; Cook's Utensils proficiency.\nâ€¢ Short Rest meal: extra 1d8 HP on spent dice (up to 4+PB creatures).\nâ€¢ PB treats grant temp HP = PB (Bonus Action to eat; lasts 8h).",
+  "Crossbow Expert": "â€¢ +1 DEX.\nâ€¢ Ignore Loading; can load without free hand.\nâ€¢ No Disadvantage in melee; add ability mod to Light crossbow off-hand attack.",
+  "Crusher": "â€¢ +1 STR or CON.\nâ€¢ Once/turn on bludgeoning hit, move target 5 ft.\nâ€¢ On bludgeoning crit, attacks vs. target have Advantage until your next turn.",
+  "Defensive Duelist": "â€¢ +1 DEX.\nâ€¢ Reaction: add PB to AC vs. a melee hit while wielding a Finesse weapon (until start of your next turn).",
+  "Dual Wielder": "â€¢ +1 STR or DEX.\nâ€¢ When you Attack with a Light weapon, make one extra off-hand attack as Bonus Action with a different non-Two-Handed melee weapon.\nâ€¢ Draw/stow two one-handed weapons at once.",
+  "Durable": "â€¢ +1 CON.\nâ€¢ Advantage on Death Saves.\nâ€¢ Bonus Action: spend one Hit Die to heal.",
+  "Elemental Adept": "â€¢ +1 INT/WIS/CHA.\nâ€¢ Pick Acid/Cold/Fire/Lightning/Thunder; spells ignore resistance; treat 1s on damage dice as 2s. Repeatable for different types.",
+  "Fey Touched": "â€¢ +1 INT/WIS/CHA.\nâ€¢ Always have Misty Step + one L1 Divination/Enchantment; cast each 1/day w/o slot; also via slots.",
+  "Grappler": "â€¢ +1 STR or DEX.\nâ€¢ On Unarmed Strike hit, do damage and Grapple (1/turn).\nâ€¢ Advantage on attacks vs. your grappled creatures.\nâ€¢ Move grappled target (your size or smaller) without extra movement.",
+  "Great Weapon Master": "â€¢ +1 STR.\nâ€¢ When you hit with a Heavy weapon, add PB damage.\nâ€¢ On melee crit or drop to 0 HP, make one attack as Bonus Action.",
+  "Heavily Armored": "â€¢ +1 CON or STR.\nâ€¢ Gain Heavy armor training.",
+  "Heavy Armor Master": "â€¢ +1 CON or STR.\nâ€¢ While in Heavy armor, reduce B/P/S damage from attacks by PB.",
+  "Inspiring Leader": "â€¢ +1 WIS or CHA.\nâ€¢ After Short/Long Rest, give temp HP = level + chosen ability mod to up to 6 creatures within 30 ft who hear/see you.",
+  "Keen Mind": "â€¢ +1 INT.\nâ€¢ Proficiency (or Expertise if proficient) in Arcana/History/Investigation/Nature/Religion (choose one).\nâ€¢ Study as a Bonus Action.",
+  "Lightly Armored": "â€¢ +1 STR or DEX.\nâ€¢ Gain Light armor & Shield training.",
+  "Mage Slayer": "â€¢ +1 STR or DEX.\nâ€¢ Creatures you damage have Disadvantage on Concentration saves.\nâ€¢ 1/Short or Long Rest: succeed on INT/WIS/CHA save instead after failing.",
+  "Martial Weapon Training": "â€¢ +1 STR or DEX.\nâ€¢ Gain Martial weapon proficiency.",
+  "Medium Armor Master": "â€¢ +1 STR or DEX.\nâ€¢ While in Medium armor and DEX â‰¥16, add +3 DEX (not +2) to AC.",
+  "Moderately Armored": "â€¢ +1 STR or DEX.\nâ€¢ Gain Medium armor training.",
+  "Mounted Combatant": "â€¢ +1 STR/DEX/WIS.\nâ€¢ Advantage on attacks vs. unmounted creatures smaller than your mount within 5 ft of mount; Evasion-like for mount; redirect hit on mount to you.",
+  "Observant": "â€¢ +1 INT or WIS.\nâ€¢ Gain proficiency (or Expertise if proficient) in Insight/Investigation/Perception (choose one).\nâ€¢ Search as Bonus Action.",
+  "Piercer": "â€¢ +1 STR or DEX.\nâ€¢ Once/turn on piercing hit, reroll one damage die.\nâ€¢ On piercing crit, roll one extra damage die.",
+  "Poisoner": "â€¢ +1 DEX or INT; Poisoner's Kit proficiency.\nâ€¢ Your Poison damage ignores resistance.\nâ€¢ Craft PB doses (1h & 50 gp each); Bonus Action apply; save vs. 2d8 Poison + Poisoned (DC 8 + chosen ability mod + PB).",
+  "Polearm Master": "â€¢ +1 STR or DEX.\nâ€¢ Bonus Action butt-end d4 bludgeoning after Attack with qualifying weapons.\nâ€¢ Reaction attack when a creature enters your reach.",
+  "Resilient": "â€¢ +1 to an ability you lack save proficiency in (max 20); gain save proficiency in it.",
+  "Ritual Caster": "â€¢ +1 INT/WIS/CHA.\nâ€¢ Always prepared L1 Rituals = PB (add more as PB increases). 1/Long Rest cast a prepared Ritual at normal casting time without slot.",
+  "Sentinel": "â€¢ +1 STR or DEX.\nâ€¢ Opportunity Attack when nearby enemy Disengages or attacks others; on OA hit, reduce target Speed to 0 this turn.",
+  "Shadow Touched": "â€¢ +1 INT/WIS/CHA.\nâ€¢ Always have Invisibility + one L1 Illusion/Necromancy; 1/day w/o slot; also via slots.",
+  "Sharpshooter": "â€¢ +1 DEX.\nâ€¢ Ranged weapon attacks ignore half/three-quarters cover; no Disadvantage in melee; no Disadvantage at long range.",
+  "Shield Master": "â€¢ +1 STR.\nâ€¢ After hitting, 1/turn shove with shield (save STR DC 8+STR+PB) to push 5 ft or knock prone.\nâ€¢ Reaction to take no damage on successful Dex save while holding shield.",
+  "Skill Expert": "â€¢ +1 to any ability.\nâ€¢ Gain one skill proficiency and Expertise in a proficient skill.",
+  "Skulker": "â€¢ +1 DEX.\nâ€¢ Blindsight 10 ft.\nâ€¢ Advantage on Stealth checks to Hide during combat.\nâ€¢ Missed attack while hidden doesn't reveal you.",
+  "Slasher": "â€¢ +1 STR or DEX.\nâ€¢ Once/turn on slashing hit reduce target Speed by 10 ft; on slashing crit, target has Disadvantage on attacks until your next turn.",
+  "Speedy": "â€¢ +1 DEX or CON; +10 ft speed; Dash ignores Difficult Terrain; enemies have Disadvantage on OAs vs. you.",
+  "Spell Sniper": "â€¢ +1 INT/WIS/CHA.\nâ€¢ Spell attack rolls ignore half/three-quarters cover; no Disadvantage in melee; +60 ft to eligible spell ranges.",
+  "Telekinetic": "â€¢ +1 INT/WIS/CHA.\nâ€¢ Mage Hand upgrades (+range; silent).\nâ€¢ Bonus Action shove a creature 5 ft (STR save DC 8 + chosen mod + PB).",
+  "Telepathic": "â€¢ +1 INT/WIS/CHA.\nâ€¢ 60-ft one-way telepathy (known language).\nâ€¢ Detect Thoughts always prepared; 1/day w/o slot; also via slots.",
+  "War Caster": "â€¢ +1 INT/WIS/CHA.\nâ€¢ Advantage on Concentration saves.\nâ€¢ Opportunity cast a 1-action spell targeting the provoker.\nâ€¢ Perform Somatic while hands occupied.",
+  "Weapon Master": "â€¢ +1 STR or DEX.\nâ€¢ Use mastery property of one Simple/Martial weapon you're proficient with; change on a Long Rest."
 };
 
-const ARMOR_DATA = {
-  "None": { category: "None", acFormula: (dex) => 10 + dex, str: 0 },
-  "Padded Armor": { category: "Light", acFormula: (dex) => 11 + dex, str: 0 },
-  "Leather Armor": { category: "Light", acFormula: (dex) => 11 + dex, str: 0 },
-  "Studded Leather Armor": { category: "Light", acFormula: (dex) => 12 + dex, str: 0 },
-  "Hide Armor": { category: "Medium", acFormula: (dex) => 12 + Math.min(dex, 2), str: 0 },
-  "Chain Shirt": { category: "Medium", acFormula: (dex) => 13 + Math.min(dex, 2), str: 0 },
-  "Scale Mail": { category: "Medium", acFormula: (dex) => 14 + Math.min(dex, 2), str: 0 },
-  "Breastplate": { category: "Medium", acFormula: (dex) => 14 + Math.min(dex, 2), str: 0 },
-  "Half Plate Armor": { category: "Medium", acFormula: (dex) => 15 + Math.min(dex, 2), str: 0 },
-  "Ring Mail": { category: "Heavy", acFormula: () => 14, str: 0 },
-  "Chain Mail": { category: "Heavy", acFormula: () => 16, str: 13 },
-  "Splint Armor": { category: "Heavy", acFormula: () => 17, str: 15 },
-  "Plate Armor": { category: "Heavy", acFormula: () => 18, str: 15 }
-};
-
-const INSTINCTS_DB = {
-  base: [
-    { name: "Ambusher", desc: "When you roll initiative, you can expend a 1st-level Adaptive Edge slot to move up to half your speed.", action: "special" },
-    { name: "Battle Hymn", desc: "You gain proficiency in Performance. You also learn the vicious mockery cantrip.", action: "special" },
-    { name: "Beast Handler", desc: "You have advantage on Animal Handling checks.", action: "passive" },
-    { name: "Beast Speech", desc: "You can cast speak with animals by expending a 1st-level Adaptive Edge slot. Duration is extended to 8 hours.", action: "action" },
-    { name: "Bloodmarked", desc: "You gain proficiency in Intimidation. You also learn one cantrip or one Level 1 spell from the Sorcerer or Warlock spell list.", action: "special" },
-    { name: "Cunning Linguist", desc: "You learn two languages of your choice. You can take this Instinct multiple times.", action: "passive" },
-    { name: "Druidic Warrior", desc: "You learn two cantrips or one level one spell from the Druid spell list. This Instinct can be taken multiple times.", action: "special" },
-    { name: "Fleet of Foot", desc: "Your walking speed increases by 10 feet.", action: "passive" },
-    { name: "Forager", desc: "When foraging in the wild, you find twice as much food and water as normal.", action: "passive" },
-    { name: "Herbalist", desc: "You add double your proficiency bonus to checks made with a Healer's Kit. The time needed to craft a healing potion is reduced to 6 hours.", action: "passive" },
-    { name: "Hunter's Mark", desc: "You learn the Hunter's Mark spell. It is always prepared and you can cast it once per day without expending an Adaptive Edge slot.", action: "special" },
-    { name: "Lone Wolf", desc: "When no ally is within 30 feet of you, you gain a +2 bonus to attack rolls.", action: "passive" },
-    { name: "Natural Camouflage", desc: "You can attempt to hide even when you are only lightly obscured by natural phenomena such as foliage, mist, or heavy rain.", action: "passive" },
-    { name: "Nerves of Steel", desc: "You have advantage on saving throws against the frightened condition.", action: "passive" },
-    { name: "Pack Tactics", desc: "When an ally is within 5 feet of a creature, you can expend a 1st-level Adaptive Edge slot as a bonus action to gain advantage on your next attack against that creature.", action: "bonus" },
-    { name: "Predator's Poise", desc: "When you reduce a creature to 0 hit points, you gain temporary hit points equal to your Wisdom modifier (Warden may use Charisma).", action: "passive" },
-    { name: "Warding Thorns", desc: "You learn the Shield Spell.", action: "reaction" },
-    { name: "Sacred Oath", desc: "You gain proficiency in Religion. You also learn one cantrip or one Level 1 spell from the Cleric or Paladin spell list.", action: "special" },
-    { name: "Skilled Survivalist", desc: "You gain proficiency in one additional skill of your choice from the Ranger skill list.", action: "passive" },
-    { name: "Spell Lore", desc: "You gain proficiency in Arcana. You also learn one cantrip or one Level 1 spell from the Wizard or Bard spell list.", action: "special" },
-    { name: "Sure Footing", desc: "You have advantage on ability checks and saving throws made to resist being knocked prone or moved against your will.", action: "passive" },
-    { name: "Trailblazer", desc: "Difficult terrain doesn't cost you extra movement.", action: "passive" },
-    { name: "Weapon Mastery", desc: "Choose one weapon you are proficient with. You gain access to one Weapon Mastery property for that weapon. You can take this Instinct multiple times.", action: "passive" },
-    { name: "Wild Charm", desc: "You gain proficiency in Animal Handling. You also learn one cantrip or one Level 1 spell from the Druid spell list.", action: "special" }
-  ],
-  level6: [
-    { name: "Iron Grip", desc: "You can't be disarmed of any items in your hands against your will.", action: "passive" },
-    { name: "Silent Step", desc: "You and allies within 30 feet can sneak while traveling at a normal pace.", action: "passive" },
-    { name: "Nature's Denizen", desc: "You can cast commune with nature without expending a spell slot once per long rest.", action: "action" },
-    { name: "Keen-Eyed", desc: "You can't have disadvantage on Wisdom (Perception) checks due to dim light or lightly obscured areas.", action: "passive" },
-    { name: "Fighting Style - Archery", desc: "Grants Archery Fighting Style Feat. +2 to attack rolls with ranged weapons.", action: "passive" },
-    { name: "Fighting Style - Blind Fighting", desc: "Grants Blind Fighting Style Feat. Blindsight 10 ft; detect creatures you can't see (not behind total cover); invisible doesn't impose Disadvantage.", action: "passive" },
-    { name: "Fighting Style - Defense", desc: "Grants Defense Fighting Style Feat. +1 AC while wearing armor.", action: "passive" },
-    { name: "Fighting Style - Dueling", desc: "Grants Dueling Fighting Style Feat. +2 damage when wielding a melee weapon in one hand and no other weapon.", action: "passive" },
-    { name: "Fighting Style - Great Weapon Fighting", desc: "Grants Great Weapon Fighting Style Feat. Reroll 1s and 2s on damage dice with two-handed melee weapons.", action: "passive" },
-    { name: "Fighting Style - Interception", desc: "Grants Interception Fighting Style Feat. Reaction: reduce damage to adjacent ally by 1d10 + PB.", action: "reaction" },
-    { name: "Fighting Style - Protection", desc: "Grants Protection Fighting Style Feat. Reaction: impose Disadvantage on attack against ally within 5 ft (requires shield).", action: "reaction" },
-    { name: "Fighting Style - Thrown Weapon Fighting", desc: "Grants Thrown Weapon Fighting Style Feat. +2 damage with Thrown weapons; draw weapon as part of attack.", action: "passive" },
-    { name: "Fighting Style - Two-Weapon Fighting", desc: "Grants Two-Weapon Fighting Style Feat. Add ability modifier to damage of off-hand attack.", action: "passive" },
-    { name: "Fighting Style - Unarmed Fighting", desc: "Grants Unarmed Fighting Style Feat. Unarmed Strike: 1d6 damage (1d8 if both hands free); Bonus Action 1d4 to grappled creature.", action: "passive" }
-  ],
-  level9: [
-    { name: "Unerring Aim", desc: "When you make a ranged weapon attack roll and miss, you can add 1d4 to the roll. You can decide after rolling but before outcome. Uses = proficiency bonus/long rest.", action: "passive" },
-    { name: "Twin Strike", desc: "When you take the Attack action, you can expend a 3rd-level Adaptive Edge slot as a bonus action to make one additional weapon attack as part of the same action.", action: "bonus" }
-  ],
-  level13: [
-    { name: "Elemental Strike", desc: "Your weapon attacks deal a chosen elemental damage type (acid, cold, fire, lightning, or thunder) instead of their normal type. You can change the type after a long rest.", action: "passive" }
-  ],
-  level17: [
-    { name: "Ability Surge", desc: "Increase one ability score of your choice by 2, to a maximum of 22.", action: "passive" }
-  ]
-};
+const FIGHTING_STYLE_FEATS = [
+  "Archery Fighting Style Feat",
+  "Blind Fighting Fighting Style Feat",
+  "Defense Fighting Style Feat",
+  "Dueling Fighting Style Feat",
+  "Great Weapon Fighting Fighting Style Feat",
+  "Interception Fighting Style Feat",
+  "Protection Fighting Style Feat",
+  "Thrown Weapon Fighting Fighting Style Feat",
+  "Two-Weapon Fighting Fighting Style Feat",
+  "Unarmed Fighting Fighting Style Feat"
+];
 
 const FS_FEAT_DESC = {
-  "Archery Fighting Style Feat": "• +2 to attack rolls with ranged weapons.",
-  "Blind Fighting Fighting Style Feat": "• Blindsight 10 ft; detect creatures you can't see (not behind total cover); invisible doesn't impose Disadvantage.",
-  "Defense Fighting Style Feat": "• +1 AC while wearing Light/Medium/Heavy armor.",
-  "Dueling Fighting Style Feat": "• +2 damage when wielding a melee weapon in one hand and no other weapon.",
-  "Great Weapon Fighting Fighting Style Feat": "• Reroll 1s and 2s on damage dice with melee weapons wielded in two hands; must use new rolls.",
-  "Interception Fighting Style Feat": "• Reaction: reduce damage dealt to adjacent ally by 1d10 + PB (requires shield or simple/martial weapon).",
-  "Protection Fighting Style Feat": "• Reaction: impose Disadvantage on attack against ally within 5 ft (requires shield).",
-  "Thrown Weapon Fighting Fighting Style Feat": "• +2 damage with Thrown weapons; draw a weapon as part of the attack.",
-  "Two-Weapon Fighting Fighting Style Feat": "• Add ability modifier to damage of off-hand attack.",
-  "Unarmed Fighting Fighting Style Feat": "• Unarmed Strike: 1d6 damage (or 1d8 if both hands free); Bonus Action 1d4 to grappled creature."
+  "Archery Fighting Style Feat": "â€¢ +2 to attack rolls you make with Ranged weapons.",
+  "Blind Fighting Fighting Style Feat": "â€¢ Blindsight 10 ft.",
+  "Defense Fighting Style Feat": "â€¢ +1 AC while wearing Light/Medium/Heavy armor.",
+  "Dueling Fighting Style Feat": "â€¢ +2 damage when wielding a melee weapon in one hand and no other weapon.",
+  "Great Weapon Fighting Fighting Style Feat": "â€¢ Reroll 1s and 2s on damage dice with melee weapons wielded in two hands; must use new rolls.",
+  "Interception Fighting Style Feat": "â€¢ Reaction: reduce damage dealt to adjacent ally by 1d10 + PB (requires shield or simple/martial weapon).",
+  "Protection Fighting Style Feat": "â€¢ Reaction: impose Disadvantage on attack against ally within 5 ft (requires shield).",
+  "Thrown Weapon Fighting Fighting Style Feat": "â€¢ +2 damage with Thrown weapons; draw a weapon as part of the attack.",
+  "Two-Weapon Fighting Fighting Style Feat": "â€¢ Add ability modifier to damage of off-hand attack.",
+  "Unarmed Fighting Fighting Style Feat": "â€¢ Unarmed Strike: 1d6 damage (or 1d8 if both hands free); Bonus Action 1d4 to grappled creature."
 };
 
 const EPIC_BOONS = [
@@ -273,18 +215,18 @@ const EPIC_BOONS = [
 ];
 
 const EPIC_BOON_DESC = {
-  "Boon of Combat Prowess": "• +1 to any ability; Weapon Mastery for all weapons; Advantage on Initiative.",
-  "Boon of Dimensional Travel": "• +1 to any ability; Bonus Action teleport 30 ft (uses = PB/LR).",
-  "Boon of Energy Resistance": "• +1 to any ability; Choose damage type, gain resistance; swap on Long Rest.",
-  "Boon of Fate": "• +1 to any ability; When you/ally you see fails d20 Test, roll 2d4 and add to roll (PB uses/LR).",
-  "Boon of Fortitude": "• +1 to any ability; +40 Max HP; Regain 1 HP every minute.",
-  "Boon of Irresistible Offense": "• +1 STR or DEX; Bludgeoning/Piercing/Slashing ignore resistance.",
-  "Boon of Recovery": "• +1 to any ability; Reaction: end one condition on self when reduced to 0 HP (PB/LR).",
-  "Boon of Skill": "• +1 to any ability; Expertise on all proficient skills.",
-  "Boon of Speed": "• +1 to any ability; +30 ft Speed; opportunity attacks vs. you have Disadvantage.",
-  "Boon of Spell Recall": "• +1 INT/WIS/CHA; Once per Long Rest, after casting a 4th-level or lower spell, regain one expended 4th-level or lower slot.",
-  "Boon of the Night Spirit": "• +1 to any ability; Invisible to darkvision while in magical/nonmagical darkness.",
-  "Boon of Truesight": "• +1 to any ability; Truesight 60 ft."
+  "Boon of Combat Prowess": "â€¢ +1 to any ability; Weapon Mastery for all weapons; Advantage on Initiative.",
+  "Boon of Dimensional Travel": "â€¢ +1 to any ability; Bonus Action teleport 30 ft (uses = PB/LR).",
+  "Boon of Energy Resistance": "â€¢ +1 to any ability; Choose damage type, gain resistance; swap on Long Rest.",
+  "Boon of Fate": "â€¢ +1 to any ability; When you/ally you see fails d20 Test, roll 2d4 and add to roll (PB uses/LR).",
+  "Boon of Fortitude": "â€¢ +1 to any ability; +40 Max HP; Regain 1 HP every minute.",
+  "Boon of Irresistible Offense": "â€¢ +1 STR or DEX; Bludgeoning/Piercing/Slashing ignore resistance.",
+  "Boon of Recovery": "â€¢ +1 to any ability; Reaction: end one condition on self when reduced to 0 HP (PB/LR).",
+  "Boon of Skill": "â€¢ +1 to any ability; Expertise on all proficient skills.",
+  "Boon of Speed": "â€¢ +1 to any ability; +30 ft Speed; opportunity attacks vs. you have Disadvantage.",
+  "Boon of Spell Recall": "â€¢ +1 INT/WIS/CHA; Once per Long Rest, after casting a 4th-level or lower spell, regain one expended 4th-level or lower slot.",
+  "Boon of the Night Spirit": "â€¢ +1 to any ability; Invisible to darkvision while in magical/nonmagical darkness.",
+  "Boon of Truesight": "â€¢ +1 to any ability; Truesight 60 ft."
 };
 
 const LEVEL_DATA = {
@@ -347,7 +289,7 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Bonus Proficiencies", 
-          description: "You gain proficiency with heavy armor and Charisma saving throws. You can choose whether your skills will scale with Wisdom or Charisma when taking this Calling, but cannot be interchanged." 
+          description: "You gain proficiency with heavy armor and Charisma saving throws. You can choose whether your skills will scale with Wisdom or Charisma when taking this Calling." 
         },
         { 
           level: 1, 
@@ -388,12 +330,12 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Deadeye's Focus", 
-          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to enter a state of perfect focus for 1 minute. While in this state you can add your Wisdom modifier to both the attack roll and damage roll of your ranged weapon attacks. When you choose to make an attack benefiting from this feature, you must have more than half your base movement speed remaining at the start of the attack. Immediately after making the attack, your speed becomes 0 until the start of your next turn, as you center yourself to maintain precision." 
+          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to enter a state of perfect focus for 1 minute. While in this state, you gain advantage on Perception checks, and you can add your Wisdom modifier to both the attack roll and damage roll of your ranged weapon attacks. When you choose to make an attack benefiting from this feature, you must have more than half your base movement speed remaining at the start of the attack. Immediately after making the attack, your speed becomes 0 until the start of your next turn, as you center yourself to maintain precision." 
         },
         { 
           level: 6, 
           name: "Trick Shot", 
-          description: "When you take the attack action, you may expend a 2nd-level Adaptive Edge slot to attempt one of the following trick shots:\n• Split: The projectile from your first attack is split by the second, turning two attack rolls into three. You can target up to three enemies in range. The weapon damage of the first projectile becomes 1d6.\n• Pin: You pin your target with a projectile, freezing their movement. The target must make a Strength Saving throw (DC 8 + Prof + Wis). On a failure, the target is grappled and must use an action to attempt to break free." 
+          description: "You hone your accuracy into high-skill maneuvers. When you take the Attack action, you may expend a 2nd-level Adaptive Edge slot to attempt one of the following techniques with one of your attacks. Some techniques can also be used as reactions to specific triggers.\nâ€¢ Stack: When you take the Attack action, you may also use your bonus action to shoot an additional projectile at the same target or a different target within range.\nâ€¢ Pin: You pin your target with a projectile, freezing their movement. The target must make a Strength saving throw against your spell save DC (8 + Prof + Wis). On a failure, the target is grappled and must use an action to attempt to break free.\nâ€¢ Disarm: When you take the Attack action, you may use one of your attacks to attempt to disarm a creature within range. Make a ranged weapon attack against the target's AC + 2. On a hit, the target takes damage equal to your Dexterity modifier and must make a Strength saving throw against your spell save DC. On a failed save, the target drops one object of your choice that it's holding.\nâ€¢ Deflect: When a creature makes a ranged weapon attack or melee weapon attack against you, you may use your reaction to deflect the incoming strike. Roll your weapon damage die and add that number to your AC until the end of the attacker's next turn." 
         },
         { 
           level: 10, 
@@ -403,7 +345,7 @@ const DATABASE = {
         { 
           level: 14, 
           name: "Perfect Focus", 
-          description: "Once per turn, you can expend a 4th-level Adaptive Edge slot to enter a state of Perfect Focus. The number needed for a critical hit decreases by 2 for one minute. This effect requires concentration (as if concentrating on a spell). If you take damage, you must succeed on a Constitution saving throw to maintain concentration." 
+          description: "Once per turn, you can expend a 4th-level Adaptive Edge slot to enter a state of Perfect Focus. The number needed for a critical hit decreases by 2 for 1 minute. This effect requires concentration (as if concentrating on a spell). If you take damage, you must succeed on a Constitution saving throw to maintain concentration.\nRiposte: While Perfect Focus is active, you gain access to an additional Precision Technique. When a creature misses you with an attack, you may use your reaction to make two ranged weapon attacks against that creature. If the triggering attack was a melee attack, you do not have disadvantage on these ranged attacks." 
         },
         { 
           level: 18, 
@@ -424,12 +366,12 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Primal Casting", 
-          description: "You are a half-caster whose magic draws from both the natural and arcane worlds. You prepare and cast spells using your Adaptive Edge slots, which also serve as your spell slots. Wisdom is your spellcasting ability. You can prepare spells from the Ranger or Cleric lists. Your Spell Save DC equals 8 + your Proficiency Bonus + your Wisdom modifier. You can cast any Ranger or Druid spell you know as a ritual if that spell has the ritual tag. You can use a weapon, druidic focus, or arcane focus as a spellcasting focus for your Mystic spells. You ignore non-costly material components while using such a focus." 
+          description: "You are a half-caster whose magic draws from both the natural and arcane worlds. You prepare and cast spells using your Adaptive Edge slots, which also serve as your spell slots. Wisdom is your spellcasting ability. You can prepare spells from the Ranger or Cleric lists. Your Spell Save DC equals 8 + your Proficiency Bonus + your Wisdom modifier. You can cast any Ranger or Druid spell you know as a ritual if that spell has the ritual tag." 
         },
         { 
           level: 6, 
           name: "Spellblade's Strike", 
-          description: "When you take the Attack action, you can replace one of your attacks with a spell by expending an Adaptive Edge slot. The spell you cast must target only one creature and must have a casting time of 1 action.\n• 1st-level slot: Cast a cantrip or a 1st-level spell.\n• 2nd-level slot: Cast a 2nd-level spell." 
+          description: "When you take the Attack action, you can replace one of your attacks with a spell by expending an Adaptive Edge slot. The spell you cast must target only one creature and must have a casting time of 1 action.\nâ€¢ 1st-level slot: Cast a cantrip or a 1st-level spell.\nâ€¢ 2nd-level slot: Cast a 2nd-level spell." 
         },
         { 
           level: 10, 
@@ -439,7 +381,7 @@ const DATABASE = {
         { 
           level: 14, 
           name: "Spirit Channel", 
-          description: "When you cast a spell or make an attack, you can expend a 4th-level Adaptive Edge slot to infuse it with one of the following effects:\n• Witchfire Charm: One target of the spell or attack takes an additional 3d8 damage of the spell's type.\n• Lifeward Charm: One ally of your choice within 30 feet of the spell or attack regains 3d8 hit points.\n• Valor or Vex Charm: One creature affected by the spell gains advantage on attack rolls, ability checks, and saving throws (Valor) or disadvantage on attack rolls, ability check or saving throw (Vex) until the start of your next turn.\n• Silent Charm: Until the start of your next turn, spells made by allies within 10 feet of you can't be countered." 
+          description: "When you cast a spell or make an attack, you can expend a 4th-level Adaptive Edge slot to infuse it with one of the following effects:\nâ€¢ Witchfire Charm: One target of the spell or attack takes an additional 3d8 damage of the spell's type.\nâ€¢ Lifeward Charm: One ally of your choice within 30 feet of the spell or attack regains 3d8 hit points.\nâ€¢ Valor or Vex Charm: One creature affected by the spell gains advantage on attack rolls, ability checks, and saving throws (Valor) or disadvantage on attack rolls, ability check or saving throw (Vex) until the start of your next turn.\nâ€¢ Silent Charm: Until the start of your next turn, spells made by allies within 10 feet of you can't be countered." 
         },
         { 
           level: 18, 
@@ -501,12 +443,12 @@ const DATABASE = {
         { 
           level: 6, 
           name: "Eyes of Discovery", 
-          description: "Whenever you make an Intelligence check related to a magic item, cultural artifact, or ancient location, you may add your Wisdom modifier to the check. You may spend a 2nd-level Adaptive Edge slot to gain advantage on checks to find and avoid traps, gain advantage on checks to find secret doors and passages, and give yourself Darkvision out to a range of 60 feet (or increase existing Darkvision by 30 feet). This effect lasts for one hour. For each additional 2nd-level or higher Adaptive Edge you expend, you may target one additional creature that you can see or that is within 60 feet of you. If you spend at least 10 minutes studying a ruin, dungeon, or ancient location, you can determine which society built it, its age, and other notable details about it, if that knowledge could be known. Certain knowledge is unknowable, and the DM may place restrictions on what this ability can unearth." 
+          description: "Whenever you make an Intelligence check related to a magic item, cultural artifact, or ancient location, you may add your Wisdom modifier to the check. You may spend a 2nd-level Adaptive Edge slot to gain advantage on checks to find and avoid traps, gain advantage on checks to find secret doors and passages, and give yourself Darkvision out to a range of 60 feet (or increase existing Darkvision by 30 feet). This effect lasts for one hour. For each additional 2nd-level or higher Adaptive Edge you expend, you may target one additional creature. If you spend at least 10 minutes studying a ruin, dungeon, or ancient location, you can determine which society built it, its age, and other notable details about it." 
         },
         { 
           level: 10, 
           name: "Singing Songs of Dead Tongues", 
-          description: "Your unearthing of lost things has taught you the power to speak, read, write, and understand all languages. You can also share your affinity for lost tongues with allies. You can expend a 3rd-level Adaptive Edge slot to give any ally within 60 feet of you this same ability to speak, read, write, and understand all languages. This effect lasts for one hour. For each level Adaptive Edge above third, you may target one additional creature. Once per day, you can touch an object or a location with written word and magically transform the writing into any other language. This ritual takes 10 minutes and the effect lasts for 24 hours, unless a spell or magical effect of appropriate power undoes this. This ability works not only for words written on parchment, but also inscriptions, or words depicted in pictures or tattoos, or words created by illusory magic." 
+          description: "Your unearthing of lost things has taught you the power to speak, read, write, and understand all languages. You can also share your affinity for lost tongues with allies. You can expend a 3rd-level Adaptive Edge slot to give any ally within 60 feet of you this same ability to speak, read, write, and understand all languages. This effect lasts for one hour. For each level Adaptive Edge above third, you may target one additional creature. Once per day, you can touch an object or a location with written word and magically transform the writing into any other language. This ritual takes 10 minutes and the effect lasts for 24 hours." 
         },
         { 
           level: 14, 
@@ -516,7 +458,7 @@ const DATABASE = {
         { 
           level: 18, 
           name: "Loremaster", 
-          description: "You have achieved an unrivaled grasp of archaic knowledge. Once per day, you can cast the Legend Lore spell without expending any Adaptive Edge slots or material components. You may cast it additional times, but you must use a 5th-level Adaptive Edge slot and the material components. You gain Proficiency in two more of the skills offered by this calling or the Ranger class at Level 1, and you gain Expertise in a skill in which you are already proficiency that is offered by this calling at Level 1 or the Ranger class. In order to gain expertise, you do not have to have actually gained the skill proficiency from the Level 1 or Level 18 ability of this calling. You may spend an adaptive edge slot as a Bonus Action to gain Proficiency in a skill in which you are not proficient, or gain Expertise in another skill in which you are proficient. You may also use this ability to give an ally that you can see or that is within 60 feet of you Proficiency or Expertise. The duration of this ability depends on the level of the Adaptive Edge slot: 1st-level = 1 Hour Proficiency, 2nd-level = 1 Day Proficiency, 3rd-level = 1 Week Proficiency or 1 Hour Expertise, 4th-level = 1 Day Expertise, 5th-level = 1 Week Expertise." 
+          description: "You have achieved an unrivaled grasp of archaic knowledge. Once per day, you can cast the Legend Lore spell without expending any Adaptive Edge slots or material components. You may cast it additional times, but you must use a 5th-level Adaptive Edge slot and the material components. You gain Proficiency in two more of the skills offered by this calling or the Ranger class at Level 1, and you gain Expertise in a skill in which you are already proficiency that is offered by this calling at Level 1 or the Ranger class. You may spend an adaptive edge slot as a Bonus Action to gain Proficiency in a skill in which you are not proficient, or gain Expertise in another skill in which you are proficient. You may also use this ability to give an ally that you can see or that is within 60 feet of you Proficiency or Expertise. Duration: 1st-level = 1 Hour Proficiency, 2nd-level = 1 Day Proficiency, 3rd-level = 1 Week Proficiency or 1 Hour Expertise, 4th-level = 1 Day Expertise, 5th-level = 1 Week Expertise." 
         }
       ]
     },
@@ -547,7 +489,7 @@ const DATABASE = {
         { 
           level: 14, 
           name: "Pathshifter Form", 
-          description: "As an action, you can expend a 4th-level Adaptive Edge slot to assume one of the following aspects for up to 1 hour. This transformation requires concentration (as if concentrating on a spell). If your concentration is broken, the form ends. While in a Pathshifter Form, your weapon and unarmed strikes are considered magical for overcoming resistance and immunity, and they deal extra 2d8 elemental damage based on the aspect.\n\n• Sky Aspect: You sprout spectral wings, gaining a flying speed equal to your walking speed. Your weapon strikes deal an extra 2d8 lightning damage on a hit. If this effect ends while you are airborne, or if an ally benefiting from this form's aura is airborne, you or they descend up to 60 feet per round until safely on the ground.\n\n• Sea Aspect: You manifest gilled armor and a spectral harpoon. You gain a swimming speed equal to twice your walking speed and can breathe underwater. Your weapon strikes deal an extra 2d8 cold damage on a hit. You also gain resistance to cold damage.\n\n• Land Aspect: Your limbs take on a stony, bestial form, and your body brims with seismic force. You gain a climbing speed equal to your walking speed, the benefits of spider climb (move across vertical surfaces and ceilings), and you ignore difficult terrain. Your weapon strikes deal an extra 2d8 thunder damage on a hit. If this effect ends while an ally benefiting from this form's aura is on a vertical surface, they descend safely to the ground.\n\n• Shared Benefit: You may extend the chosen movement benefit (fly, swim, or climb) to up to two allies within 30 feet who can see you when you assume your form. Allies don't gain resistances, bonus damage, or other effects of the form.\n\nIn addition, you gain one 4th-level Druid spell or lower of your choice, always prepared." 
+          description: "As an action, you can expend a 4th-level Adaptive Edge slot to assume one of the following aspects for up to 1 hour. This transformation requires concentration (as if concentrating on a spell). While in a Pathshifter Form, your weapon and unarmed strikes are considered magical for overcoming resistance and immunity, and they deal extra 2d8 elemental damage based on the aspect.\nâ€¢ Sky Aspect: You sprout spectral wings, gaining a flying speed equal to your walking speed. Your weapon strikes deal an extra 2d8 lightning damage on a hit.\nâ€¢ Sea Aspect: You manifest gilled armor and a spectral harpoon. You gain a swimming speed equal to twice your walking speed and can breathe underwater. Your weapon strikes deal an extra 2d8 cold damage on a hit. You also gain resistance to cold damage.\nâ€¢ Land Aspect: Your limbs take on a stony, bestial form, and your body brims with seismic force. You gain a climbing speed equal to your walking speed, the benefits of spider climb, and you ignore difficult terrain. Your weapon strikes deal an extra 2d8 thunder damage on a hit.\nâ€¢ Shared Benefit: You may extend the chosen movement benefit (fly, swim, or climb) to up to two allies within 30 feet who can see you when you assume your form. In addition, you gain one 4th-level Druid spell or lower of your choice, always prepared." 
         },
         { 
           level: 18, 
@@ -569,12 +511,12 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Hunter's Prey", 
-          description: "You specialize in hunting either single powerful foes or groups of enemies. Choose one of the following options (you may change your choice on a short or long rest):\n• Colossus Slayer: Once per turn, when you hit a creature that is missing any of its hit points with a weapon attack, the attack deals an extra 1d8 damage.\n• Horde Breaker: Once on each of your turns when you take the Attack action and make a weapon attack, you can make one additional attack with the same weapon against a different creature within 5 feet of the original target and within range." 
+          description: "You specialize in hunting either single powerful foes or groups of enemies. Choose one of the following options (you may change your choice on a short or long rest):\nâ€¢ Colossus Slayer: Once per turn, when you hit a creature that is missing any of its hit points with a weapon attack, the attack deals an extra 1d8 damage.\nâ€¢ Horde Breaker: Once on each of your turns when you take the Attack action and make a weapon attack, you can make one additional attack with the same weapon against a different creature within 5 feet of the original target and within range." 
         },
         { 
           level: 7, 
           name: "Defensive Tactics", 
-          description: "You adapt your fighting style for survival. Choose one of the following options (you may change your choice on a short or long rest):\n• Escape the Horde: Opportunity attacks against you are made with disadvantage.\n• Multiattack Defense: When a creature hits you with an attack roll, that creature has disadvantage on all subsequent attack rolls against you until the end of the turn." 
+          description: "You adapt your fighting style for survival. Choose one of the following options (you may change your choice on a short or long rest):\nâ€¢ Escape the Horde: Opportunity attacks against you are made with disadvantage.\nâ€¢ Multiattack Defense: When a creature hits you with an attack roll, that creature has disadvantage on all subsequent attack rolls against you until the end of the turn." 
         },
         { 
           level: 11, 
@@ -594,7 +536,7 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Primal Companion", 
-          description: "You magically summon a primal beast, which draws strength from your Adaptive Edge. Choose its stat block: Beast of the Land, Beast of the Sea, or Beast of the Sky. You also determine the kind of animal it is, choosing a form appropriate for the stat block. Whatever form it takes, it bears primal markings indicating its supernatural origin. The beast is friendly to you and your allies and obeys your commands. It vanishes if you die. In combat, the beast acts during your turn. It can move and use its reaction on its own, but the only action it takes is the Dodge action unless you command it to act. You can command it in one of the following ways:\n• Attack Replacement: When you take the Attack action, you can sacrifice one of your attacks to command the beast to use its Strike action.\n• Adaptive Command: As a bonus action, you can expend a 1st-level Adaptive Edge slot to command the beast to use its Strike action without sacrificing your own attacks.\n\nIf you are incapacitated, the beast acts on its own and isn't limited to the Dodge action." 
+          description: "You summon a primal beast as your companion. Choose one of three stat blocks: Beast of the Land (Charge, Primal Bond), Beast of the Sea (Amphibious, Binding Strike), or Beast of the Sky (Flyby, Primal Bond). The beast takes its turn on your initiative, immediately after yours. It can move and use its reaction on its own, but it only takes the Dodge action unless you use a bonus action to command it to take another action. If you're incapacitated, it acts on its own to defend itself." 
         },
         { 
           level: 3, 
@@ -604,7 +546,7 @@ const DATABASE = {
         { 
           level: 7, 
           name: "Exceptional Training", 
-          description: "When you command your beast to attack, you may also allow it to Dash, Disengage, Dodge, or Help as part of the same bonus action. Its attacks count as magical for the purpose of overcoming resistance and immunity. Whenever it hits with an attack, it may deal force damage instead of its normal type." 
+          description: "When you command it to attack, you may also allow it to Dash, Disengage, Dodge, or Help as part of the same bonus action. Its attacks count as magical for the purpose of overcoming resistance and immunity. Whenever it hits with an attack, it may deal force damage instead of its normal type." 
         },
         { 
           level: 11, 
@@ -624,7 +566,7 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Dread Ambusher", 
-          description: "• Ambusher's Leap: At the start of your first turn of each combat, your speed increases by 10 feet until the end of that turn.\n• Dreadful Strike: Once per turn when you hit a creature with a weapon attack, you can expend a 1st-level Adaptive Edge slot to deal an extra 2d6 psychic damage.\n• Initiative Bonus: When you roll initiative, you can add your Wisdom modifier to the roll." 
+          description: "â€¢ Ambusher's Leap: At the start of your first turn of each combat, your speed increases by 10 feet until the end of that turn.\nâ€¢ Dreadful Strike: Once per turn when you hit a creature with a weapon attack, you can expend a 1st-level Adaptive Edge slot to deal an extra 2d6 psychic damage.\nâ€¢ Initiative Bonus: When you roll initiative, you can add your Wisdom modifier to the roll." 
         },
         { 
           level: 3, 
@@ -639,7 +581,7 @@ const DATABASE = {
         { 
           level: 11, 
           name: "Stalker's Flurry", 
-          description: "When you deal psychic damage to a creature with Dreadful Strike, you can choose one of the following additional effects (once per turn). When you expend a 2nd- or 3rd-level Adaptive Edge slot for Dreadful Strike, you may also apply one or both of the following effects:\n• Sudden Strike: Immediately make one weapon attack against a different creature within 5 feet of the original target.\n• Mass Fear: Hostile creatures of your choice within 10 feet of the target must succeed on a Wisdom saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be frightened of you until the start of your next turn.\n\nThe psychic damage of your Dreadful Strike also increases to 2d8." 
+          description: "When you deal psychic damage to a creature with Dreadful Strike, you can choose one of the following additional effects (once per turn). When you expend a 2nd- or 3rd-level Adaptive Edge slot for Dreadful Strike, you may also apply one or both of the following effects:\nâ€¢ Sudden Strike: Immediately make one weapon attack against a different creature within 5 feet of the original target.\nâ€¢ Mass Fear: Hostile creatures of your choice within 10 feet of the target must succeed on a Wisdom saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be frightened of you until the start of your next turn.\nThe psychic damage of your Dreadful Strike also increases to 2d8." 
         },
         { 
           level: 15, 
@@ -684,7 +626,7 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Luminescent Warrior", 
-          description: "• Moonlit Draw: When you roll initiative, your weapons shed dim light in a 10-foot radius until you sheathe or drop them (no action required).\n• Radiant Edge: Once per turn when you hit a creature with a weapon attack, the attack deals an extra 1d4 radiant damage. This extra damage increases to 1d6 at 7th level, 1d8 at 11th level, and 1d10 at 15th level." 
+          description: "â€¢ Moonlit Draw: When you roll initiative, your weapons shed dim light in a 10-foot radius until you sheathe or drop them (no action required).\nâ€¢ Radiant Edge: Once per turn when you hit a creature with a weapon attack, the attack deals an extra 1d4 radiant damage. This extra damage increases to 1d6 at 7th level, 1d8 at 11th level, and 1d10 at 15th level." 
         },
         { 
           level: 3, 
@@ -739,12 +681,12 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Gathered Swarm", 
-          description: "A swarm of intangible nature spirits has bonded with you. The swarm remains in your space, skittering, crawling, or fluttering about. You determine its appearance (insects, birds, pixies, leaves, etc.), and it may change with your mood or the seasons. Once on each of your turns, immediately after you hit a creature with a weapon attack, you can command the swarm to assist you in one of the following ways:\n• Swarm Strike: The target takes 1d6 piercing damage from the swarm.\n• Swarm Push: The target must succeed on a Strength saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be moved by the swarm up to 15 feet horizontally.\n• Swarm Shift: You are moved by the swarm up to 5 feet horizontally." 
+          description: "A swarm of intangible nature spirits has bonded with you. The swarm remains in your space. You determine its appearance (insects, birds, pixies, leaves, etc.). Once on each of your turns, immediately after you hit a creature with a weapon attack, you can command the swarm to assist you in one of the following ways:\nâ€¢ Swarm Strike: The target takes 1d6 piercing damage from the swarm.\nâ€¢ Swarm Push: The target must succeed on a Strength saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be moved by the swarm up to 15 feet horizontally.\nâ€¢ Swarm Shift: You are moved by the swarm up to 5 feet horizontally." 
         },
         { 
           level: 3, 
           name: "Swarmkeeper's Gift", 
-          description: "Your swarm can act independently of you in small ways. You learn the mage hand cantrip. When you cast it, the spectral hand is formed of your swarm. You may also expend Adaptive Edge slots to manifest certain swarm effects, echoing your spiritual bond: 1st Level Slot = faerie fire, 2nd Level Slot = web, 3rd Level Slot = gaseous form, 4th Level Slot = arcane eye, 5th Level Slot = insect plague. These spells are always prepared for you and do not count against your prepared spells." 
+          description: "Your swarm can act independently of you in small ways. You learn the mage hand cantrip. When you cast it, the spectral hand is formed of your swarm. You may also expend Adaptive Edge slots to manifest certain swarm effects: 1st Level Slot = faerie fire, 2nd Level Slot = web, 3rd Level Slot = gaseous form, 4th Level Slot = arcane eye, 5th Level Slot = insect plague. These spells are always prepared for you and do not count against your prepared spells." 
         },
         { 
           level: 7, 
