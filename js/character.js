@@ -176,7 +176,20 @@ function setArmor(armorName) {
 function computeAC() {
   const armorInfo = ARMOR_DATA[character.armor || 'None'];
   const dexMod = getMod(getScore('dex'));
-  let ac = armorInfo.acFormula(dexMod);
+  
+  // Calculate base AC from armor
+  let ac = armorInfo.ac;
+  
+  // Add DEX modifier based on armor type
+  if (armorInfo.dexBonus === "full") {
+    // Light armor or no armor: add full DEX modifier
+    ac += dexMod;
+  } else if (typeof armorInfo.dexBonus === "number" && armorInfo.dexBonus > 0) {
+    // Medium armor: add DEX modifier up to the armor's max
+    ac += Math.min(dexMod, armorInfo.dexBonus);
+  }
+  // Heavy armor (dexBonus = 0): don't add DEX modifier
+  
   if (character.shield) ac += 2;
   if (armorInfo.category !== 'None' && hasFS("Defense Fighting Style Feat")) ac += 1;
   return ac;
