@@ -1,4 +1,4 @@
-// ========================================
+/ ========================================
 // UI RENDERING FUNCTIONS
 // This file handles all the visual display of character data
 // ========================================
