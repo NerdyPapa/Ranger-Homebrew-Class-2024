@@ -7,8 +7,8 @@
 let character = {
   name: "New Character",
   player: "",
-  species: "Human",
-  background: "Soldier",
+  species: "None",
+  background: "None",
   level: 1,
   calling: null,
   subclass: null,
