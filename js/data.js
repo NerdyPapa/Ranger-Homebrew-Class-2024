@@ -87,6 +87,53 @@ const SPECIES_DATA = {
   }
 };
 
+// NEW: Subspecies support for Dragonborn and Elf
+const SUBSPECIES = {
+  "Dragonborn": ["Black", "Blue", "Brass", "Bronze", "Copper", "Gold", "Green", "Red", "Silver", "White"],
+  "Elf": ["Drow", "High Elf", "Wood Elf"],
+  "Gnome": ["Forest Gnome", "Rock Gnome"]
+};
+
+const SUBSPECIES_DATA = {
+  "Black": { damageType: "Acid", desc: "Your draconic ancestry grants you affinity for acid damage." },
+  "Blue": { damageType: "Lightning", desc: "Your draconic ancestry grants you affinity for lightning damage." },
+  "Brass": { damageType: "Fire", desc: "Your draconic ancestry grants you affinity for fire damage." },
+  "Bronze": { damageType: "Lightning", desc: "Your draconic ancestry grants you affinity for lightning damage." },
+  "Copper": { damageType: "Acid", desc: "Your draconic ancestry grants you affinity for acid damage." },
+  "Gold": { damageType: "Fire", desc: "Your draconic ancestry grants you affinity for fire damage." },
+  "Green": { damageType: "Poison", desc: "Your draconic ancestry grants you affinity for poison damage." },
+  "Red": { damageType: "Fire", desc: "Your draconic ancestry grants you affinity for fire damage." },
+  "Silver": { damageType: "Cold", desc: "Your draconic ancestry grants you affinity for cold damage." },
+  "White": { damageType: "Cold", desc: "Your draconic ancestry grants you affinity for cold damage." },
+  "Drow": { 
+    cantrip: "Dancing Lights", 
+    spell3: "Faerie Fire", 
+    spell5: "Darkness",
+    desc: "You know the Dancing Lights cantrip. At 3rd level, you can cast Faerie Fire once per day. At 5th level, you can cast Darkness once per day. You can also cast these spells using spell slots."
+  },
+  "High Elf": { 
+    cantrip: "Prestidigitation", 
+    spell3: "Detect Magic", 
+    spell5: "Misty Step",
+    desc: "You know the Prestidigitation cantrip. At 3rd level, you can cast Detect Magic once per day. At 5th level, you can cast Misty Step once per day. You can also cast these spells using spell slots."
+  },
+  "Wood Elf": { 
+    cantrip: "Druidcraft", 
+    spell3: "Longstrider", 
+    spell5: "Pass Without Trace",
+    desc: "You know the Druidcraft cantrip. At 3rd level, you can cast Longstrider once per day. At 5th level, you can cast Pass Without Trace once per day. You can also cast these spells using spell slots."
+  },
+  "Forest Gnome": {
+    cantrip: "Minor Illusion",
+    spell: "Speak with Animals",
+    desc: "You know the Minor Illusion cantrip. You can prepare Speak with Animals a number of times equal to your proficiency bonus per day without expending a spell slot."
+  },
+  "Rock Gnome": {
+    cantrips: ["Mending", "Prestidigitation"],
+    desc: "You know the Mending and Prestidigitation cantrips. You can spend 10 minutes to create a Tiny clockwork device that lasts 8 hours. You can have up to 3 such devices active at once."
+  }
+};
+
 const BACKGROUNDS = {
   "Acolyte": { originFeat: "Magic Initiate (Cleric)" },
   "Artisan": { originFeat: "Crafter" },
@@ -276,6 +323,345 @@ const SLOT_PROGRESSION = [
   [4, 3, 3, 3, 2]   // level 20
 ];
 
+// NEW: Ranger Base Class Features
+const RANGER_BASE_FEATURES = {
+  1: [
+    {
+      name: "Ranger Training",
+      description: "You gain proficiency in Light Armor, Medium Armor, Shields, Simple Weapons, and Martial Weapons. Choose three skills from the Ranger skill list.",
+      skillChoices: ["Animal Handling", "Athletics", "Insight", "Investigation", "Nature", "Perception", "Stealth", "Survival"],
+      pickCount: 3
+    },
+    {
+      name: "Weapon Master",
+      description: "Choose one weapon you are proficient with. You gain the Weapon Mastery property for that weapon.",
+      weaponMasterChoice: true
+    }
+  ],
+  5: [
+    {
+      name: "Extra Attack",
+      description: "You can attack twice when you take the Attack action on your turn.",
+      actionType: null
+    }
+  ],
+  9: [
+    {
+      name: "Expertise",
+      description: "Choose two skills you are proficient in. Your proficiency bonus is doubled for ability checks using those skills.",
+      expertiseChoice: true,
+      pickCount: 2
+    }
+  ]
+};
+
+// NEW: Comprehensive Weapons Database
+const WEAPONS_DATABASE = {
+  // SIMPLE MELEE
+  "Club": { 
+    damage: "1d4", 
+    damageType: "bludgeoning", 
+    properties: ["Light"], 
+    mastery: "Slow",
+    masteryDesc: "Hit creature's speed reduced by 10 ft until start of your next turn",
+    category: "simple melee"
+  },
+  "Dagger": { 
+    damage: "1d4", 
+    damageType: "piercing", 
+    properties: ["Finesse", "Light", "Thrown (20/60)"], 
+    mastery: "Nick",
+    masteryDesc: "When you make extra attack with this weapon, you can make it as part of Attack action instead of Bonus Action",
+    category: "simple melee"
+  },
+  "Greatclub": { 
+    damage: "1d8", 
+    damageType: "bludgeoning", 
+    properties: ["Two-Handed"], 
+    mastery: "Push",
+    masteryDesc: "Hit creature, push it 10 ft away (save: STR DC 8+Prof+STR)",
+    category: "simple melee"
+  },
+  "Handaxe": { 
+    damage: "1d6", 
+    damageType: "slashing", 
+    properties: ["Light", "Thrown (20/60)"], 
+    mastery: "Vex",
+    masteryDesc: "Hit creature, advantage on next attack against it before end of next turn",
+    category: "simple melee"
+  },
+  "Javelin": { 
+    damage: "1d6", 
+    damageType: "piercing", 
+    properties: ["Thrown (30/120)"], 
+    mastery: "Slow",
+    masteryDesc: "Hit creature's speed reduced by 10 ft until start of your next turn",
+    category: "simple melee"
+  },
+  "Light Hammer": { 
+    damage: "1d4", 
+    damageType: "bludgeoning", 
+    properties: ["Light", "Thrown (20/60)"], 
+    mastery: "Nick",
+    masteryDesc: "When you make extra attack with this weapon, you can make it as part of Attack action instead of Bonus Action",
+    category: "simple melee"
+  },
+  "Mace": { 
+    damage: "1d6", 
+    damageType: "bludgeoning", 
+    properties: [], 
+    mastery: "Sap",
+    masteryDesc: "Hit creature, disadvantage on next attack before start of your next turn",
+    category: "simple melee"
+  },
+  "Quarterstaff": { 
+    damage: "1d6", 
+    damageType: "bludgeoning", 
+    properties: ["Versatile (1d8)"], 
+    mastery: "Topple",
+    masteryDesc: "Hit creature, it must save or be knocked prone (save: CON DC 8+Prof+STR)",
+    category: "simple melee"
+  },
+  "Sickle": { 
+    damage: "1d4", 
+    damageType: "slashing", 
+    properties: ["Light"], 
+    mastery: "Nick",
+    masteryDesc: "When you make extra attack with this weapon, you can make it as part of Attack action instead of Bonus Action",
+    category: "simple melee"
+  },
+  "Spear": { 
+    damage: "1d6", 
+    damageType: "piercing", 
+    properties: ["Thrown (20/60)", "Versatile (1d8)"], 
+    mastery: "Sap",
+    masteryDesc: "Hit creature, disadvantage on next attack before start of your next turn",
+    category: "simple melee"
+  },
+  
+  // SIMPLE RANGED
+  "Light Crossbow": { 
+    damage: "1d8", 
+    damageType: "piercing", 
+    properties: ["Ammunition (80/320)", "Loading", "Two-Handed"], 
+    mastery: "Slow",
+    masteryDesc: "Hit creature's speed reduced by 10 ft until start of your next turn",
+    category: "simple ranged"
+  },
+  "Dart": { 
+    damage: "1d4", 
+    damageType: "piercing", 
+    properties: ["Finesse", "Thrown (20/60)"], 
+    mastery: "Vex",
+    masteryDesc: "Hit creature, advantage on next attack against it before end of next turn",
+    category: "simple ranged"
+  },
+  "Shortbow": { 
+    damage: "1d6", 
+    damageType: "piercing", 
+    properties: ["Ammunition (80/320)", "Two-Handed"], 
+    mastery: "Vex",
+    masteryDesc: "Hit creature, advantage on next attack against it before end of next turn",
+    category: "simple ranged"
+  },
+  "Sling": { 
+    damage: "1d4", 
+    damageType: "bludgeoning", 
+    properties: ["Ammunition (30/120)"], 
+    mastery: "Slow",
+    masteryDesc: "Hit creature's speed reduced by 10 ft until start of your next turn",
+    category: "simple ranged"
+  },
+  
+  // MARTIAL MELEE
+  "Battleaxe": { 
+    damage: "1d8", 
+    damageType: "slashing", 
+    properties: ["Versatile (1d10)"], 
+    mastery: "Topple",
+    masteryDesc: "Hit creature, it must save or be knocked prone (save: CON DC 8+Prof+STR)",
+    category: "martial melee"
+  },
+  "Flail": { 
+    damage: "1d8", 
+    damageType: "bludgeoning", 
+    properties: [], 
+    mastery: "Sap",
+    masteryDesc: "Hit creature, disadvantage on next attack before start of your next turn",
+    category: "martial melee"
+  },
+  "Glaive": { 
+    damage: "1d10", 
+    damageType: "slashing", 
+    properties: ["Heavy", "Reach", "Two-Handed"], 
+    mastery: "Graze",
+    masteryDesc: "Miss with attack, deal damage = ability mod to target",
+    category: "martial melee"
+  },
+  "Greataxe": { 
+    damage: "1d12", 
+    damageType: "slashing", 
+    properties: ["Heavy", "Two-Handed"], 
+    mastery: "Cleave",
+    masteryDesc: "Kill creature, make melee attack against second creature within 5 ft with same weapon",
+    category: "martial melee"
+  },
+  "Greatsword": { 
+    damage: "2d6", 
+    damageType: "slashing", 
+    properties: ["Heavy", "Two-Handed"], 
+    mastery: "Graze",
+    masteryDesc: "Miss with attack, deal damage = ability mod to target",
+    category: "martial melee"
+  },
+  "Halberd": { 
+    damage: "1d10", 
+    damageType: "slashing", 
+    properties: ["Heavy", "Reach", "Two-Handed"], 
+    mastery: "Cleave",
+    masteryDesc: "Kill creature, make melee attack against second creature within 5 ft with same weapon",
+    category: "martial melee"
+  },
+  "Lance": { 
+    damage: "1d12", 
+    damageType: "piercing", 
+    properties: ["Reach", "Special"], 
+    mastery: "Topple",
+    masteryDesc: "Hit creature, it must save or be knocked prone (save: CON DC 8+Prof+STR)",
+    category: "martial melee"
+  },
+  "Longsword": { 
+    damage: "1d8", 
+    damageType: "slashing", 
+    properties: ["Versatile (1d10)"], 
+    mastery: "Sap",
+    masteryDesc: "Hit creature, disadvantage on next attack before start of your next turn",
+    category: "martial melee"
+  },
+  "Maul": { 
+    damage: "2d6", 
+    damageType: "bludgeoning", 
+    properties: ["Heavy", "Two-Handed"], 
+    mastery: "Topple",
+    masteryDesc: "Hit creature, it must save or be knocked prone (save: CON DC 8+Prof+STR)",
+    category: "martial melee"
+  },
+  "Morningstar": { 
+    damage: "1d8", 
+    damageType: "piercing", 
+    properties: [], 
+    mastery: "Sap",
+    masteryDesc: "Hit creature, disadvantage on next attack before start of your next turn",
+    category: "martial melee"
+  },
+  "Pike": { 
+    damage: "1d10", 
+    damageType: "piercing", 
+    properties: ["Heavy", "Reach", "Two-Handed"], 
+    mastery: "Push",
+    masteryDesc: "Hit creature, push it 10 ft away (save: STR DC 8+Prof+STR)",
+    category: "martial melee"
+  },
+  "Rapier": { 
+    damage: "1d8", 
+    damageType: "piercing", 
+    properties: ["Finesse"], 
+    mastery: "Vex",
+    masteryDesc: "Hit creature, advantage on next attack against it before end of next turn",
+    category: "martial melee"
+  },
+  "Scimitar": { 
+    damage: "1d6", 
+    damageType: "slashing", 
+    properties: ["Finesse", "Light"], 
+    mastery: "Nick",
+    masteryDesc: "When you make extra attack with this weapon, you can make it as part of Attack action instead of Bonus Action",
+    category: "martial melee"
+  },
+  "Shortsword": { 
+    damage: "1d6", 
+    damageType: "piercing", 
+    properties: ["Finesse", "Light"], 
+    mastery: "Vex",
+    masteryDesc: "Hit creature, advantage on next attack against it before end of next turn",
+    category: "martial melee"
+  },
+  "Trident": { 
+    damage: "1d6", 
+    damageType: "piercing", 
+    properties: ["Thrown (20/60)", "Versatile (1d8)"], 
+    mastery: "Topple",
+    masteryDesc: "Hit creature, it must save or be knocked prone (save: CON DC 8+Prof+STR)",
+    category: "martial melee"
+  },
+  "War Pick": { 
+    damage: "1d8", 
+    damageType: "piercing", 
+    properties: [], 
+    mastery: "Sap",
+    masteryDesc: "Hit creature, disadvantage on next attack before start of your next turn",
+    category: "martial melee"
+  },
+  "Warhammer": { 
+    damage: "1d8", 
+    damageType: "bludgeoning", 
+    properties: ["Versatile (1d10)"], 
+    mastery: "Push",
+    masteryDesc: "Hit creature, push it 10 ft away (save: STR DC 8+Prof+STR)",
+    category: "martial melee"
+  },
+  "Whip": { 
+    damage: "1d4", 
+    damageType: "slashing", 
+    properties: ["Finesse", "Reach"], 
+    mastery: "Slow",
+    masteryDesc: "Hit creature's speed reduced by 10 ft until start of your next turn",
+    category: "martial melee"
+  },
+  
+  // MARTIAL RANGED
+  "Blowgun": { 
+    damage: "1", 
+    damageType: "piercing", 
+    properties: ["Ammunition (25/100)", "Loading"], 
+    mastery: "Vex",
+    masteryDesc: "Hit creature, advantage on next attack against it before end of next turn",
+    category: "martial ranged"
+  },
+  "Hand Crossbow": { 
+    damage: "1d6", 
+    damageType: "piercing", 
+    properties: ["Ammunition (30/120)", "Light", "Loading"], 
+    mastery: "Vex",
+    masteryDesc: "Hit creature, advantage on next attack against it before end of next turn",
+    category: "martial ranged"
+  },
+  "Heavy Crossbow": { 
+    damage: "1d10", 
+    damageType: "piercing", 
+    properties: ["Ammunition (100/400)", "Heavy", "Loading", "Two-Handed"], 
+    mastery: "Push",
+    masteryDesc: "Hit creature, push it 10 ft away (save: STR DC 8+Prof+STR)",
+    category: "martial ranged"
+  },
+  "Longbow": { 
+    damage: "1d8", 
+    damageType: "piercing", 
+    properties: ["Ammunition (150/600)", "Heavy", "Two-Handed"], 
+    mastery: "Slow",
+    masteryDesc: "Hit creature's speed reduced by 10 ft until start of your next turn",
+    category: "martial ranged"
+  },
+  "Net": { 
+    damage: "0", 
+    damageType: "none", 
+    properties: ["Special", "Thrown (5/15)"], 
+    mastery: "Topple",
+    masteryDesc: "Hit creature, it must save or be knocked prone (save: CON DC 8+Prof+STR)",
+    category: "martial ranged"
+  }
+};
+
 // ========================================
 // DATABASE - Callings and Subclasses
 // ========================================
@@ -289,32 +675,38 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Bonus Proficiencies", 
-          description: "You gain proficiency with heavy armor and Charisma saving throws. You can choose whether your skills will scale with Wisdom or Charisma when taking this Calling." 
+          description: "You gain proficiency with heavy armor and Charisma saving throws. You can choose whether your skills will scale with Wisdom or Charisma when taking this Calling.",
+          actionType: null
         },
         { 
           level: 1, 
           name: "Guardian's Endurance", 
-          description: "When you roll initiative, you gain temporary hit points equal to your Ranger level + your Wisdom or Charisma modifier. As a bonus action, you can expend a 1st-level Adaptive Edge slot to grant an ally within 30 feet temporary hit points equal to 1d8 + your Wisdom or Charisma modifier." 
+          description: "When you roll initiative, you gain temporary hit points equal to your Ranger level + your Wisdom or Charisma modifier. As a bonus action, you can expend a 1st-level Adaptive Edge slot to grant an ally within 30 feet temporary hit points equal to 1d8 + your Wisdom or Charisma modifier.",
+          actionType: "bonus"
         },
         { 
           level: 6, 
           name: "Rallying Cry", 
-          description: "When you or an ally within 30 feet is reduced below half hit points, you may use your reaction to expend a 2nd-level Adaptive Edge slot. That creature regains hit points equal to 2d8 + your Wisdom or Charisma modifier." 
+          description: "When you or an ally within 30 feet is reduced below half hit points, you may use your reaction to expend a 2nd-level Adaptive Edge slot. That creature regains hit points equal to 2d8 + your Wisdom or Charisma modifier.",
+          actionType: "reaction"
         },
         { 
           level: 10, 
           name: "Warden's Protection", 
-          description: "As an action, you can expend a 3rd-level Adaptive Edge slot to create a 10-foot protective emanation for 1 minute. While conscious, you and one ally of your choice within 10 feet gain resistance to bludgeoning, piercing, and slashing damage (magical and nonmagical)." 
+          description: "As an action, you can expend a 3rd-level Adaptive Edge slot to create a 10-foot protective emanation for 1 minute. While conscious, you and one ally of your choice within 10 feet gain resistance to bludgeoning, piercing, and slashing damage (magical and nonmagical).",
+          actionType: "action"
         },
         { 
           level: 14, 
           name: "Swordbearer's Command", 
-          description: "When you take the Attack action, you can expend a 4th-level Adaptive Edge slot to issue a rallying command. Choose up to two creatures within 30 feet. Each may immediately use their reaction to either: make one weapon attack, adding your Charisma modifier to the attack roll, or move up to their speed without provoking opportunity attacks." 
+          description: "When you take the Attack action, you can expend a 4th-level Adaptive Edge slot to issue a rallying command. Choose up to two creatures within 30 feet. Each may immediately use their reaction to either: make one weapon attack, adding your Charisma modifier to the attack roll, or move up to their speed without provoking opportunity attacks.",
+          actionType: "action"
         },
         { 
           level: 18, 
           name: "Heir of the Warden-Kings", 
-          description: "As an action, you can expend a 5th-level Adaptive Edge slot to enter a heroic state for 1 minute. While active: Allies within 30 feet have immunity to fear and charm effects. Once per round, when an ally within 30 feet fails a saving throw, you may use your reaction to let them reroll it. Whenever you hit with a melee weapon attack, one ally of your choice within 30 feet gains temporary hit points equal to double your Wisdom or Charisma modifier." 
+          description: "As an action, you can expend a 5th-level Adaptive Edge slot to enter a heroic state for 1 minute. While active: Allies within 30 feet have immunity to fear and charm effects. Once per round, when an ally within 30 feet fails a saving throw, you may use your reaction to let them reroll it. Whenever you hit with a melee weapon attack, one ally of your choice within 30 feet gains temporary hit points equal to double your Wisdom or Charisma modifier.",
+          actionType: "action"
         }
       ]
     },
@@ -325,32 +717,40 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Bonus Proficiency", 
-          description: "You gain proficiency with Perception and Investigation." 
+          description: "Choose two skills from: Perception and Investigation.",
+          skillChoices: ["Perception", "Investigation"],
+          pickCount: 2,
+          actionType: null
         },
         { 
           level: 1, 
           name: "Deadeye's Focus", 
-          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to enter a state of perfect focus for 1 minute. While in this state, you gain advantage on Perception checks, and you can add your Wisdom modifier to both the attack roll and damage roll of your ranged weapon attacks. When you choose to make an attack benefiting from this feature, you must have more than half your base movement speed remaining at the start of the attack. Immediately after making the attack, your speed becomes 0 until the start of your next turn, as you center yourself to maintain precision." 
+          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to enter a state of perfect focus for 1 minute. While in this state, you gain advantage on Perception checks, and you can add your Wisdom modifier to both the attack roll and damage roll of your ranged weapon attacks. When you choose to make an attack benefiting from this feature, you must have more than half your base movement speed remaining at the start of the attack. Immediately after making the attack, your speed becomes 0 until the start of your next turn, as you center yourself to maintain precision.",
+          actionType: "bonus"
         },
         { 
           level: 6, 
           name: "Precision Techniques", 
-          description: "You hone your accuracy into high-skill maneuvers. When you take the Attack action, you may expend a 2nd-level Adaptive Edge slot to attempt one of the following techniques with one of your attacks. Some techniques can also be used as reactions to specific triggers. • Stack: When you take the Attack action, you may also use your bonus action to shoot an additional projectile at the same target or a different target within range. • Pin: You pin your target with a projectile, freezing their movement. The target must make a Strength saving throw against your spell save DC (8 + Prof + Wis). On a failure, the target is grappled and must use an action to attempt to break free. • Disarm: When you take the Attack action, you may use one of your attacks to attempt to disarm a creature within range. Make a ranged weapon attack against the target's AC + 2. On a hit, the target takes damage equal to your Dexterity modifier and must make a Strength saving throw against your spell save DC. On a failed save, the target drops one object of your choice that it's holding. • Deflect: When a creature makes a ranged weapon attack or melee weapon attack against you, you may use your reaction to deflect the incoming strike. Roll your weapon damage die and add that number to your AC until the end of the attacker's next turn." 
+          description: "You hone your accuracy into high-skill maneuvers. When you take the Attack action, you may expend a 2nd-level Adaptive Edge slot to attempt one of the following techniques with one of your attacks. Some techniques can also be used as reactions to specific triggers. • Stack: When you take the Attack action, you may also use your bonus action to shoot an additional projectile at the same target or a different target within range. • Pin: You pin your target with a projectile, freezing their movement. The target must make a Strength saving throw against your spell save DC (8 + Prof + Wis). On a failure, the target is grappled and must use an action to attempt to break free. • Disarm: When you take the Attack action, you may use one of your attacks to attempt to disarm a creature within range. Make a ranged weapon attack against the target's AC + 2. On a hit, the target takes damage equal to your Dexterity modifier and must make a Strength saving throw against your spell save DC. On a failed save, the target drops one object of your choice that it's holding. • Deflect: When a creature makes a ranged weapon attack or melee weapon attack against you, you may use your reaction to deflect the incoming strike. Roll your weapon damage die and add that number to your AC until the end of the attacker's next turn.",
+          actionType: "bonus"
         },
         { 
           level: 10, 
           name: "Devastating Shot", 
-          description: "Once per turn when you make a ranged weapon attack, you can expend a 3rd-level Adaptive Edge slot to declare a Devastating Shot. This attack roll has a -5 penalty, but if it hits, it deals an additional +10 damage. If the target is concentrating on a spell, it makes its concentration check with disadvantage." 
+          description: "Once per turn when you make a ranged weapon attack, you can expend a 3rd-level Adaptive Edge slot to declare a Devastating Shot. This attack roll has a -5 penalty, but if it hits, it deals an additional +10 damage. If the target is concentrating on a spell, it makes its concentration check with disadvantage.",
+          actionType: null
         },
         { 
           level: 14, 
           name: "Perfect Focus", 
-          description: "Once per turn, you can expend a 4th-level Adaptive Edge slot to enter a state of Perfect Focus. The number needed for a critical hit decreases by 2 for 1 minute. This effect requires concentration (as if concentrating on a spell). If you take damage, you must succeed on a Constitution saving throw to maintain concentration. Riposte: While Perfect Focus is active, you gain access to an additional Precision Technique. When a creature misses you with an attack, you may use your reaction to make two ranged weapon attacks against that creature. If the triggering attack was a melee attack, you do not have disadvantage on these ranged attacks." 
+          description: "Once per turn, you can expend a 4th-level Adaptive Edge slot to enter a state of Perfect Focus. The number needed for a critical hit decreases by 2 for 1 minute. This effect requires concentration (as if concentrating on a spell). If you take damage, you must succeed on a Constitution saving throw to maintain concentration. Riposte: While Perfect Focus is active, you gain access to an additional Precision Technique. When a creature misses you with an attack, you may use your reaction to make two ranged weapon attacks against that creature. If the triggering attack was a melee attack, you do not have disadvantage on these ranged attacks.",
+          actionType: "action"
         },
         { 
           level: 18, 
           name: "Efficient Volley", 
-          description: "When you take the Attack action, you can expend a 5th-level Adaptive Edge slot to unleash a deadly volley. Choose up to four creatures within your weapon's normal range. Make a separate ranged attack roll against each target. Each creature that is hit takes normal damage plus an additional 2d8 damage." 
+          description: "When you take the Attack action, you can expend a 5th-level Adaptive Edge slot to unleash a deadly volley. Choose up to four creatures within your weapon's normal range. Make a separate ranged attack roll against each target. Each creature that is hit takes normal damage plus an additional 2d8 damage.",
+          actionType: "action"
         }
       ]
     },
@@ -361,32 +761,41 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Bonus Proficiencies", 
-          description: "You gain proficiency in Arcana and Nature. You may use a weapon, druidic focus, or arcane focus as your spellcasting focus." 
+          description: "Choose two skills from: Arcana and Nature. You may use a weapon, druidic focus, or arcane focus as your spellcasting focus.",
+          skillChoices: ["Arcana", "Nature"],
+          pickCount: 2,
+          actionType: null
         },
         { 
           level: 1, 
           name: "Primal Casting", 
-          description: "You are a half-caster whose magic draws from both the natural and arcane worlds. You prepare and cast spells using your Adaptive Edge slots, which also serve as your spell slots. Wisdom is your spellcasting ability. You can prepare spells from the Ranger or Cleric lists. Your Spell Save DC equals 8 + your Proficiency Bonus + your Wisdom modifier. You can cast any Ranger or Druid spell you know as a ritual if that spell has the ritual tag." 
+          description: "You are a half-caster whose magic draws from both the natural and arcane worlds. You prepare and cast spells using your Adaptive Edge slots, which also serve as your spell slots. Wisdom is your spellcasting ability. You can prepare spells from the Ranger or Cleric lists. Your Spell Save DC equals 8 + your Proficiency Bonus + your Wisdom modifier. You can cast any Ranger or Druid spell you know as a ritual if that spell has the ritual tag.",
+          spellcasting: true,
+          actionType: null
         },
         { 
           level: 6, 
           name: "Spellblade's Strike", 
-          description: "When you take the Attack action, you can replace one of your attacks with a spell by expending an Adaptive Edge slot. The spell you cast must target only one creature and must have a casting time of 1 action.\n• 1st-level slot: Cast a cantrip or a 1st-level spell.\n• 2nd-level slot: Cast a 2nd-level spell." 
+          description: "When you take the Attack action, you can replace one of your attacks with a spell by expending an Adaptive Edge slot. The spell you cast must target only one creature and must have a casting time of 1 action.\n• 1st-level slot: Cast a cantrip or a 1st-level spell.\n• 2nd-level slot: Cast a 2nd-level spell.",
+          actionType: null
         },
         { 
           level: 10, 
           name: "Widened Circle", 
-          description: "When you cast a Ranger spell of 1st or 2nd level that targets only yourself or one ally, and you cast it using a 3rd-level Adaptive Edge slot, you can also target one additional ally within range." 
+          description: "When you cast a Ranger spell of 1st or 2nd level that targets only yourself or one ally, and you cast it using a 3rd-level Adaptive Edge slot, you can also target one additional ally within range.",
+          actionType: null
         },
         { 
           level: 14, 
           name: "Spirit Channel", 
-          description: "When you cast a spell or make an attack, you can expend a 4th-level Adaptive Edge slot to infuse it with one of the following effects:\n• Witchfire Charm: One target of the spell or attack takes an additional 3d8 damage of the spell's type.\n• Lifeward Charm: One ally of your choice within 30 feet of the spell or attack regains 3d8 hit points.\n• Valor or Vex Charm: One creature affected by the spell gains advantage on attack rolls, ability checks, and saving throws (Valor) or disadvantage on attack rolls, ability check or saving throw (Vex) until the start of your next turn.\n• Silent Charm: Until the start of your next turn, spells made by allies within 10 feet of you can't be countered." 
+          description: "When you cast a spell or make an attack, you can expend a 4th-level Adaptive Edge slot to infuse it with one of the following effects:\n• Witchfire Charm: One target of the spell or attack takes an additional 3d8 damage of the spell's type.\n• Lifeward Charm: One ally of your choice within 30 feet of the spell or attack regains 3d8 hit points.\n• Valor or Vex Charm: One creature affected by the spell gains advantage on attack rolls, ability checks, and saving throws (Valor) or disadvantage on attack rolls, ability check or saving throw (Vex) until the start of your next turn.\n• Silent Charm: Until the start of your next turn, spells made by allies within 10 feet of you can't be countered.",
+          actionType: null
         },
         { 
           level: 18, 
           name: "Avatar of the Hedge", 
-          description: "As an action, you can expend a 5th-level Adaptive Edge slot to enter a transcendent state for 1 minute. While in this state: You gain resistance to acid, cold, fire, lightning, and thunder damage. Once per turn when you cast a spell, you can make a weapon attack as a bonus action. That attack deals an additional 1d8 elemental damage of your choice. Beasts and Fey within 30 feet regard you as an ally unless harmed." 
+          description: "As an action, you can expend a 5th-level Adaptive Edge slot to enter a transcendent state for 1 minute. While in this state: You gain resistance to acid, cold, fire, lightning, and thunder damage. Once per turn when you cast a spell, you can make a weapon attack as a bonus action. That attack deals an additional 1d8 elemental damage of your choice. Beasts and Fey within 30 feet regard you as an ally unless harmed.",
+          actionType: "action"
         }
       ]
     },
@@ -397,32 +806,38 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Bonus Proficiencies", 
-          description: "You gain proficiency in Stealth and Thieves' Tools." 
+          description: "You gain proficiency in Stealth and Thieves' Tools.",
+          actionType: null
         },
         { 
           level: 1, 
           name: "Relentless Pursuit", 
-          description: "When a hostile creature you can see within 30 feet moves, you can expend a 1st-level Adaptive Edge slot to use your reaction to move up to half your speed toward it. This movement does not provoke opportunity attacks." 
+          description: "When a hostile creature you can see within 30 feet moves, you can expend a 1st-level Adaptive Edge slot to use your reaction to move up to half your speed toward it. This movement does not provoke opportunity attacks.",
+          actionType: "reaction"
         },
         { 
           level: 6, 
           name: "Shadow Flourish", 
-          description: "When you make a weapon attack, you can expend a 2nd-level Adaptive Edge slot as a bonus action before the attack roll. If the attack hits, the target must make a Constitution Saving Throw (DC = 8 + proficiency bonus + Wis). On a failure, the target is blinded until the start of your next turn. If the attack misses, you instead gain a +2 bonus to AC until the start of your next turn." 
+          description: "When you make a weapon attack, you can expend a 2nd-level Adaptive Edge slot as a bonus action before the attack roll. If the attack hits, the target must make a Constitution Saving Throw (DC = 8 + proficiency bonus + Wis). On a failure, the target is blinded until the start of your next turn. If the attack misses, you instead gain a +2 bonus to AC until the start of your next turn.",
+          actionType: "bonus"
         },
         { 
           level: 10, 
           name: "Crippling Strike", 
-          description: "When you hit a creature with a weapon attack, you can expend a 3rd-level Adaptive Edge slot to force the target to make a Constitution saving throw (DC = 8 + proficiency bonus + Wis). On a failed save, the target is stunned until the start of your next turn. On a success, the creature instead suffers disadvantage on its next attack roll." 
+          description: "When you hit a creature with a weapon attack, you can expend a 3rd-level Adaptive Edge slot to force the target to make a Constitution saving throw (DC = 8 + proficiency bonus + Wis). On a failed save, the target is stunned until the start of your next turn. On a success, the creature instead suffers disadvantage on its next attack roll.",
+          actionType: null
         },
         { 
           level: 14, 
           name: "Stalking Terror", 
-          description: "As an action, you can expend a 4th-level Adaptive Edge slot to become invisible until the start of your next turn. The first attack you make while invisible deals an additional 3d8 psychic damage on a hit. If this attack reduces a creature to 0 hit points, all hostile creatures of your choice within 30 feet must succeed on a Wisdom saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be frightened of you until the end of your next turn." 
+          description: "As an action, you can expend a 4th-level Adaptive Edge slot to become invisible until the start of your next turn. The first attack you make while invisible deals an additional 3d8 psychic damage on a hit. If this attack reduces a creature to 0 hit points, all hostile creatures of your choice within 30 feet must succeed on a Wisdom saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be frightened of you until the end of your next turn.",
+          actionType: "action"
         },
         { 
           level: 18, 
           name: "Apex Predator", 
-          description: "When you reduce a creature to 0 hit points with a weapon attack, you can expend a 5th-level Adaptive Edge slot as a reaction to immediately make another weapon attack against a different creature within range. If this attack hits, it is treated as a critical hit and deals an extra 2d8 damage." 
+          description: "When you reduce a creature to 0 hit points with a weapon attack, you can expend a 5th-level Adaptive Edge slot as a reaction to immediately make another weapon attack against a different creature within range. If this attack hits, it is treated as a critical hit and deals an extra 2d8 damage.",
+          actionType: "reaction"
         }
       ]
     },
@@ -433,32 +848,38 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Bonus Proficiencies", 
-          description: "You gain proficiency in two skills from among Arcana, Nature, History, Religion, Perception, or Survival. You also gain proficiency in Cartographer's Tools." 
+          description: "You gain proficiency in two skills from among Arcana, Nature, History, Religion, Perception, or Survival. You also gain proficiency in Cartographer's Tools.",
+          actionType: null
         },
         { 
           level: 1, 
           name: "Finder of Lost Lore", 
-          description: "Your study of past civilizations has given you a supernatural gift to discern lost knowledge. You can cast Identify, Detect Magic, and Comprehend Languages once per day without expending an Adaptive Edge slot. You can cast them more times per day if you use a 1st-level or higher Adaptive Edge slot. Wisdom is your spellcasting ability." 
+          description: "Your study of past civilizations has given you a supernatural gift to discern lost knowledge. You can cast Identify, Detect Magic, and Comprehend Languages once per day without expending an Adaptive Edge slot. You can cast them more times per day if you use a 1st-level or higher Adaptive Edge slot. Wisdom is your spellcasting ability.",
+          actionType: null
         },
         { 
           level: 6, 
           name: "Eyes of Discovery", 
-          description: "Whenever you make an Intelligence check related to a magic item, cultural artifact, or ancient location, you may add your Wisdom modifier to the check. You may spend a 2nd-level Adaptive Edge slot to gain advantage on checks to find and avoid traps, gain advantage on checks to find secret doors and passages, and give yourself Darkvision out to a range of 60 feet (or increase existing Darkvision by 30 feet). This effect lasts for one hour. For each additional 2nd-level or higher Adaptive Edge you expend, you may target one additional creature. If you spend at least 10 minutes studying a ruin, dungeon, or ancient location, you can determine which society built it, its age, and other notable details about it." 
+          description: "Whenever you make an Intelligence check related to a magic item, cultural artifact, or ancient location, you may add your Wisdom modifier to the check. You may spend a 2nd-level Adaptive Edge slot to gain advantage on checks to find and avoid traps, gain advantage on checks to find secret doors and passages, and give yourself Darkvision out to a range of 60 feet (or increase existing Darkvision by 30 feet). This effect lasts for one hour. For each additional 2nd-level or higher Adaptive Edge you expend, you may target one additional creature. If you spend at least 10 minutes studying a ruin, dungeon, or ancient location, you can determine which society built it, its age, and other notable details about it.",
+          actionType: "action"
         },
         { 
           level: 10, 
           name: "Singing Songs of Dead Tongues", 
-          description: "Your unearthing of lost things has taught you the power to speak, read, write, and understand all languages. You can also share your affinity for lost tongues with allies. You can expend a 3rd-level Adaptive Edge slot to give any ally within 60 feet of you this same ability to speak, read, write, and understand all languages. This effect lasts for one hour. For each level Adaptive Edge above third, you may target one additional creature. Once per day, you can touch an object or a location with written word and magically transform the writing into any other language. This ritual takes 10 minutes and the effect lasts for 24 hours." 
+          description: "Your unearthing of lost things has taught you the power to speak, read, write, and understand all languages. You can also share your affinity for lost tongues with allies. You can expend a 3rd-level Adaptive Edge slot to give any ally within 60 feet of you this same ability to speak, read, write, and understand all languages. This effect lasts for one hour. For each level Adaptive Edge above third, you may target one additional creature. Once per day, you can touch an object or a location with written word and magically transform the writing into any other language. This ritual takes 10 minutes and the effect lasts for 24 hours.",
+          actionType: null
         },
         { 
           level: 14, 
           name: "Relic Sage", 
-          description: "You have excavated enough lost artifacts to find a way around their magical limitations. You may ignore all class, race, and alignment requirements on attuning to or using a magic item. Additionally, if a magic item requires a certain level to use or attune to, you may spend a 4th-level Adaptive Edge slot as an action to overcome that restriction for one hour. If you use an Adaptive Edge slot in this manner, then attunement to that item happens as part of that action. Additionally, you may attune up to four magic items at once." 
+          description: "You have excavated enough lost artifacts to find a way around their magical limitations. You may ignore all class, race, and alignment requirements on attuning to or using a magic item. Additionally, if a magic item requires a certain level to use or attune to, you may spend a 4th-level Adaptive Edge slot as an action to overcome that restriction for one hour. If you use an Adaptive Edge slot in this manner, then attunement to that item happens as part of that action. Additionally, you may attune up to four magic items at once.",
+          actionType: "action"
         },
         { 
           level: 18, 
           name: "Loremaster", 
-          description: "You have achieved an unrivaled grasp of archaic knowledge. Once per day, you can cast the Legend Lore spell without expending any Adaptive Edge slots or material components. You may cast it additional times, but you must use a 5th-level Adaptive Edge slot and the material components. You gain Proficiency in two more of the skills offered by this calling or the Ranger class at Level 1, and you gain Expertise in a skill in which you are already proficiency that is offered by this calling at Level 1 or the Ranger class. You may spend an adaptive edge slot as a Bonus Action to gain Proficiency in a skill in which you are not proficient, or gain Expertise in another skill in which you are proficient. You may also use this ability to give an ally that you can see or that is within 60 feet of you Proficiency or Expertise. Duration: 1st-level = 1 Hour Proficiency, 2nd-level = 1 Day Proficiency, 3rd-level = 1 Week Proficiency or 1 Hour Expertise, 4th-level = 1 Day Expertise, 5th-level = 1 Week Expertise." 
+          description: "You have achieved an unrivaled grasp of archaic knowledge. Once per day, you can cast the Legend Lore spell without expending any Adaptive Edge slots or material components. You may cast it additional times, but you must use a 5th-level Adaptive Edge slot and the material components. You gain Proficiency in two more of the skills offered by this calling or the Ranger class at Level 1, and you gain Expertise in a skill in which you are already proficiency that is offered by this calling at Level 1 or the Ranger class. You may spend an adaptive edge slot as a Bonus Action to gain Proficiency in a skill in which you are not proficient, or gain Expertise in another skill in which you are proficient. You may also use this ability to give an ally that you can see or that is within 60 feet of you Proficiency or Expertise. Duration: 1st-level = 1 Hour Proficiency, 2nd-level = 1 Day Proficiency, 3rd-level = 1 Week Proficiency or 1 Hour Expertise, 4th-level = 1 Day Expertise, 5th-level = 1 Week Expertise.",
+          actionType: "bonus"
         }
       ]
     },
@@ -469,32 +890,44 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Bonus Proficiencies", 
-          description: "You gain proficiency in one skill of your choice from the Ranger or Druid list, and you learn two additional languages." 
+          description: "You gain proficiency in one skill of your choice from the Ranger or Druid list, and you learn two additional languages.",
+          actionType: null
         },
         { 
           level: 1, 
           name: "Primal Casting", 
-          description: "You are a half-caster. You prepare spells from the Ranger list. Wisdom is your spellcasting ability. Your Adaptive Edge slots are also your spell slots. Pathbound Magic: You gain one 1st-level Druid spell of your choice. It is always prepared and does not count against your number of prepared spells." 
+          description: "You are a half-caster. You prepare spells from the Ranger list. Wisdom is your spellcasting ability. Your Adaptive Edge slots are also your spell slots. Pathbound Magic: You gain one 1st-level Druid spell of your choice. It is always prepared and does not count against your number of prepared spells.",
+          spellcasting: true,
+          spellChoices: { 1: 1 },
+          actionType: null
         },
         { 
           level: 6, 
           name: "Quick Study", 
-          description: "As a bonus action, you can expend a 2nd-level Adaptive Edge slot to copy a trait from one creature you can see within 30 feet until the start of your next turn: gain that creature's movement type (fly, swim, or climb) up to your speed, gain resistance to one damage type it resists, or gain advantage on your next attack against that creature. In addition, you gain one 2nd-level Druid spell or lower of your choice, always prepared." 
+          description: "As a bonus action, you can expend a 2nd-level Adaptive Edge slot to copy a trait from one creature you can see within 30 feet until the start of your next turn: gain that creature's movement type (fly, swim, or climb) up to your speed, gain resistance to one damage type it resists, or gain advantage on your next attack against that creature. In addition, you gain one 2nd-level Druid spell or lower of your choice, always prepared.",
+          actionType: "bonus",
+          spellChoices: { 6: 1 }
         },
         { 
           level: 10, 
           name: "Wanderer's Resilience", 
-          description: "Your walking speed increases by 10 feet, and you gain resistance to poison damage. As a bonus action, you can expend a 3rd-level Adaptive Edge slot to heal yourself for 3d8 + your Wisdom modifier hit points. In addition, you gain one 3rd-level Druid spell or lower of your choice, always prepared." 
+          description: "Your walking speed increases by 10 feet, and you gain resistance to poison damage. As a bonus action, you can expend a 3rd-level Adaptive Edge slot to heal yourself for 3d8 + your Wisdom modifier hit points. In addition, you gain one 3rd-level Druid spell or lower of your choice, always prepared.",
+          actionType: "bonus",
+          spellChoices: { 10: 1 }
         },
         { 
           level: 14, 
           name: "Pathshifter Form", 
-          description: "As an action, you can expend a 4th-level Adaptive Edge slot to assume one of the following aspects for up to 1 hour. This transformation requires concentration (as if concentrating on a spell). While in a Pathshifter Form, your weapon and unarmed strikes are considered magical for overcoming resistance and immunity, and they deal extra 2d8 elemental damage based on the aspect.\n• Sky Aspect: You sprout spectral wings, gaining a flying speed equal to your walking speed. Your weapon strikes deal an extra 2d8 lightning damage on a hit.\n• Sea Aspect: You manifest gilled armor and a spectral harpoon. You gain a swimming speed equal to twice your walking speed and can breathe underwater. Your weapon strikes deal an extra 2d8 cold damage on a hit. You also gain resistance to cold damage.\n• Land Aspect: Your limbs take on a stony, bestial form, and your body brims with seismic force. You gain a climbing speed equal to your walking speed, the benefits of spider climb, and you ignore difficult terrain. Your weapon strikes deal an extra 2d8 thunder damage on a hit.\n• Shared Benefit: You may extend the chosen movement benefit (fly, swim, or climb) to up to two allies within 30 feet who can see you when you assume your form. In addition, you gain one 4th-level Druid spell or lower of your choice, always prepared." 
+          description: "As an action, you can expend a 4th-level Adaptive Edge slot to assume one of the following aspects for up to 1 hour. This transformation requires concentration (as if concentrating on a spell). While in a Pathshifter Form, your weapon and unarmed strikes are considered magical for overcoming resistance and immunity, and they deal extra 2d8 elemental damage based on the aspect.\n• Sky Aspect: You sprout spectral wings, gaining a flying speed equal to your walking speed. Your weapon strikes deal an extra 2d8 lightning damage on a hit.\n• Sea Aspect: You manifest gilled armor and a spectral harpoon. You gain a swimming speed equal to twice your walking speed and can breathe underwater. Your weapon strikes deal an extra 2d8 cold damage on a hit. You also gain resistance to cold damage.\n• Land Aspect: Your limbs take on a stony, bestial form, and your body brims with seismic force. You gain a climbing speed equal to your walking speed, the benefits of spider climb, and you ignore difficult terrain. Your weapon strikes deal an extra 2d8 thunder damage on a hit.\n• Shared Benefit: You may extend the chosen movement benefit (fly, swim, or climb) to up to two allies within 30 feet who can see you when you assume your form. In addition, you gain one 4th-level Druid spell or lower of your choice, always prepared.",
+          actionType: "action",
+          spellChoices: { 14: 1 }
         },
         { 
           level: 18, 
           name: "Adventure's Master", 
-          description: "You gain immunity to exhaustion, disease, and poison. You no longer need food, water, or air to survive. Upon your death, there is a 50% chance you return to life within 24 hours, as if by the reincarnate spell (DM chooses the form). As an action, you can expend a 5th-level Adaptive Edge slot to cast mass cure wounds. In addition, you gain one 5th-level Druid spell or lower of your choice, always prepared." 
+          description: "You gain immunity to exhaustion, disease, and poison. You no longer need food, water, or air to survive. Upon your death, there is a 50% chance you return to life within 24 hours, as if by the reincarnate spell (DM chooses the form). As an action, you can expend a 5th-level Adaptive Edge slot to cast mass cure wounds. In addition, you gain one 5th-level Druid spell or lower of your choice, always prepared.",
+          actionType: "action",
+          spellChoices: { 18: 1 }
         }
       ]
     }
@@ -506,27 +939,32 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Hunter's Lore", 
-          description: "You learn the Hunter's Mark Instinct and it does not count against the number of instincts that you know. While a creature is affected by your Hunter's Mark Instinct, you automatically know whether that creature has any immunities, resistances, or vulnerabilities, and what they are." 
+          description: "You learn the Hunter's Mark Instinct and it does not count against the number of instincts that you know. While a creature is affected by your Hunter's Mark Instinct, you automatically know whether that creature has any immunities, resistances, or vulnerabilities, and what they are.",
+          actionType: null
         },
         { 
           level: 3, 
           name: "Hunter's Prey", 
-          description: "You specialize in hunting either single powerful foes or groups of enemies. Choose one of the following options (you may change your choice on a short or long rest):\n• Colossus Slayer: Once per turn, when you hit a creature that is missing any of its hit points with a weapon attack, the attack deals an extra 1d8 damage.\n• Horde Breaker: Once on each of your turns when you take the Attack action and make a weapon attack, you can make one additional attack with the same weapon against a different creature within 5 feet of the original target and within range." 
+          description: "You specialize in hunting either single powerful foes or groups of enemies. Choose one of the following options (you may change your choice on a short or long rest):\n• Colossus Slayer: Once per turn, when you hit a creature that is missing any of its hit points with a weapon attack, the attack deals an extra 1d8 damage.\n• Horde Breaker: Once on each of your turns when you take the Attack action and make a weapon attack, you can make one additional attack with the same weapon against a different creature within 5 feet of the original target and within range.",
+          actionType: null
         },
         { 
           level: 7, 
           name: "Defensive Tactics", 
-          description: "You adapt your fighting style for survival. Choose one of the following options (you may change your choice on a short or long rest):\n• Escape the Horde: Opportunity attacks against you are made with disadvantage.\n• Multiattack Defense: When a creature hits you with an attack roll, that creature has disadvantage on all subsequent attack rolls against you until the end of the turn." 
+          description: "You adapt your fighting style for survival. Choose one of the following options (you may change your choice on a short or long rest):\n• Escape the Horde: Opportunity attacks against you are made with disadvantage.\n• Multiattack Defense: When a creature hits you with an attack roll, that creature has disadvantage on all subsequent attack rolls against you until the end of the turn.",
+          actionType: null
         },
         { 
           level: 11, 
           name: "Superior Hunter's Prey", 
-          description: "Once per turn, when you deal damage to a creature affected by your Hunter's Mark Instinct, you can deal the same Hunter's Mark bonus damage to a different creature you can see within 30 feet of the original target." 
+          description: "Once per turn, when you deal damage to a creature affected by your Hunter's Mark Instinct, you can deal the same Hunter's Mark bonus damage to a different creature you can see within 30 feet of the original target.",
+          actionType: null
         },
         { 
           level: 15, 
           name: "Superior Hunter's Defense", 
-          description: "When you take damage from an attack, you can use your reaction to gain resistance to that damage type until the start of your next turn. If you expend a 3rd-level Adaptive Edge slot when using this feature, you instead gain immunity to that damage type until the start of your next turn." 
+          description: "When you take damage from an attack, you can use your reaction to gain resistance to that damage type until the start of your next turn. If you expend a 3rd-level Adaptive Edge slot when using this feature, you instead gain immunity to that damage type until the start of your next turn.",
+          actionType: "reaction"
         }
       ]
     },
@@ -536,27 +974,32 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Primal Companion", 
-          description: "You summon a primal beast as your companion. Choose one of three stat blocks: Beast of the Land (Charge, Primal Bond), Beast of the Sea (Amphibious, Binding Strike), or Beast of the Sky (Flyby, Primal Bond). The beast takes its turn on your initiative, immediately after yours. It can move and use its reaction on its own, but it only takes the Dodge action unless you use a bonus action to command it to take another action. If you're incapacitated, it acts on its own to defend itself." 
+          description: "You summon a primal beast as your companion. Choose one of three stat blocks: Beast of the Land (Charge, Primal Bond), Beast of the Sea (Amphibious, Binding Strike), or Beast of the Sky (Flyby, Primal Bond). The beast takes its turn on your initiative, immediately after yours. It can move and use its reaction on its own, but it only takes the Dodge action unless you use a bonus action to command it to take another action. If you're incapacitated, it acts on its own to defend itself.",
+          actionType: "bonus"
         },
         { 
           level: 3, 
           name: "Restoring or Replacing the Beast", 
-          description: "If the beast has died within the last hour, you can take a Magic action to touch it and expend a 1st-level Adaptive Edge slot. The beast returns to life after 1 minute with all its hit points restored. Whenever you finish a long rest, you can summon a different primal beast, which appears in an unoccupied space within 5 feet of you. You choose its stat block and appearance. If you already have a beast from this feature, the old one vanishes when the new one appears." 
+          description: "If the beast has died within the last hour, you can take a Magic action to touch it and expend a 1st-level Adaptive Edge slot. The beast returns to life after 1 minute with all its hit points restored. Whenever you finish a long rest, you can summon a different primal beast, which appears in an unoccupied space within 5 feet of you. You choose its stat block and appearance. If you already have a beast from this feature, the old one vanishes when the new one appears.",
+          actionType: "action"
         },
         { 
           level: 7, 
           name: "Exceptional Training", 
-          description: "When you command it to attack, you may also allow it to Dash, Disengage, Dodge, or Help as part of the same bonus action. Its attacks count as magical for the purpose of overcoming resistance and immunity. Whenever it hits with an attack, it may deal force damage instead of its normal type." 
+          description: "When you command it to attack, you may also allow it to Dash, Disengage, Dodge, or Help as part of the same bonus action. Its attacks count as magical for the purpose of overcoming resistance and immunity. Whenever it hits with an attack, it may deal force damage instead of its normal type.",
+          actionType: null
         },
         { 
           level: 11, 
           name: "Bestial Fury", 
-          description: "When you command your beast to attack, it can make two attacks instead of one. You can expend a 2nd-level Adaptive Edge slot as a bonus action to command it to make a third attack." 
+          description: "When you command your beast to attack, it can make two attacks instead of one. You can expend a 2nd-level Adaptive Edge slot as a bonus action to command it to make a third attack.",
+          actionType: "bonus"
         },
         { 
           level: 15, 
           name: "Share Bond", 
-          description: "While your beast is within 30 feet of you, the beast can expend your Adaptive Edge slots (up to 3rd level) to use your Calling features or Instincts as if it were you. The beast uses your save DC, attack modifier, and any other relevant statistics. The beast can activate one such feature on its turn, following all normal rules for that feature. This does not grant the beast its own pool of Adaptive Edge slots; it draws directly from yours." 
+          description: "While your beast is within 30 feet of you, the beast can expend your Adaptive Edge slots (up to 3rd level) to use your Calling features or Instincts as if it were you. The beast uses your save DC, attack modifier, and any other relevant statistics. The beast can activate one such feature on its turn, following all normal rules for that feature. This does not grant the beast its own pool of Adaptive Edge slots; it draws directly from yours.",
+          actionType: null
         }
       ]
     },
@@ -566,27 +1009,32 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Dread Ambusher", 
-          description: "• Ambusher's Leap: At the start of your first turn of each combat, your speed increases by 10 feet until the end of that turn.\n• Dreadful Strike: Once per turn when you hit a creature with a weapon attack, you can expend a 1st-level Adaptive Edge slot to deal an extra 2d6 psychic damage.\n• Initiative Bonus: When you roll initiative, you can add your Wisdom modifier to the roll." 
+          description: "• Ambusher's Leap: At the start of your first turn of each combat, your speed increases by 10 feet until the end of that turn.\n• Dreadful Strike: Once per turn when you hit a creature with a weapon attack, you can expend a 1st-level Adaptive Edge slot to deal an extra 2d6 psychic damage.\n• Initiative Bonus: When you roll initiative, you can add your Wisdom modifier to the roll.",
+          actionType: null
         },
         { 
           level: 3, 
           name: "Umbral Sight", 
-          description: "You gain darkvision with a range of 60 feet. If you already have darkvision, its range increases by 60 feet. While you are in darkness, you are invisible to any creature that relies on darkvision to see you in that darkness." 
+          description: "You gain darkvision with a range of 60 feet. If you already have darkvision, its range increases by 60 feet. While you are in darkness, you are invisible to any creature that relies on darkvision to see you in that darkness.",
+          actionType: null
         },
         { 
           level: 7, 
           name: "Iron Mind", 
-          description: "You have honed your will against the lurking horrors of the dark. You gain proficiency in Wisdom saving throws. If you already have this proficiency, gain proficiency in Intelligence or Charisma saving throws instead." 
+          description: "You have honed your will against the lurking horrors of the dark. You gain proficiency in Wisdom saving throws. If you already have this proficiency, gain proficiency in Intelligence or Charisma saving throws instead.",
+          actionType: null
         },
         { 
           level: 11, 
           name: "Stalker's Flurry", 
-          description: "When you deal psychic damage to a creature with Dreadful Strike, you can choose one of the following additional effects (once per turn). When you expend a 2nd- or 3rd-level Adaptive Edge slot for Dreadful Strike, you may also apply one or both of the following effects:\n• Sudden Strike: Immediately make one weapon attack against a different creature within 5 feet of the original target.\n• Mass Fear: Hostile creatures of your choice within 10 feet of the target must succeed on a Wisdom saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be frightened of you until the start of your next turn.\nThe psychic damage of your Dreadful Strike also increases to 2d8." 
+          description: "When you deal psychic damage to a creature with Dreadful Strike, you can choose one of the following additional effects (once per turn). When you expend a 2nd- or 3rd-level Adaptive Edge slot for Dreadful Strike, you may also apply one or both of the following effects:\n• Sudden Strike: Immediately make one weapon attack against a different creature within 5 feet of the original target.\n• Mass Fear: Hostile creatures of your choice within 10 feet of the target must succeed on a Wisdom saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be frightened of you until the start of your next turn.\nThe psychic damage of your Dreadful Strike also increases to 2d8.",
+          actionType: null
         },
         { 
           level: 15, 
           name: "Shadowy Dodge", 
-          description: "When a creature targets you with an attack, you can use your reaction and expend a 3rd-level Adaptive Edge slot to impose disadvantage on the attack roll. Whether the attack hits or misses, you can then teleport up to 30 feet to an unoccupied space you can see." 
+          description: "When a creature targets you with an attack, you can use your reaction and expend a 3rd-level Adaptive Edge slot to impose disadvantage on the attack roll. Whether the attack hits or misses, you can then teleport up to 30 feet to an unoccupied space you can see.",
+          actionType: "reaction"
         }
       ]
     },
@@ -596,27 +1044,32 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Planar Warrior", 
-          description: "As a bonus action, choose one creature you can see within 30 feet of you. Next time you hit that creature on this turn with a weapon attack, you can expend a 1st-level Adaptive Edge slot to make all damage dealt by the attack force damage, and the creature takes an extra 1d8 force damage from the attack. When you reach 11th level in this class, the extra damage increases to 2d8." 
+          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to choose one creature you can see within 30 feet. Until the end of your turn, your weapon attacks against that creature convert all damage to force damage and deal an extra 1d8 force damage on a hit.",
+          actionType: "bonus"
         },
         { 
           level: 3, 
           name: "Spectral Eye", 
-          description: "Your connection to the ethereal plane has improved your senses. You gain proficiency in Perception and Wisdom saving throws." 
+          description: "Your connection to the ethereal plane has improved your senses. You gain proficiency in Perception and Wisdom saving throws.",
+          actionType: null
         },
         { 
           level: 7, 
           name: "Ethereal Step", 
-          description: "As a bonus action, you can expend a 2nd-level Adaptive Edge slot to slip through the Ethereal Plane. You teleport up to 40 feet to an unoccupied space you can see, phasing into the Ethereal Plane as part of this movement. While ethereal, until the end of your turn, you can move through creatures and objects on the Material Plane as if they were difficult terrain, and you can't affect or be affected by creatures or objects on the Material Plane. At the end of your turn, you return to the Material Plane in your current space. When you would return, you can instead roll a d20; on an 11 or higher, you remain on the Ethereal Plane until the start of your next turn, then return automatically. If you would reappear in an occupied space or inside an object, you instead appear in the nearest unoccupied space you can see within 5 feet and take 1d6 force damage." 
+          description: "As a bonus action, you can expend a 2nd-level Adaptive Edge slot to slip through the Ethereal Plane. You teleport up to 40 feet to an unoccupied space you can see, phasing into the Ethereal Plane as part of this movement. While ethereal, until the end of your turn, you can move through creatures and objects on the Material Plane as if they were difficult terrain, and you can't affect or be affected by creatures or objects on the Material Plane. At the end of your turn, you return to the Material Plane in your current space. When you would return, you can instead roll a d20; on an 11 or higher, you remain on the Ethereal Plane until the start of your next turn, then return automatically. If you would reappear in an occupied space or inside an object, you instead appear in the nearest unoccupied space you can see within 5 feet and take 1d6 force damage.",
+          actionType: "bonus"
         },
         { 
           level: 11, 
           name: "Distant Strike", 
-          description: "You gain the ability to pass between the planes in the blink of an eye. When you take the Attack action, you can teleport up to 10 feet before each attack to an unoccupied space you can see. If you attack at least two different creatures with the action, you can make one additional attack with it against a third creature." 
+          description: "You gain the ability to pass between the planes in the blink of an eye. When you take the Attack action, you can teleport up to 10 feet before each attack to an unoccupied space you can see. If you attack at least two different creatures with the action, you can make one additional attack with it against a third creature.",
+          actionType: null
         },
         { 
           level: 15, 
           name: "Spectral Defense", 
-          description: "Your ability to move between planes enables you to slip through the planar boundaries to lessen the harm done to you during battle. When you take damage from an attack, you can use your reaction to give yourself resistance to all of that attack's damage on this turn." 
+          description: "Your ability to move between planes enables you to slip through the planar boundaries to lessen the harm done to you during battle. When you take damage from an attack, you can use your reaction to give yourself resistance to all of that attack's damage on this turn.",
+          actionType: "reaction"
         }
       ]
     },
@@ -626,27 +1079,32 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Luminescent Warrior", 
-          description: "• Moonlit Draw: When you roll initiative, your weapons shed dim light in a 10-foot radius until you sheathe or drop them (no action required).\n• Radiant Edge: Once per turn when you hit a creature with a weapon attack, the attack deals an extra 1d4 radiant damage. This extra damage increases to 1d6 at 7th level, 1d8 at 11th level, and 1d10 at 15th level." 
+          description: "• Moonlit Draw: When you roll initiative, your weapons shed dim light in a 10-foot radius until you sheathe or drop them (no action required).\n• Radiant Edge: Once per turn when you hit a creature with a weapon attack, the attack deals an extra 1d4 radiant damage. This extra damage increases to 1d6 at 7th level, 1d8 at 11th level, and 1d10 at 15th level.",
+          actionType: null
         },
         { 
           level: 3, 
           name: "Phase Blink", 
-          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to teleport up to 30 feet to an unoccupied space you can see. If the destination is in dim light or darkness, you have advantage on the first weapon attack you make before the end of your turn. You also gain advantage on Wisdom (Perception) checks made in dim light or darkness." 
+          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to teleport up to 30 feet to an unoccupied space you can see. If the destination is in dim light or darkness, you have advantage on the first weapon attack you make before the end of your turn. You also gain advantage on Wisdom (Perception) checks made in dim light or darkness.",
+          actionType: "bonus"
         },
         { 
           level: 7, 
           name: "Sanctified Resilience", 
-          description: "You gain resistance to radiant and necrotic damage. Your radiant damage ignores resistance, and if a creature is immune to radiant, your radiant damage is treated as resistance. Rebuke the Fell: When you take necrotic damage or are targeted by an effect that deals necrotic damage, you can use your reaction and expend a 2nd-level Adaptive Edge slot to make one weapon attack against the source if it is within range. On a hit, the attack deals an extra 3d8 radiant damage, and the next attack roll made against that target before the end of your next turn has advantage." 
+          description: "You gain resistance to radiant and necrotic damage. Your radiant damage ignores resistance, and if a creature is immune to radiant, your radiant damage is treated as resistance. Rebuke the Fell: When you take necrotic damage or are targeted by an effect that deals necrotic damage, you can use your reaction and expend a 2nd-level Adaptive Edge slot to make one weapon attack against the source if it is within range. On a hit, the attack deals an extra 3d8 radiant damage, and the next attack roll made against that target before the end of your next turn has advantage.",
+          actionType: "reaction"
         },
         { 
           level: 11, 
           name: "Illuminated Vision", 
-          description: "You can see normally in darkness (nonmagical and magical) out to 120 feet. You have advantage on saving throws against being blinded." 
+          description: "You can see normally in darkness (nonmagical and magical) out to 120 feet. You have advantage on saving throws against being blinded.",
+          actionType: null
         },
         { 
           level: 15, 
           name: "Nightfall's Fury", 
-          description: "When you hit a creature with a weapon attack, you can expend an Adaptive Edge slot to deal extra radiant damage. The extra damage is 1d8 per slot level (maximum 5d8). If the target is a celestial, fiend, or aberration, the attack deals an additional 1d8 radiant damage (maximum 6d8). You can use this feature once per turn." 
+          description: "When you hit a creature with a weapon attack, you can expend an Adaptive Edge slot to deal extra radiant damage. The extra damage is 1d8 per slot level (maximum 5d8). If the target is a celestial, fiend, or aberration, the attack deals an additional 1d8 radiant damage (maximum 6d8). You can use this feature once per turn.",
+          actionType: null
         }
       ]
     },
@@ -656,22 +1114,26 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Otherworldly Glamour", 
-          description: "You add your Wisdom modifier (minimum +1) to all Charisma checks. You also gain proficiency in one of the following skills: Deception, Performance, or Persuasion." 
+          description: "You add your Wisdom modifier (minimum +1) to all Charisma checks. You also gain proficiency in one of the following skills: Deception, Performance, or Persuasion.",
+          actionType: null
         },
         { 
           level: 7, 
           name: "Beguiling Twist", 
-          description: "You have advantage on saving throws to avoid or end the charmed or frightened conditions. In addition, when you or a creature you can see within 120 feet succeeds on a saving throw against being charmed or frightened, you can use your reaction to force a different creature you can see within 120 feet to make a Wisdom saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier). On a failure, the target is either charmed or frightened (your choice) for 1 minute. The target repeats the saving throw at the end of each of its turns, ending the effect on itself on a success." 
+          description: "You have advantage on saving throws to avoid or end the charmed or frightened conditions. In addition, when you or a creature you can see within 120 feet succeeds on a saving throw against being charmed or frightened, you can use your reaction to force a different creature you can see within 120 feet to make a Wisdom saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier). On a failure, the target is either charmed or frightened (your choice) for 1 minute. The target repeats the saving throw at the end of each of its turns, ending the effect on itself on a success.",
+          actionType: "reaction"
         },
         { 
           level: 11, 
           name: "Fey Reinforcements", 
-          description: "You can cast Summon Fey by expending an Adaptive Edge slot of 3rd level or higher, and it does not require material components. Once per long rest, you can cast Summon Fey without expending an Adaptive Edge slot. When you cast Summon Fey, you can choose to make the spell not require concentration. If you do, the spell lasts for 1 minute." 
+          description: "You can cast Summon Fey by expending an Adaptive Edge slot of 3rd level or higher, and it does not require material components. Once per long rest, you can cast Summon Fey without expending an Adaptive Edge slot. When you cast Summon Fey, you can choose to make the spell not require concentration. If you do, the spell lasts for 1 minute.",
+          actionType: null
         },
         { 
           level: 15, 
           name: "Misty Wanderer", 
-          description: "You can cast Misty Step once per day without expending an Adaptive Edge slot. You can cast it again by expending a 2nd-level Adaptive Edge slot. In addition, you can use Misty Step without expending a slot a number of times equal to your Wisdom modifier (minimum once). You regain these free uses when you finish a long rest. When you cast Misty Step, you can bring along one willing creature within 5 feet. That creature teleports to an unoccupied space of your choice within 5 feet of your destination." 
+          description: "You can cast Misty Step once per day without expending an Adaptive Edge slot. You can cast it again by expending a 2nd-level Adaptive Edge slot. In addition, you can use Misty Step without expending a slot a number of times equal to your Wisdom modifier (minimum once). You regain these free uses when you finish a long rest. When you cast Misty Step, you can bring along one willing creature within 5 feet. That creature teleports to an unoccupied space of your choice within 5 feet of your destination.",
+          actionType: null
         }
       ]
     },
@@ -681,27 +1143,32 @@ const DATABASE = {
         { 
           level: 3, 
           name: "Gathered Swarm", 
-          description: "A swarm of intangible nature spirits has bonded with you. The swarm remains in your space. You determine its appearance (insects, birds, pixies, leaves, etc.). Once on each of your turns, immediately after you hit a creature with a weapon attack, you can command the swarm to assist you in one of the following ways:\n• Swarm Strike: The target takes 1d6 piercing damage from the swarm.\n• Swarm Push: The target must succeed on a Strength saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be moved by the swarm up to 15 feet horizontally.\n• Swarm Shift: You are moved by the swarm up to 5 feet horizontally." 
+          description: "A swarm of intangible nature spirits has bonded with you. The swarm remains in your space. You determine its appearance (insects, birds, pixies, leaves, etc.). Once on each of your turns, immediately after you hit a creature with a weapon attack, you can command the swarm to assist you in one of the following ways:\n• Swarm Strike: The target takes 1d6 piercing damage from the swarm.\n• Swarm Push: The target must succeed on a Strength saving throw (DC = 8 + your proficiency bonus + your Wisdom modifier) or be moved by the swarm up to 15 feet horizontally.\n• Swarm Shift: You are moved by the swarm up to 5 feet horizontally.",
+          actionType: null
         },
         { 
           level: 3, 
           name: "Swarmkeeper's Gift", 
-          description: "Your swarm can act independently of you in small ways. You learn the mage hand cantrip. When you cast it, the spectral hand is formed of your swarm. You may also expend Adaptive Edge slots to manifest certain swarm effects: 1st Level Slot = faerie fire, 2nd Level Slot = web, 3rd Level Slot = gaseous form, 4th Level Slot = arcane eye, 5th Level Slot = insect plague. These spells are always prepared for you and do not count against your prepared spells." 
+          description: "Your swarm can act independently of you in small ways. You learn the mage hand cantrip. When you cast it, the spectral hand is formed of your swarm. You may also expend Adaptive Edge slots to manifest certain swarm effects: 1st Level Slot = faerie fire, 2nd Level Slot = web, 3rd Level Slot = gaseous form, 4th Level Slot = arcane eye, 5th Level Slot = insect plague. These spells are always prepared for you and do not count against your prepared spells.",
+          actionType: null
         },
         { 
           level: 7, 
           name: "Writhing Tide", 
-          description: "As a bonus action, you can expend a 2nd-level Adaptive Edge slot to condense your swarm into a writhing tide that lifts you. You gain a flying speed of 20 feet and can hover for 1 minute, or until you are incapacitated." 
+          description: "As a bonus action, you can expend a 2nd-level Adaptive Edge slot to condense your swarm into a writhing tide that lifts you. You gain a flying speed of 20 feet and can hover for 1 minute, or until you are incapacitated.",
+          actionType: "bonus"
         },
         { 
           level: 11, 
           name: "Mighty Swarm", 
-          description: "Swarm Strike damage increases to 1d8. If a creature fails its saving throw against Swarm Push, the swarm can also knock the creature prone. When you use Swarm Shift, you gain half cover until the start of your next turn." 
+          description: "Swarm Strike damage increases to 1d8. If a creature fails its saving throw against Swarm Push, the swarm can also knock the creature prone. When you use Swarm Shift, you gain half cover until the start of your next turn.",
+          actionType: null
         },
         { 
           level: 15, 
           name: "Swarming Dispersal", 
-          description: "When you take damage, you can use your reaction and expend a 3rd-level Adaptive Edge slot to vanish into your swarm. You gain resistance to the triggering damage, then teleport to an unoccupied space within 30 feet that you can see, reappearing with your swarm." 
+          description: "When you take damage, you can use your reaction and expend a 3rd-level Adaptive Edge slot to vanish into your swarm. You gain resistance to the triggering damage, then teleport to an unoccupied space within 30 feet that you can see, reappearing with your swarm.",
+          actionType: "reaction"
         }
       ]
     }
@@ -799,6 +1266,7 @@ const ABILITY_LABELS = {
   wis: 'Wisdom',
   cha: 'Charisma'
 };
+
 const ARMOR_DATA = {
   "None": {
     category: "None",
@@ -921,32 +1389,10 @@ const ARMOR_DATA = {
 
 // ========================================
 // INSTINCTS DATABASE
-// Organized by level prerequisite
 // ========================================
 
 const INSTINCTS_DB = {
-  // Base Instincts (available at level 2+)
   base: [
-    {
-      name: "Ambusher",
-      desc: "When you roll initiative, you can expend a 1st-level Adaptive Edge slot to move up to half your speed.",
-      action: "free"
-    },
-    {
-      name: "Battle Hymn",
-      desc: "You gain proficiency in Performance. You also learn the vicious mockery cantrip.",
-      action: "passive"
-    },
-    {
-      name: "Beast Handler",
-      desc: "You have advantage on Animal Handling checks.",
-      action: "passive"
-    },
-    {
-      name: "Beast Speech",
-      desc: "You can cast speak with animals by expending a 1st-level Adaptive Edge slot. When you do so, the effect's duration is extended to 8 hours.",
-      action: "action"
-    },
     {
       name: "Bloodmarked",
       desc: "You gain proficiency in Intimidation. You also learn one cantrip or one Level 1 spell from the Sorcerer or Warlock spell list.",
@@ -1052,7 +1498,6 @@ const INSTINCTS_DB = {
     }
   ],
 
-  // 6th Level Instincts
   level6: [
     {
       name: "Iron Grip",
@@ -1082,7 +1527,6 @@ const INSTINCTS_DB = {
     }
   ],
 
-  // 9th Level Instincts
   level9: [
     {
       name: "Unerring Aim",
@@ -1096,7 +1540,6 @@ const INSTINCTS_DB = {
     }
   ],
 
-  // 13th Level Instincts
   level13: [
     {
       name: "Elemental Strike",
@@ -1105,7 +1548,6 @@ const INSTINCTS_DB = {
     }
   ],
 
-  // 17th Level Instincts
   level17: [
     {
       name: "Ability Surge",
