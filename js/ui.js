@@ -62,29 +62,27 @@ function renderCombatStats() {
   const speedPenalty = getArmorSpeedPenalty();
   const totalSpeed = baseSpeed + speedBonus + speedPenalty;
   
-  // FIXED: Removed dice roller, made purely manual with automatic CON calculation
   let hpDisplay = '';
   if (character.hpMethod === 'manual' && character.level > 1) {
     hpDisplay = `<div style="grid-column: 1 / -1; padding: 15px; background: #fff3cd; border-radius: 4px; margin-bottom: 15px;">
-      <strong>HP Per Level (Level 1 = 10 + CON, each level after = HP roll + CON):</strong>
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px;">
+      <strong>HP Per Level (Level 1 = 10 + CON):</strong>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px;">
         ${Array.from({ length: character.level }, (_, i) => {
           if (i === 0) {
-            const conMod = getMod(getScore('con'));
-            const lvl1HP = 10 + conMod;
             return `<div style="text-align: center;">
               <div style="font-size: 11px; margin-bottom: 3px;">Lvl 1</div>
-              <div style="font-weight: bold; font-size: 18px;">${lvl1HP}</div>
-              <div style="font-size: 10px; color: #666;">(10 + ${conMod})</div>
+              <div style="font-weight: bold;">10 + ${getMod(getScore('con'))}</div>
             </div>`;
           } else {
             const roll = character.rolledHP[i] || 0;
             const conMod = getMod(getScore('con'));
-            const levelTotal = roll + conMod;
             return `<div style="text-align: center;">
               <div style="font-size: 11px; margin-bottom: 3px;">Lvl ${i + 1}</div>
-              <input type="number" value="${roll}" min="0" max="10" onchange="setManualHP(${i + 1}, this.value)" style="width: 60px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 3px; font-size: 16px;">
-              <div style="font-size: 10px; margin-top: 2px; color: #666;">+${conMod} = ${levelTotal}</div>
+              <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+                <input type="number" value="${roll}" min="1" max="10" onchange="setManualHP(${i + 1}, this.value)" style="width: 50px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 3px;">
+                <button onclick="rollHP(${i + 1})" style="padding: 3px 6px; cursor: pointer; background: #8B0000; color: white; border: none; border-radius: 3px;" title="Roll 1d10">ðŸŽ²</button>
+              </div>
+              <div style="font-size: 10px; margin-top: 2px;">+${conMod} CON</div>
             </div>`;
           }
         }).join('')}
@@ -103,7 +101,7 @@ function renderCombatStats() {
     </div>
     <div class="combat-stat">
       <div class="combat-stat-label">Speed</div>
-      <div class="combat-stat-value">${totalSpeed} ft${speedPenalty < 0 ? ' WARNING' : ''}</div>
+      <div class="combat-stat-value">${totalSpeed} ft${speedPenalty < 0 ? ' âš ï¸' : ''}</div>
     </div>
     <div class="combat-stat">
       <div class="combat-stat-label">Prof Bonus</div>
@@ -126,7 +124,6 @@ function renderCombatStats() {
       <div class="combat-stat-value">${hitDice}d10</div>
     </div>`;
 }
-
 
 // ========================================
 // SKILLS RENDERING
@@ -209,7 +206,6 @@ function renderSpellsSection() {
   const container = document.getElementById('spellsSection');
   const spellTitle = document.getElementById('spellsTitle');
   
-  // Only show spells for spellcasting callings
   const spellcasters = ['mystic', 'wayfarer', 'excavator'];
   if (!character.calling || !spellcasters.includes(character.calling)) {
     spellTitle.style.display = 'none';
@@ -221,7 +217,6 @@ function renderSpellsSection() {
   container.style.display = 'block';
   spellTitle.textContent = "Adaptive Edge Casting";
   
-  // Collect all spells from all sources
   const allSpells = {
     cantrips: [],
     level1: [],
@@ -231,55 +226,30 @@ function renderSpellsSection() {
     level5: []
   };
   
-  // Add spells from calling
-  if (character.selectedSpells && character.selectedSpells.calling) {
+  if (character.selectedSpells.calling) {
     Object.keys(character.selectedSpells.calling).forEach(key => {
       if (allSpells[key]) {
-        const spells = character.selectedSpells.calling[key];
-        if (Array.isArray(spells)) {
-          spells.forEach(spell => {
-            if (spell && spell.trim() !== '') {
-              allSpells[key].push(spell);
-            }
-          });
-        }
+        allSpells[key].push(...character.selectedSpells.calling[key].filter(s => s));
       }
     });
   }
   
-  // Add spells from origin feat
-  if (character.selectedSpells && character.selectedSpells.originFeat) {
+  if (character.selectedSpells.originFeat) {
     if (character.selectedSpells.originFeat.cantrips) {
-      character.selectedSpells.originFeat.cantrips.forEach(spell => {
-        if (spell && spell.trim() !== '') allSpells.cantrips.push(spell);
-      });
+      allSpells.cantrips.push(...character.selectedSpells.originFeat.cantrips.filter(s => s));
     }
     if (character.selectedSpells.originFeat.level1) {
-      character.selectedSpells.originFeat.level1.forEach(spell => {
-        if (spell && spell.trim() !== '') allSpells.level1.push(spell);
-      });
+      allSpells.level1.push(...character.selectedSpells.originFeat.level1.filter(s => s));
     }
   }
   
-  // Add spells from instincts
-  if (character.selectedSpells && character.selectedSpells.instincts) {
+  if (character.selectedSpells.instincts) {
     Object.values(character.selectedSpells.instincts).forEach(instSpells => {
-      if (instSpells) {
-        if (instSpells.cantrips) {
-          instSpells.cantrips.forEach(spell => {
-            if (spell && spell.trim() !== '') allSpells.cantrips.push(spell);
-          });
-        }
-        if (instSpells.level1) {
-          instSpells.level1.forEach(spell => {
-            if (spell && spell.trim() !== '') allSpells.level1.push(spell);
-          });
-        }
-      }
+      if (instSpells.cantrips) allSpells.cantrips.push(...instSpells.cantrips.filter(s => s));
+      if (instSpells.level1) allSpells.level1.push(...instSpells.level1.filter(s => s));
     });
   }
   
-  // Render organized by level
   let html = '';
   
   const levelLabels = {
@@ -293,30 +263,19 @@ function renderSpellsSection() {
   
   Object.keys(levelLabels).forEach(levelKey => {
     const spells = allSpells[levelKey];
-    if (spells && spells.length > 0) {
+    if (spells.length > 0) {
       html += `<h3 class="spell-level-header">${levelLabels[levelKey]}</h3>`;
-      
-      // Remove duplicates
-      const uniqueSpells = [...new Set(spells)];
-      
-      uniqueSpells.forEach(spellName => {
+      spells.forEach(spellName => {
         html += `<div class="feature-item">
           <div class="feature-title">${spellName}</div>
-          <div class="feature-description">
-            <em>Spell details available in rulebook or Spell Descriptions document.</em>
-          </div>
+          <div class="feature-description">Spell details from spell database</div>
         </div>`;
       });
     }
   });
   
-  if (html === '') {
-    html = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No spells selected yet. Choose your calling spells from the spell selection dropdowns in the Calling Features section.</p>';
-  }
-  
-  container.innerHTML = html;
+  container.innerHTML = html || '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No spells selected yet.</p>';
 }
-
 
 // ========================================
 // INSTINCTS SELECTION RENDERING
