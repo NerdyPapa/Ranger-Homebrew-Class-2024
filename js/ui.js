@@ -209,19 +209,7 @@ function renderSpellsSection() {
   const container = document.getElementById('spellsSection');
   const spellTitle = document.getElementById('spellsTitle');
   
-  // Only show spells for spellcasting callings
-  const spellcasters = ['mystic', 'wayfarer', 'excavator'];
-  if (!character.calling || !spellcasters.includes(character.calling)) {
-    spellTitle.style.display = 'none';
-    container.style.display = 'none';
-    return;
-  }
-  
-  spellTitle.style.display = 'block';
-  container.style.display = 'block';
-  spellTitle.textContent = "Adaptive Edge Casting";
-  
-  // Collect all spells from all sources
+  // Collect all spells from all sources FIRST to see if we have any
   const allSpells = {
     cantrips: [],
     level1: [],
@@ -310,8 +298,25 @@ function renderSpellsSection() {
     }
   });
   
+  // Check if we have any spells from any source
+  const hasAnySpells = Object.values(allSpells).some(arr => arr.length > 0);
+  
+  // Only show section if we have spells OR if character is a spellcasting calling
+  const spellcasters = ['mystic', 'wayfarer', 'excavator'];
+  const isSpellcaster = character.calling && spellcasters.includes(character.calling);
+  
+  if (!hasAnySpells && !isSpellcaster) {
+    spellTitle.style.display = 'none';
+    container.style.display = 'none';
+    return;
+  }
+  
+  spellTitle.style.display = 'block';
+  container.style.display = 'block';
+  spellTitle.textContent = "Adaptive Edge Casting";
+  
   if (html === '') {
-    html = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No spells selected yet. Choose your spells from:<br>• <strong>Calling Features</strong> section (for spellcasting features)<br>• <strong>Instincts</strong> section (for instincts that grant spells)<br>• <strong>Origin Feat</strong> section (for Magic Initiate feats)</p>';
+    html = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No spells selected yet. Choose your spells from:<br>- <strong>Calling Features</strong> section (for spellcasting features)<br>- <strong>Instincts</strong> section (for instincts that grant spells)<br>- <strong>Origin Feat</strong> section (for Magic Initiate feats)</p>';
   }
   
   container.innerHTML = html;
