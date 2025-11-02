@@ -23,7 +23,7 @@ function renderAbilityScores() {
     const modStr = (mod >= 0 ? `+${mod}` : `${mod}`);
     const saveMod = saves[ab] ? mod + profBonus : mod;
     const saveStr = (saveMod >= 0 ? `+${saveMod}` : `${saveMod}`);
-    const checkmark = saves[ab] ? ' ✔' : '';
+    const checkmark = saves[ab] ? ' âœ”' : '';
     const bgBonus = getBgBonus(ab);
     const featBonus = getFeatBonus(ab);
     
@@ -43,7 +43,7 @@ function renderAbilityScores() {
       ${inputHTML}
       <div class="stat-modifier">${modStr}</div>
       <div class="stat-save">Save: ${saveStr}${checkmark}</div>
-      <div class="bg-bonus">BG +${bgBonus || 0} • Feat/Boon +${featBonus || 0} → <strong>${eff}</strong></div>
+      <div class="bg-bonus">BG +${bgBonus || 0} â€¢ Feat/Boon +${featBonus || 0} â†’ <strong>${eff}</strong></div>
     </div>`;
   }).join('');
 }
@@ -62,27 +62,29 @@ function renderCombatStats() {
   const speedPenalty = getArmorSpeedPenalty();
   const totalSpeed = baseSpeed + speedBonus + speedPenalty;
   
+  // FIXED: Removed dice roller, made purely manual with automatic CON calculation
   let hpDisplay = '';
   if (character.hpMethod === 'manual' && character.level > 1) {
     hpDisplay = `<div style="grid-column: 1 / -1; padding: 15px; background: #fff3cd; border-radius: 4px; margin-bottom: 15px;">
-      <strong>HP Per Level (Level 1 = 10 + CON):</strong>
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px;">
+      <strong>HP Per Level (Level 1 = 10 + CON, each level after = HP roll + CON):</strong>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px;">
         ${Array.from({ length: character.level }, (_, i) => {
           if (i === 0) {
+            const conMod = getMod(getScore('con'));
+            const lvl1HP = 10 + conMod;
             return `<div style="text-align: center;">
               <div style="font-size: 11px; margin-bottom: 3px;">Lvl 1</div>
-              <div style="font-weight: bold;">10 + ${getMod(getScore('con'))}</div>
+              <div style="font-weight: bold; font-size: 18px;">${lvl1HP}</div>
+              <div style="font-size: 10px; color: #666;">(10 + ${conMod})</div>
             </div>`;
           } else {
             const roll = character.rolledHP[i] || 0;
             const conMod = getMod(getScore('con'));
+            const levelTotal = roll + conMod;
             return `<div style="text-align: center;">
               <div style="font-size: 11px; margin-bottom: 3px;">Lvl ${i + 1}</div>
-              <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                <input type="number" value="${roll}" min="1" max="10" onchange="setManualHP(${i + 1}, this.value)" style="width: 50px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 3px;">
-                <button onclick="rollHP(${i + 1})" style="padding: 3px 6px; cursor: pointer; background: #8B0000; color: white; border: none; border-radius: 3px;" title="Roll 1d10">🎲</button>
-              </div>
-              <div style="font-size: 10px; margin-top: 2px;">+${conMod} CON</div>
+              <input type="number" value="${roll}" min="0" max="10" onchange="setManualHP(${i + 1}, this.value)" style="width: 60px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 3px; font-size: 16px;">
+              <div style="font-size: 10px; margin-top: 2px; color: #666;">+${conMod} = ${levelTotal}</div>
             </div>`;
           }
         }).join('')}
@@ -101,7 +103,7 @@ function renderCombatStats() {
     </div>
     <div class="combat-stat">
       <div class="combat-stat-label">Speed</div>
-      <div class="combat-stat-value">${totalSpeed} ft${speedPenalty < 0 ? ' ⚠️' : ''}</div>
+      <div class="combat-stat-value">${totalSpeed} ft${speedPenalty < 0 ? ' WARNING' : ''}</div>
     </div>
     <div class="combat-stat">
       <div class="combat-stat-label">Prof Bonus</div>
@@ -124,6 +126,7 @@ function renderCombatStats() {
       <div class="combat-stat-value">${hitDice}d10</div>
     </div>`;
 }
+
 
 // ========================================
 // SKILLS RENDERING
@@ -156,7 +159,7 @@ function renderSkills() {
     const modStr = modifier >= 0 ? `+${modifier}` : `${modifier}`;
     const profDisabled = (!skillData.prof && profCount >= maxProf);
     const expertDisabled = (!skillData.expert && (expertCount >= maxExpert || !isActuallyProficient || character.level < 9));
-    const profLabel = hasInstinctProf ? '✔ (Instinct)' : '';
+    const profLabel = hasInstinctProf ? 'âœ” (Instinct)' : '';
     
     return `<div class="skill-item">
       <div class="skill-checkboxes">
@@ -206,6 +209,7 @@ function renderSpellsSection() {
   const container = document.getElementById('spellsSection');
   const spellTitle = document.getElementById('spellsTitle');
   
+  // Only show spells for spellcasting callings
   const spellcasters = ['mystic', 'wayfarer', 'excavator'];
   if (!character.calling || !spellcasters.includes(character.calling)) {
     spellTitle.style.display = 'none';
@@ -217,6 +221,7 @@ function renderSpellsSection() {
   container.style.display = 'block';
   spellTitle.textContent = "Adaptive Edge Casting";
   
+  // Collect all spells from all sources
   const allSpells = {
     cantrips: [],
     level1: [],
@@ -226,30 +231,55 @@ function renderSpellsSection() {
     level5: []
   };
   
-  if (character.selectedSpells.calling) {
+  // Add spells from calling
+  if (character.selectedSpells && character.selectedSpells.calling) {
     Object.keys(character.selectedSpells.calling).forEach(key => {
       if (allSpells[key]) {
-        allSpells[key].push(...character.selectedSpells.calling[key].filter(s => s));
+        const spells = character.selectedSpells.calling[key];
+        if (Array.isArray(spells)) {
+          spells.forEach(spell => {
+            if (spell && spell.trim() !== '') {
+              allSpells[key].push(spell);
+            }
+          });
+        }
       }
     });
   }
   
-  if (character.selectedSpells.originFeat) {
+  // Add spells from origin feat
+  if (character.selectedSpells && character.selectedSpells.originFeat) {
     if (character.selectedSpells.originFeat.cantrips) {
-      allSpells.cantrips.push(...character.selectedSpells.originFeat.cantrips.filter(s => s));
+      character.selectedSpells.originFeat.cantrips.forEach(spell => {
+        if (spell && spell.trim() !== '') allSpells.cantrips.push(spell);
+      });
     }
     if (character.selectedSpells.originFeat.level1) {
-      allSpells.level1.push(...character.selectedSpells.originFeat.level1.filter(s => s));
+      character.selectedSpells.originFeat.level1.forEach(spell => {
+        if (spell && spell.trim() !== '') allSpells.level1.push(spell);
+      });
     }
   }
   
-  if (character.selectedSpells.instincts) {
+  // Add spells from instincts
+  if (character.selectedSpells && character.selectedSpells.instincts) {
     Object.values(character.selectedSpells.instincts).forEach(instSpells => {
-      if (instSpells.cantrips) allSpells.cantrips.push(...instSpells.cantrips.filter(s => s));
-      if (instSpells.level1) allSpells.level1.push(...instSpells.level1.filter(s => s));
+      if (instSpells) {
+        if (instSpells.cantrips) {
+          instSpells.cantrips.forEach(spell => {
+            if (spell && spell.trim() !== '') allSpells.cantrips.push(spell);
+          });
+        }
+        if (instSpells.level1) {
+          instSpells.level1.forEach(spell => {
+            if (spell && spell.trim() !== '') allSpells.level1.push(spell);
+          });
+        }
+      }
     });
   }
   
+  // Render organized by level
   let html = '';
   
   const levelLabels = {
@@ -263,19 +293,30 @@ function renderSpellsSection() {
   
   Object.keys(levelLabels).forEach(levelKey => {
     const spells = allSpells[levelKey];
-    if (spells.length > 0) {
+    if (spells && spells.length > 0) {
       html += `<h3 class="spell-level-header">${levelLabels[levelKey]}</h3>`;
-      spells.forEach(spellName => {
+      
+      // Remove duplicates
+      const uniqueSpells = [...new Set(spells)];
+      
+      uniqueSpells.forEach(spellName => {
         html += `<div class="feature-item">
           <div class="feature-title">${spellName}</div>
-          <div class="feature-description">Spell details from spell database</div>
+          <div class="feature-description">
+            <em>Spell details available in rulebook or Spell Descriptions document.</em>
+          </div>
         </div>`;
       });
     }
   });
   
-  container.innerHTML = html || '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No spells selected yet.</p>';
+  if (html === '') {
+    html = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No spells selected yet. Choose your calling spells from the spell selection dropdowns in the Calling Features section.</p>';
+  }
+  
+  container.innerHTML = html;
 }
+
 
 // ========================================
 // INSTINCTS SELECTION RENDERING
@@ -346,7 +387,7 @@ function renderInstinctSelectors() {
 function renderSpeciesFeatures() {
   const s = character.species;
   const block = SPECIES_DATA[s];
-  setHTML('speciesTitle', block ? block.title : '—');
+  setHTML('speciesTitle', block ? block.title : 'â€”');
   document.getElementById('speciesDesc').textContent = block ? block.desc : 'Select a species to view its traits.';
   
   // NEW: Render subspecies selection if applicable
@@ -532,8 +573,8 @@ function renderFeaturesAndTraits() {
   document.getElementById('feat19').style.display = lvl >= 19 ? 'block' : 'none';
   
   // Render background and origin feat info
-  setHTML('featBgName', character.background || '—');
-  setHTML('originFeatName', character.originFeat || '—');
+  setHTML('featBgName', character.background || 'â€”');
+  setHTML('originFeatName', character.originFeat || 'â€”');
   renderOriginFeatDesc();
   renderBgASISelectors();
   
@@ -571,7 +612,7 @@ function renderActions() {
       const modStr = (w.mod !== "" && !Number.isNaN(parseInt(w.mod, 10))) ?
         (parseInt(w.mod, 10) >= 0 ? `+${parseInt(w.mod, 10)}` : `${parseInt(w.mod, 10)}`) : '';
       const dmgTxt = (w.dmg || '').trim();
-      actions.push(`<div class="action-item"><strong>${w.name || 'Weapon'}</strong> — to hit ${modStr}, dmg ${dmgTxt}</div>`);
+      actions.push(`<div class="action-item"><strong>${w.name || 'Weapon'}</strong> â€” to hit ${modStr}, dmg ${dmgTxt}</div>`);
     }
   });
   
@@ -645,18 +686,18 @@ function renderEquipment() {
 
 function renderGeneralFeatDesc(level) {
   const key = character.generalFeats[level] || "Ability Score Improvement";
-  const text = GENERAL_FEAT_DESC[key] || "—";
+  const text = GENERAL_FEAT_DESC[key] || "â€”";
   setHTML('featDesc' + level, text);
 }
 
 function renderOriginFeatDesc() {
   const name = character.originFeat;
-  document.getElementById('originFeatDesc').textContent = name ? (ORIGIN_FEAT_DESC[name] || "—") : "—";
+  document.getElementById('originFeatDesc').textContent = name ? (ORIGIN_FEAT_DESC[name] || "â€”") : "â€”";
 }
 
 function renderEpicBoonDesc() {
   const name = character.epicBoon;
-  document.getElementById('boonDesc').textContent = name ? (EPIC_BOON_DESC[name] || "—") : "—";
+  document.getElementById('boonDesc').textContent = name ? (EPIC_BOON_DESC[name] || "â€”") : "â€”";
 }
 
 // ========================================
@@ -668,8 +709,8 @@ function renderBgASISelectors() {
   const plus1Sel = document.getElementById('bgPlus1');
   if (!plus2Sel || !plus1Sel) return;
   
-  const opts = ['<option value="">+2 — choose</option>', ...ABILITIES.map(a => `<option value="${a}">${ABILITY_LABELS[a]} (+2)</option>`)];
-  const opts1 = ['<option value="">+1 — choose</option>', ...ABILITIES.map(a => `<option value="${a}">${ABILITY_LABELS[a]} (+1)</option>`)];
+  const opts = ['<option value="">+2 â€” choose</option>', ...ABILITIES.map(a => `<option value="${a}">${ABILITY_LABELS[a]} (+2)</option>`)];
+  const opts1 = ['<option value="">+1 â€” choose</option>', ...ABILITIES.map(a => `<option value="${a}">${ABILITY_LABELS[a]} (+1)</option>`)];
   
   plus2Sel.innerHTML = opts;
   plus1Sel.innerHTML = opts1;
@@ -773,7 +814,7 @@ function renderFSFeats() {
   list.innerHTML = styles.map(s => {
     const matches = FIGHTING_STYLE_FEATS.filter(f => f.toLowerCase().startsWith(s.toLowerCase()));
     const options = ['<option value="">-- Select --</option>', ...matches.map(f => `<option value="${f}" ${character.fsFeats[s] === f ? 'selected' : ''}>${f}</option>`)].join('');
-    const desc = character.fsFeats[s] ? (FS_FEAT_DESC[character.fsFeats[s]] || "—") : "—";
+    const desc = character.fsFeats[s] ? (FS_FEAT_DESC[character.fsFeats[s]] || "â€”") : "â€”";
     return `<div class="field-group" style="margin-top:8px;">
       <label>${s} Fighting Style Feat</label>
       <select onchange="character.fsFeats['${s}']=this.value; renderFSFeats(); renderCombatStats();">${options}</select>
