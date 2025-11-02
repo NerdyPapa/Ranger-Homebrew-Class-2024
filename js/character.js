@@ -1,5 +1,4 @@
 // ========================================
-// ========================================
 // CHARACTER STATE & CALCULATIONS
 // ========================================
 
@@ -7,8 +6,9 @@
 let character = {
   name: "New Character",
   player: "",
-  species: "None",
-  background: "None",
+  species: "Human",
+  subspecies: null,
+  background: "Soldier",
   level: 1,
   calling: null,
   subclass: null,
@@ -58,9 +58,15 @@ let character = {
   selectedSpells: {
     originFeat: { cantrips: [], level1: [] },
     instincts: {},
-    calling: { cantrips: [], level1: [] }
-  }
+    calling: { cantrips: [], level1: [], level2: [], level3: [], level4: [], level5: [] }
+  },
+  // NEW TRACKING PROPERTIES
+  rangerSkillChoices: [],
+  callingSkillChoices: {},
+  weaponMaster: null,
+  expertiseChoices: []
 };
+
 // Initialize all skills with proficiency/expertise tracking
 SKILLS.forEach(s => character.skills[s.name] = { prof: false, expert: false });
 
@@ -132,6 +138,123 @@ function handleSubclassChange() {
   character.subclass = val;
   const note = document.getElementById('subclassNote');
   if (note) note.style.display = (character.level < 3 && val) ? 'inline' : 'none';
+  updateCharacter();
+}
+
+// ========================================
+// NEW: SUBSPECIES HANDLER
+// ========================================
+
+function setSubspecies(subspecies) {
+  character.subspecies = subspecies;
+  updateCharacter();
+}
+
+// ========================================
+// NEW: RANGER SKILL SELECTION
+// ========================================
+
+function setRangerSkill(index, skillName) {
+  if (!character.rangerSkillChoices) character.rangerSkillChoices = [];
+  
+  // Clear old skill proficiency if changing
+  const oldSkill = character.rangerSkillChoices[index];
+  if (oldSkill && character.skills[oldSkill]) {
+    // Only clear if not selected elsewhere
+    const otherSelections = character.rangerSkillChoices.filter((s, i) => i !== index && s === oldSkill);
+    if (otherSelections.length === 0) {
+      character.skills[oldSkill].prof = false;
+    }
+  }
+  
+  character.rangerSkillChoices[index] = skillName;
+  
+  // Auto-check the skill
+  if (skillName && character.skills[skillName]) {
+    character.skills[skillName].prof = true;
+  }
+  
+  updateCharacter();
+}
+
+// ========================================
+// NEW: CALLING SKILL SELECTION
+// ========================================
+
+function setCallingSkill(index, skillName) {
+  if (!character.callingSkillChoices) character.callingSkillChoices = {};
+  if (!character.callingSkillChoices[character.calling]) {
+    character.callingSkillChoices[character.calling] = [];
+  }
+  
+  // Clear old skill proficiency if changing
+  const oldSkill = character.callingSkillChoices[character.calling][index];
+  if (oldSkill && character.skills[oldSkill]) {
+    const otherSelections = character.callingSkillChoices[character.calling].filter((s, i) => i !== index && s === oldSkill);
+    if (otherSelections.length === 0) {
+      character.skills[oldSkill].prof = false;
+    }
+  }
+  
+  character.callingSkillChoices[character.calling][index] = skillName;
+  
+  // Auto-check the skill
+  if (skillName && character.skills[skillName]) {
+    character.skills[skillName].prof = true;
+  }
+  
+  updateCharacter();
+}
+
+// ========================================
+// NEW: WEAPON MASTER SELECTION
+// ========================================
+
+function setWeaponMaster(weaponName) {
+  character.weaponMaster = weaponName;
+  updateCharacter();
+}
+
+// ========================================
+// NEW: EXPERTISE SELECTION (LEVEL 9)
+// ========================================
+
+function setExpertise(index, skillName) {
+  if (!character.expertiseChoices) character.expertiseChoices = [];
+  
+  // Clear old expertise if changing
+  const oldSkill = character.expertiseChoices[index];
+  if (oldSkill && character.skills[oldSkill]) {
+    character.skills[oldSkill].expert = false;
+  }
+  
+  character.expertiseChoices[index] = skillName;
+  
+  // Auto-apply expertise
+  if (skillName && character.skills[skillName]) {
+    character.skills[skillName].expert = true;
+  }
+  
+  updateCharacter();
+}
+
+// ========================================
+// NEW: SPELL SELECTION FOR SPELLCASTING CALLINGS
+// ========================================
+
+function setCallingSpell(level, index, spellName) {
+  if (!character.selectedSpells.calling) {
+    character.selectedSpells.calling = {
+      cantrips: [], level1: [], level2: [], level3: [], level4: [], level5: []
+    };
+  }
+  
+  const key = level === 0 ? 'cantrips' : `level${level}`;
+  if (!character.selectedSpells.calling[key]) {
+    character.selectedSpells.calling[key] = [];
+  }
+  
+  character.selectedSpells.calling[key][index] = spellName;
   updateCharacter();
 }
 
