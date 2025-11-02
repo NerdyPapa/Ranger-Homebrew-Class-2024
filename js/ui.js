@@ -18,26 +18,24 @@ function renderAbilityScores() {
   
   container.innerHTML = abilities.map((ab, i) => {
     const base = character.abilities[ab];
-    const eff = getScore(ab);  // Gets effective score including bonuses
+    const eff = getScore(ab);
     const mod = getMod(eff);
     const modStr = (mod >= 0 ? `+${mod}` : `${mod}`);
     const saveMod = saves[ab] ? mod + profBonus : mod;
     const saveStr = (saveMod >= 0 ? `+${saveMod}` : `${saveMod}`);
-    const checkmark = saves[ab] ? ' ✓' : '';
+    const checkmark = saves[ab] ? ' ✔' : '';
     const bgBonus = getBgBonus(ab);
     const featBonus = getFeatBonus(ab);
     
     let inputHTML = '';
     if (character.abilityMethod === 'standard') {
-      // Standard Array method - show dropdown with available scores
       const optsPool = [...character.availableArray];
-      if (base !== null) optsPool.push(base);  // Include currently selected score
+      if (base !== null) optsPool.push(base);
       optsPool.sort((a, b) => b - a);
       const opts = ['<option value="">--</option>', ...optsPool.map(v => `<option value="${v}" ${base === v ? 'selected' : ''}>${v}</option>`)].join('');
       inputHTML = `<select onchange="assignAbility('${ab}', this.value)" style="width: 80px; margin-bottom: 10px;">${opts}</select>`;
     } else {
-      // Manual Entry method - show number input
-      inputHTML = `<input type="number" value="${base ?? ''}" onchange="assignAbility('${ab}', this.value)" style="width: 80px; margin-bottom: 10px; padding: 5px; text-align: center;" min="1" max="30" placeholder="Score">`;
+      inputHTML = `<input type="number" value="${base ?? ''}" onchange="assignAbility('${ab}', this.value)" style="width: 80px; margin-bottom: 10px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 3px;" min="1" max="30" placeholder="Score">`;
     }
     
     return `<div class="stat-block">
@@ -64,7 +62,6 @@ function renderCombatStats() {
   const speedPenalty = getArmorSpeedPenalty();
   const totalSpeed = baseSpeed + speedBonus + speedPenalty;
   
-  // If using manual HP method and above level 1, show HP per level inputs
   let hpDisplay = '';
   if (character.hpMethod === 'manual' && character.level > 1) {
     hpDisplay = `<div style="grid-column: 1 / -1; padding: 15px; background: #fff3cd; border-radius: 4px; margin-bottom: 15px;">
@@ -72,20 +69,18 @@ function renderCombatStats() {
       <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px;">
         ${Array.from({ length: character.level }, (_, i) => {
           if (i === 0) {
-            // Level 1 is always max (10) + CON
             return `<div style="text-align: center;">
               <div style="font-size: 11px; margin-bottom: 3px;">Lvl 1</div>
               <div style="font-weight: bold;">10 + ${getMod(getScore('con'))}</div>
             </div>`;
           } else {
-            // Levels 2+ can be rolled or manually entered
             const roll = character.rolledHP[i] || 0;
             const conMod = getMod(getScore('con'));
             return `<div style="text-align: center;">
               <div style="font-size: 11px; margin-bottom: 3px;">Lvl ${i + 1}</div>
               <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                <input type="number" value="${roll}" min="1" max="10" onchange="setManualHP(${i + 1}, this.value)" style="width: 50px; padding: 3px; text-align: center;">
-                <button onclick="rollHP(${i + 1})" style="padding: 3px 6px; cursor: pointer; background: #8B0000; color: white; border: none; border-radius: 3px;" title="Roll 1d10">ðŸŽ²</button>
+                <input type="number" value="${roll}" min="1" max="10" onchange="setManualHP(${i + 1}, this.value)" style="width: 50px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 3px;">
+                <button onclick="rollHP(${i + 1})" style="padding: 3px 6px; cursor: pointer; background: #8B0000; color: white; border: none; border-radius: 3px;" title="Roll 1d10">🎲</button>
               </div>
               <div style="font-size: 10px; margin-top: 2px;">+${conMod} CON</div>
             </div>`;
@@ -138,11 +133,10 @@ function renderSkills() {
   const container = document.getElementById('skillsList');
   const levelData = LEVEL_DATA[character.level];
   const profBonus = levelData.profBonus;
-  const maxProf = levelData.skillProfs;  // Max number of proficient skills
-  const maxExpert = character.level >= 9 ? 2 : 0;  // Expertise available at level 9
-  const instinctProfs = getInstinctSkillProfs();  // Skills granted by instincts
+  const maxProf = levelData.skillProfs;
+  const maxExpert = character.level >= 9 ? 2 : 0;
+  const instinctProfs = getInstinctSkillProfs();
   
-  // Count how many skills are already proficient/expert
   let profCount = 0, expertCount = 0;
   Object.values(character.skills).forEach(s => {
     if (s.prof) profCount++;
@@ -155,15 +149,14 @@ function renderSkills() {
     const hasInstinctProf = instinctProfs.includes(skill.name);
     const isActuallyProficient = skillData.prof || hasInstinctProf;
     
-    // Calculate final modifier
     let modifier = abilMod;
     if (isActuallyProficient) modifier += profBonus;
-    if (skillData.expert) modifier += profBonus;  // Expertise adds another proficiency bonus
+    if (skillData.expert) modifier += profBonus;
     
     const modStr = modifier >= 0 ? `+${modifier}` : `${modifier}`;
     const profDisabled = (!skillData.prof && profCount >= maxProf);
     const expertDisabled = (!skillData.expert && (expertCount >= maxExpert || !isActuallyProficient || character.level < 9));
-    const profLabel = hasInstinctProf ? '✓ (Instinct)' : '';
+    const profLabel = hasInstinctProf ? '✔ (Instinct)' : '';
     
     return `<div class="skill-item">
       <div class="skill-checkboxes">
@@ -185,7 +178,6 @@ function renderSlots() {
   const container = document.getElementById('adaptiveEdgeSlots');
   const labels = ['1st', '2nd', '3rd', '4th', '5th'];
   
-  // Level 1 Rangers don't have spell slots yet
   if (character.level === 1) {
     document.getElementById('slotsTitle').style.display = 'none';
     container.style.display = 'none';
@@ -198,229 +190,157 @@ function renderSlots() {
   container.innerHTML = slots.map((count, i) => {
     if (count === 0) return '';
     return `<div class="slot-level">
-      <div class="slot-level-title">${labels[i]} Level (${count})</div>
+      <h3 class="slot-level-title">${labels[i]} Level</h3>
       <div class="slot-boxes">
-        ${Array(count).fill(0).map(() => `<div class="slot-box" onclick="this.classList.toggle('used')"></div>`).join('')}
+        ${Array.from({ length: count }, (_, j) => `<div class="slot-box" onclick="this.classList.toggle('used')"></div>`).join('')}
       </div>
     </div>`;
-  }).join('');
+  }).filter(Boolean).join('');
 }
 
 // ========================================
-// INSTINCT SELECTION RENDERING
-// ========================================
-
-function getInstinctSpellSelector(instinctName, index) {
-  // If this instinct doesn't grant spells, return empty string
-  if (!instinctName || !SPELL_SOURCES[instinctName]) return '';
-  
-  const src = SPELL_SOURCES[instinctName];
-  const storageKey = `instinct_${index}`;
-  let html = '<div style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 4px;">';
-  
-  // Cantrips selection
-  if (src.cantrips > 0) {
-    html += `<div style="margin-bottom: 8px;"><strong>Choose ${src.cantrips} Cantrip(s):</strong></div>`;
-    for (let i = 0; i < src.cantrips; i++) {
-      const selected = character.selectedSpells[storageKey]?.cantrips[i] || '';
-      html += `<select class="feat-select" style="width: 100%; margin-bottom: 4px;" onchange="setSpellChoice('${storageKey}', 'cantrips', ${i}, this.value)">
-        <option value="">-- Select Cantrip --</option>`;
-      const cantripList = CANTRIPS[src.cantripList] || [];
-      cantripList.forEach(spell => {
-        html += `<option value="${spell}" ${selected === spell ? 'selected' : ''}>${spell}</option>`;
-      });
-      html += `</select>`;
-    }
-  }
-  
-  // Level 1 spells selection (if not fixed)
-  if (src.level1 > 0 && !src.fixedSpells) {
-    html += `<div style="margin-bottom: 8px; margin-top: 8px;"><strong>Choose ${src.level1} Level 1 Spell(s):</strong></div>`;
-    for (let i = 0; i < src.level1; i++) {
-      const selected = character.selectedSpells[storageKey]?.level1[i] || '';
-      html += `<select class="feat-select" style="width: 100%; margin-bottom: 4px;" onchange="setSpellChoice('${storageKey}', 'level1', ${i}, this.value)">
-        <option value="">-- Select Spell --</option>`;
-      const spellList = LEVEL1_SPELLS[src.level1List] || [];
-      spellList.forEach(spell => {
-        html += `<option value="${spell}" ${selected === spell ? 'selected' : ''}>${spell}</option>`;
-      });
-      html += `</select>`;
-    }
-  }
-  
-  html += '</div>';
-  return html;
-}
-
-function renderInstinctSelectors() {
-  const levelData = LEVEL_DATA[character.level];
-  const instinctCount = levelData.instincts;
-  const container = document.getElementById('instinctsSelection');
-  
-  if (instinctCount === 0) {
-    container.innerHTML = '<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">No Instincts available at Level 1.</p>';
-    return;
-  }
-  
-  // Build available instincts list based on character level
-  let available = [...INSTINCTS_DB.base];
-  if (character.level >= 6) available = [...available, ...INSTINCTS_DB.level6];
-  if (character.level >= 9) available = [...available, ...INSTINCTS_DB.level9];
-  if (character.level >= 13) available = [...available, ...INSTINCTS_DB.level13];
-  if (character.level >= 17) available = [...available, ...INSTINCTS_DB.level17];
-  
-  // Ensure the selectedInstincts array matches the number of instincts for this level
-  while (character.selectedInstincts.length < instinctCount) character.selectedInstincts.push(null);
-  while (character.selectedInstincts.length > instinctCount) character.selectedInstincts.pop();
-  
-  container.innerHTML = character.selectedInstincts.map((selected, idx) => {
-    const chosen = selected ? available.find(i => i.name === selected) : null;
-    return `<div class="instinct-selector">
-      <label style="font-size: 12px; font-weight: bold; margin-bottom: 5px; display:block;">Instinct ${idx + 1}</label>
-      <select onchange="selectInstinct(${idx}, this.value)">
-        <option value="">-- Select Instinct --</option>
-        ${available.map(i => `<option value="${i.name}" ${selected === i.name ? 'selected' : ''}>${i.name}</option>`).join('')}
-      </select>
-      <div class="instinct-description">${chosen ? chosen.desc : 'Select an instinct to see description'}</div>
-      ${getInstinctSpellSelector(selected, idx)}
-    </div>`;
-  }).join('');
-}
-
-// ========================================
-// SPELLS SECTION RENDERING
+// SPELLS SECTION RENDERING (NEW: ORGANIZED BY LEVEL)
 // ========================================
 
 function renderSpellsSection() {
   const container = document.getElementById('spellsSection');
-  const title = document.getElementById('spellsTitle');
+  const spellTitle = document.getElementById('spellsTitle');
   
-  initSpellTracking();  // Ensure spell tracking is initialized
-  
-  let allSpells = [];
-  
-  // Collect spells from origin feat
-  if (character.originFeat && SPELL_SOURCES[character.originFeat]) {
-    const stored = character.selectedSpells.originFeat;
-    if (stored.cantrips) stored.cantrips.forEach(s => { if (s) allSpells.push({ name: s, level: 'Cantrip', source: character.originFeat }); });
-    if (stored.level1) stored.level1.forEach(s => { if (s) allSpells.push({ name: s, level: '1st', source: character.originFeat }); });
-    
-    // Add fixed spells if they exist
-    const src = SPELL_SOURCES[character.originFeat];
-    if (src.fixedSpells) {
-      src.fixedSpells.forEach(s => allSpells.push({ name: s, level: '1st', source: character.originFeat }));
-    }
-  }
-  
-  // Collect spells from instincts
-  character.selectedInstincts.forEach((instinct, idx) => {
-    if (instinct && SPELL_SOURCES[instinct]) {
-      const src = SPELL_SOURCES[instinct];
-      const storageKey = `instinct_${idx}`;
-      const stored = character.selectedSpells[storageKey];
-      
-      if (src.fixedSpells) {
-        src.fixedSpells.forEach(s => allSpells.push({ name: s, level: '1st', source: instinct }));
-      }
-      if (stored?.cantrips) stored.cantrips.forEach(s => { if (s) allSpells.push({ name: s, level: 'Cantrip', source: instinct }); });
-      if (stored?.level1) stored.level1.forEach(s => { if (s) allSpells.push({ name: s, level: '1st', source: instinct }); });
-    }
-  });
-  
-  // Collect spells from general feats
-  [4, 8, 12, 16].forEach(level => {
-    const feat = character.generalFeats[level];
-    if (feat && SPELL_SOURCES[feat]) {
-      const src = SPELL_SOURCES[feat];
-      const storageKey = `feat_${level}`;
-      const stored = character.selectedSpells[storageKey];
-      
-      if (src.fixedSpells) {
-        src.fixedSpells.forEach(s => allSpells.push({ name: s, level: '1st', source: feat }));
-      }
-      if (stored?.level1) stored.level1.forEach(s => { if (s) allSpells.push({ name: s, level: '1st', source: feat }); });
-    }
-  });
-  
-  // Check if Mystic or Wayfarer (full casters)
-  const isCaster = character.calling === 'mystic' || character.calling === 'wayfarer';
-  
-  // If no spells and not a caster, hide the section
-  if (allSpells.length === 0 && !isCaster) {
-    title.style.display = 'none';
+  const spellcasters = ['mystic', 'wayfarer', 'excavator'];
+  if (!character.calling || !spellcasters.includes(character.calling)) {
+    spellTitle.style.display = 'none';
     container.style.display = 'none';
     return;
   }
   
-  title.textContent = 'Adaptive Edge Casting';
-  title.style.display = 'block';
+  spellTitle.style.display = 'block';
   container.style.display = 'block';
+  spellTitle.textContent = "Adaptive Edge Casting";
+  
+  const allSpells = {
+    cantrips: [],
+    level1: [],
+    level2: [],
+    level3: [],
+    level4: [],
+    level5: []
+  };
+  
+  if (character.selectedSpells.calling) {
+    Object.keys(character.selectedSpells.calling).forEach(key => {
+      if (allSpells[key]) {
+        allSpells[key].push(...character.selectedSpells.calling[key].filter(s => s));
+      }
+    });
+  }
+  
+  if (character.selectedSpells.originFeat) {
+    if (character.selectedSpells.originFeat.cantrips) {
+      allSpells.cantrips.push(...character.selectedSpells.originFeat.cantrips.filter(s => s));
+    }
+    if (character.selectedSpells.originFeat.level1) {
+      allSpells.level1.push(...character.selectedSpells.originFeat.level1.filter(s => s));
+    }
+  }
+  
+  if (character.selectedSpells.instincts) {
+    Object.values(character.selectedSpells.instincts).forEach(instSpells => {
+      if (instSpells.cantrips) allSpells.cantrips.push(...instSpells.cantrips.filter(s => s));
+      if (instSpells.level1) allSpells.level1.push(...instSpells.level1.filter(s => s));
+    });
+  }
   
   let html = '';
   
-  // Display collected spells from feats and instincts
-  if (allSpells.length > 0) {
-    html += `<div class="feature-item">
-      <div class="feature-title">Known Spells from Feats & Instincts</div>
-      <div class="feature-description">
-        <table style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <tr style="border-bottom: 2px solid #8B0000;">
-              <th style="text-align: left; padding: 8px;">Spell</th>
-              <th style="text-align: left; padding: 8px;">Level</th>
-              <th style="text-align: left; padding: 8px;">Source</th>
-            </tr>
-          </thead>
-          <tbody>`;
-    
-    allSpells.forEach(spell => {
-      html += `<tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 8px;"><strong>${spell.name}</strong></td>
-        <td style="padding: 8px;">${spell.level}</td>
-        <td style="padding: 8px; font-size: 11px;">${spell.source}</td>
-      </tr>`;
-    });
-    
-    html += `</tbody></table>
-        <div class="feat-note" style="margin-top: 10px;">These spells can be cast once per long rest without using a slot, or by expending Adaptive Edge slots.</div>
-      </div>
-    </div>`;
+  const levelLabels = {
+    cantrips: 'Cantrips',
+    level1: '1st-Level Spells',
+    level2: '2nd-Level Spells',
+    level3: '3rd-Level Spells',
+    level4: '4th-Level Spells',
+    level5: '5th-Level Spells'
+  };
+  
+  Object.keys(levelLabels).forEach(levelKey => {
+    const spells = allSpells[levelKey];
+    if (spells.length > 0) {
+      html += `<h3 class="spell-level-header">${levelLabels[levelKey]}</h3>`;
+      spells.forEach(spellName => {
+        html += `<div class="feature-item">
+          <div class="feature-title">${spellName}</div>
+          <div class="feature-description">Spell details from spell database</div>
+        </div>`;
+      });
+    }
+  });
+  
+  container.innerHTML = html || '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No spells selected yet.</p>';
+}
+
+// ========================================
+// INSTINCTS SELECTION RENDERING
+// ========================================
+
+function renderInstinctSelectors() {
+  const container = document.getElementById('instinctsSelection');
+  const levelData = LEVEL_DATA[character.level];
+  const totalInstincts = levelData.instincts;
+  
+  if (totalInstincts === 0) {
+    container.innerHTML = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">Instincts are available from Level 2 onwards.</p>';
+    return;
   }
   
-  // Wayfarer/Mystic spellcasting info
-  if (isCaster) {
-    const callingName = character.calling === 'mystic' ? 'Mystic' : 'Wayfarer';
-    const spellList = character.calling === 'mystic' ? 'Cleric & Ranger' : 'Druid';
+  while (character.selectedInstincts.length < totalInstincts) {
+    character.selectedInstincts.push(null);
+  }
+  
+  const getAvailableInstincts = (index) => {
+    const pools = [
+      { level: 2, pool: INSTINCTS_DB.base },
+      { level: 6, pool: INSTINCTS_DB.level6 },
+      { level: 9, pool: INSTINCTS_DB.level9 },
+      { level: 13, pool: INSTINCTS_DB.level13 },
+      { level: 17, pool: INSTINCTS_DB.level17 }
+    ];
     
-    html += `<div class="feature-item">
-      <div class="feature-title">${callingName} Prepared Spells</div>
-      <div class="feature-description">
-        <p style="margin-bottom: 12px;">As a ${callingName}, you prepare spells from the ${spellList} spell list. Number of prepared spells = WIS modifier + Ranger level.</p>
-        <div class="feat-note">Track your prepared ${callingName} spells separately. Use the Adaptive Edge Slots above to track spell slot usage.</div>
-      </div>
+    let available = [];
+    pools.forEach(p => {
+      if (character.level >= p.level) {
+        available = available.concat(p.pool);
+      }
+    });
+    
+    return available.filter(inst => {
+      if (!inst.repeatable) {
+        const alreadyPicked = character.selectedInstincts.filter((s, i) => i !== index && s === inst.name).length > 0;
+        if (alreadyPicked) return false;
+      }
+      return true;
+    });
+  };
+  
+  let html = '';
+  for (let i = 0; i < totalInstincts; i++) {
+    const available = getAvailableInstincts(i);
+    const selected = character.selectedInstincts[i];
+    const selectedInst = available.find(inst => inst.name === selected);
+    
+    html += `<div class="feature-item" style="margin-bottom:15px;">
+      <div class="feature-title">Instinct Slot ${i + 1}</div>
+      <select class="feat-select" onchange="selectInstinct(${i}, this.value)">
+        <option value="">-- Choose Instinct --</option>
+        ${available.map(inst => `<option value="${inst.name}" ${selected === inst.name ? 'selected' : ''}>${inst.name}</option>`).join('')}
+      </select>
+      ${selectedInst ? `<div class="feature-description" style="margin-top:8px;">${selectedInst.desc}</div>` : ''}
     </div>`;
   }
   
   container.innerHTML = html;
 }
 
-function setSpellChoice(storageKey, level, index, value) {
-  initSpellTracking();
-  
-  if (!character.selectedSpells[storageKey]) {
-    character.selectedSpells[storageKey] = { cantrips: [], level1: [] };
-  }
-  
-  if (!character.selectedSpells[storageKey][level]) {
-    character.selectedSpells[storageKey][level] = [];
-  }
-  
-  character.selectedSpells[storageKey][level][index] = value;
-  renderSpellsSection();
-}
-
 // ========================================
-// FEATURES AND TRAITS RENDERING
+// FEATURES AND TRAITS RENDERING (UPDATED)
 // ========================================
 
 function renderSpeciesFeatures() {
@@ -428,29 +348,163 @@ function renderSpeciesFeatures() {
   const block = SPECIES_DATA[s];
   setHTML('speciesTitle', block ? block.title : '—');
   document.getElementById('speciesDesc').textContent = block ? block.desc : 'Select a species to view its traits.';
+  
+  // NEW: Render subspecies selection if applicable
+  const subspeciesContainer = document.getElementById('subspeciesSelection');
+  if (subspeciesContainer) {
+    if (SUBSPECIES[character.species]) {
+      const options = SUBSPECIES[character.species];
+      let subspeciesHTML = `
+        <div class="field-group" style="margin-top:10px;">
+          <label>Subspecies</label>
+          <select onchange="setSubspecies(this.value)" class="feat-select">
+            <option value="">-- Choose ${character.species} Subspecies --</option>
+            ${options.map(sub => `<option value="${sub}" ${character.subspecies === sub ? 'selected' : ''}>${sub}</option>`).join('')}
+          </select>
+        </div>
+      `;
+      
+      if (character.subspecies && SUBSPECIES_DATA[character.subspecies]) {
+        const subData = SUBSPECIES_DATA[character.subspecies];
+        subspeciesHTML += `
+          <div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:4px;">
+            <strong>${character.subspecies} Benefits:</strong>
+            <p style="margin-top:5px;">${subData.desc || ''}</p>
+          </div>
+        `;
+      }
+      
+      subspeciesContainer.innerHTML = subspeciesHTML;
+    } else {
+      subspeciesContainer.innerHTML = '';
+    }
+  }
 }
 
 function renderFeaturesAndTraits() {
-  // IMPORTANT: Use character object as source of truth, not select elements
   const callingKey = character.calling;
   const subclassKey = character.subclass;
   const lvl = character.level;
   
   renderSpeciesFeatures();
   
-  // Render Calling Features
+  // NEW: Render Ranger Base Features
+  const rangerFeaturesContainer = document.getElementById('rangerBaseFeatures');
+  if (rangerFeaturesContainer && RANGER_BASE_FEATURES) {
+    let rangerHTML = '';
+    
+    for (let featLevel in RANGER_BASE_FEATURES) {
+      if (parseInt(featLevel) <= lvl) {
+        RANGER_BASE_FEATURES[featLevel].forEach(feature => {
+          rangerHTML += `<div class="feature-item">
+            <div class="feature-title">${feature.name} (${featLevel}${getOrdinal(parseInt(featLevel))} Level)</div>
+            <div class="feature-description">${feature.description}</div>`;
+          
+          // Render skill choices for Ranger Training
+          if (feature.skillChoices) {
+            rangerHTML += '<div style="margin-top:10px;">';
+            for (let i = 0; i < feature.pickCount; i++) {
+              rangerHTML += `<select class="feat-select" onchange="setRangerSkill(${i}, this.value)" style="margin-top:5px;">
+                <option value="">-- Choose Skill ${i + 1} --</option>
+                ${feature.skillChoices.map(skill => 
+                  `<option value="${skill}" ${character.rangerSkillChoices && character.rangerSkillChoices[i] === skill ? 'selected' : ''}>${skill}</option>`
+                ).join('')}
+              </select>`;
+            }
+            rangerHTML += '</div>';
+          }
+          
+          // Render Weapon Master dropdown
+          if (feature.weaponMasterChoice && WEAPONS_DATABASE) {
+            const weaponsList = Object.keys(WEAPONS_DATABASE);
+            rangerHTML += `<div style="margin-top:10px;">
+              <select class="feat-select" onchange="setWeaponMaster(this.value)">
+                <option value="">-- Choose Weapon --</option>
+                ${weaponsList.map(weapon => 
+                  `<option value="${weapon}" ${character.weaponMaster === weapon ? 'selected' : ''}>${weapon}</option>`
+                ).join('')}
+              </select>
+            </div>`;
+            
+            // Show weapon details if selected
+            if (character.weaponMaster && WEAPONS_DATABASE[character.weaponMaster]) {
+              const wpn = WEAPONS_DATABASE[character.weaponMaster];
+              const hasFinesse = wpn.properties.some(p => p.toLowerCase().includes('finesse'));
+              const hasLight = wpn.properties.some(p => p.toLowerCase().includes('light'));
+              const usesDex = hasFinesse || hasLight;
+              const abilMod = usesDex ? getMod(getScore('dex')) : getMod(getScore('str'));
+              const profBonus = LEVEL_DATA[character.level].profBonus;
+              const toHit = abilMod + profBonus;
+              
+              rangerHTML += `<div style="margin-top:10px; padding:10px; background:#fff3cd; border-radius:4px; border-left:4px solid #856404;">
+                <strong>${character.weaponMaster}</strong><br>
+                Damage: ${wpn.damage} ${wpn.damageType}<br>
+                Properties: ${wpn.properties.length > 0 ? wpn.properties.join(', ') : 'None'}<br>
+                To Hit: +${toHit} (${usesDex ? 'DEX' : 'STR'} + Prof)<br>
+                <br><strong>Mastery: ${wpn.mastery}</strong><br>
+                <em>${wpn.masteryDesc}</em>
+              </div>`;
+            }
+          }
+          
+          // Render Expertise dropdown (Level 9)
+          if (feature.expertiseChoice && lvl >= 9) {
+            const proficientSkills = SKILLS.filter(s => character.skills[s.name].prof).map(s => s.name);
+            rangerHTML += '<div style="margin-top:10px;">';
+            for (let i = 0; i < feature.pickCount; i++) {
+              rangerHTML += `<select class="feat-select" onchange="setExpertise(${i}, this.value)" style="margin-top:5px;">
+                <option value="">-- Choose Expertise ${i + 1} --</option>
+                ${proficientSkills.map(skill => 
+                  `<option value="${skill}" ${character.expertiseChoices && character.expertiseChoices[i] === skill ? 'selected' : ''}>${skill}</option>`
+                ).join('')}
+              </select>`;
+            }
+            rangerHTML += '</div>';
+          }
+          
+          rangerHTML += '</div>';
+        });
+      }
+    }
+    
+    rangerFeaturesContainer.innerHTML = rangerHTML || '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No Ranger features yet.</p>';
+  }
+  
+  // Render Calling Features (UPDATED for skill choices)
   const callingContainer = document.getElementById('callingFeatures');
   if (callingKey && DATABASE.callings[callingKey]) {
     const calling = DATABASE.callings[callingKey];
     const unlocked = calling.features.filter(f => f.level <= lvl);
-    callingContainer.innerHTML = unlocked.length ?
-      unlocked.map(f => `<div class="feature-item">
-        <div class="feature-title">${f.name} (${f.level}${getOrdinal(f.level)} Level)</div>
-        <div class="feature-description">${f.description}</div>
-      </div>`).join('') :
-      `<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">No Calling features unlocked yet.</p>`;
+    let callingHTML = '';
+    
+    unlocked.forEach(feature => {
+      callingHTML += `<div class="feature-item">
+        <div class="feature-title">${feature.name} (${feature.level}${getOrdinal(feature.level)} Level)</div>
+        <div class="feature-description">${feature.description}</div>`;
+      
+      // Render skill choices (for Marksman, Mystic)
+      if (feature.skillChoices) {
+        callingHTML += '<div style="margin-top:10px;">';
+        for (let i = 0; i < feature.pickCount; i++) {
+          callingHTML += `<select class="feat-select" onchange="setCallingSkill(${i}, this.value)" style="margin-top:5px;">
+            <option value="">-- Choose Skill ${i + 1} --</option>
+            ${feature.skillChoices.map(skill => {
+              const isSelected = character.callingSkillChoices && 
+                                 character.callingSkillChoices[callingKey] && 
+                                 character.callingSkillChoices[callingKey][i] === skill;
+              return `<option value="${skill}" ${isSelected ? 'selected' : ''}>${skill}</option>`;
+            }).join('')}
+          </select>`;
+        }
+        callingHTML += '</div>';
+      }
+      
+      callingHTML += '</div>';
+    });
+    
+    callingContainer.innerHTML = callingHTML || '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No Calling features unlocked yet.</p>';
   } else {
-    callingContainer.innerHTML = '<p style="padding: 15px; background: #f9f9f9; border-radius: 4px;">Select a Calling to see features.</p>';
+    callingContainer.innerHTML = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">Select a Calling to see features.</p>';
   }
   
   // Render Subclass Features
@@ -491,7 +545,7 @@ function renderFeaturesAndTraits() {
     renderFeatASIControls(l);
   });
   
-  // Render Fighting Style feats (unlocked by certain instincts)
+  // Render Fighting Style feats
   renderFSFeats();
   
   // Render Epic Boon (level 19)
@@ -502,7 +556,7 @@ function renderFeaturesAndTraits() {
 }
 
 // ========================================
-// ACTIONS RENDERING
+// ACTIONS RENDERING (UPDATED)
 // ========================================
 
 function renderActions() {
@@ -514,12 +568,18 @@ function renderActions() {
   character.weapons.forEach((w) => {
     const has = (w.name || "").trim() !== "" || (w.mod || "").toString().trim() !== "" || (w.dmg || "").trim() !== "";
     if (has) {
-      const modTxt = (w.mod !== "" && !Number.isNaN(parseInt(w.mod, 10))) ?
+      const modStr = (w.mod !== "" && !Number.isNaN(parseInt(w.mod, 10))) ?
         (parseInt(w.mod, 10) >= 0 ? `+${parseInt(w.mod, 10)}` : `${parseInt(w.mod, 10)}`) : '';
       const dmgTxt = (w.dmg || '').trim();
-      actions.push(`<div class="action-item"><strong>${w.name || 'Weapon'}</strong> — to hit ${modStr}, dmg ${dmg}</div>`);
+      actions.push(`<div class="action-item"><strong>${w.name || 'Weapon'}</strong> — to hit ${modStr}, dmg ${dmgTxt}</div>`);
     }
   });
+  
+  // Add basic Ranger actions
+  actions.push('<div class="action-item"><strong>Attack:</strong> Make weapon attack(s)</div>');
+  if (character.level >= 5) {
+    actions.push('<div class="action-item"><strong>Extra Attack:</strong> Attack twice when taking the Attack action</div>');
+  }
   
   // Add instinct actions
   const pool = [...INSTINCTS_DB.base, ...INSTINCTS_DB.level6, ...INSTINCTS_DB.level9, ...INSTINCTS_DB.level13, ...INSTINCTS_DB.level17];
@@ -532,9 +592,33 @@ function renderActions() {
     else if (inst.action === 'reaction') reacts.push(`<div class="action-item"><strong>${inst.name}:</strong> ${inst.desc}</div>`);
   });
   
-  // Add basic Ranger actions
-  actions.push('<div class="action-item"><strong>Attack:</strong> Make weapon attack(s)</div>');
-  if (character.level >= 5) actions.push('<div class="action-item"><strong>Extra Attack:</strong> Attack twice when taking the Attack action</div>');
+  // NEW: Add calling feature actions
+  if (character.calling && DATABASE.callings[character.calling]) {
+    const calling = DATABASE.callings[character.calling];
+    calling.features.filter(f => f.level <= character.level).forEach(feature => {
+      if (feature.actionType === 'action') {
+        actions.push(`<div class="action-item"><strong>${feature.name}:</strong> ${feature.description}</div>`);
+      } else if (feature.actionType === 'bonus') {
+        bonus.push(`<div class="action-item"><strong>${feature.name}:</strong> ${feature.description}</div>`);
+      } else if (feature.actionType === 'reaction') {
+        reacts.push(`<div class="action-item"><strong>${feature.name}:</strong> ${feature.description}</div>`);
+      }
+    });
+  }
+  
+  // NEW: Add subclass feature actions
+  if (character.subclass && DATABASE.subclasses[character.subclass] && character.level >= 3) {
+    const subclass = DATABASE.subclasses[character.subclass];
+    subclass.features.filter(f => f.level <= character.level).forEach(feature => {
+      if (feature.actionType === 'action') {
+        actions.push(`<div class="action-item"><strong>${feature.name}:</strong> ${feature.description}</div>`);
+      } else if (feature.actionType === 'bonus') {
+        bonus.push(`<div class="action-item"><strong>${feature.name}:</strong> ${feature.description}</div>`);
+      } else if (feature.actionType === 'reaction') {
+        reacts.push(`<div class="action-item"><strong>${feature.name}:</strong> ${feature.description}</div>`);
+      }
+    });
+  }
   
   document.getElementById('actionsList').innerHTML = actions.length ? actions.join('') : '<div class="action-item">No actions</div>';
   document.getElementById('bonusActionsList').innerHTML = bonus.length ? bonus.join('') : '<div class="action-item">No bonus actions</div>';
@@ -611,7 +695,6 @@ function renderFeatASIControls(level) {
   };
   
   if (opt === "ASI") {
-    // Full Ability Score Improvement - choose two picks
     const idA = `asi_${level}_a`, idB = `asi_${level}_b`;
     holder.innerHTML = `<div class="feat-note" style="margin-bottom:6px;">Ability Increase: choose two picks (same ability = +2, different = +1/+1).</div>
       <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px;">
@@ -622,13 +705,11 @@ function renderFeatASIControls(level) {
     if (a) document.getElementById(idA).value = a;
     if (b) document.getElementById(idB).value = b;
   } else if (opt === "ANY_ONE") {
-    // Choose any one ability for +1
     const id = `asi_${level}_one`;
     holder.innerHTML = `<div class="feat-note" style="margin-bottom:6px;">Ability Increase: choose one ability for +1.</div>${buildSelect(id, ABILITIES, "+1 pick")}`;
     const [a] = character.featASI[level] || [];
     if (a) document.getElementById(id).value = a;
   } else if (Array.isArray(opt)) {
-    // Choose from restricted list
     const id = `asi_${level}_restricted`;
     holder.innerHTML = `<div class="feat-note" style="margin-bottom:6px;">Ability Increase: choose one (${opt.map(o => ABILITY_LABELS[o]).join(' / ')}).</div>${buildSelect(id, opt, "+1 pick")}`;
     const [a] = character.featASI[level] || [];
