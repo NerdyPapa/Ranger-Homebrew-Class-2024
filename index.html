@@ -55,6 +55,9 @@
         <input type="text" id="playerName" oninput="character.player=this.value">
       </div>
     </div>
+    
+    <!-- NEW: Subspecies Selection Container -->
+    <div id="subspeciesSelection" style="margin-top: 15px;"></div>
 
     <!-- Calling and Subclass Selection -->
     <div class="builder-grid" style="margin-bottom:20px;">
@@ -180,7 +183,8 @@
     <!-- Instincts Selection -->
     <h2 class="section-title">Select Instincts</h2>
     <div id="instinctsSelection"></div>
-<!-- Spells Known -->
+
+    <!-- Spells Known -->
     <h2 class="section-title" id="spellsTitle">Spells Known</h2>
     <div id="spellsSection"></div>
 
@@ -189,9 +193,13 @@
     <div id="featuresAndTraits">
       <h3 style="color: #8B0000; margin-top: 10px; margin-bottom: 10px;">Species Features</h3>
       <div id="speciesFeatures" class="feature-item">
-        <div class="feature-title" id="speciesTitle">â€”</div>
+        <div class="feature-title" id="speciesTitle">—</div>
         <div class="feature-description" id="speciesDesc">Select a species to view its traits.</div>
       </div>
+
+      <!-- NEW: Ranger Base Features Section -->
+      <h3 style="color: #8B0000; margin-top: 20px; margin-bottom: 15px;">Ranger Class Features</h3>
+      <div id="rangerBaseFeatures"></div>
 
       <h3 style="color: #8B0000; margin-top: 20px; margin-bottom: 15px;">Calling Features</h3>
       <div id="callingFeatures"></div>
@@ -204,8 +212,8 @@
         <div class="feature-item">
           <div class="feature-title">Origin Feat (from Background)</div>
           <div class="feature-description">
-            <div><strong>Background:</strong> <span id="featBgName">â€”</span></div>
-            <div><strong>Origin Feat:</strong> <span id="originFeatName">â€”</span></div>
+            <div><strong>Background:</strong> <span id="featBgName">—</span></div>
+            <div><strong>Origin Feat:</strong> <span id="originFeatName">—</span></div>
             <div id="originFeatDesc" style="margin-top:6px; color:#333;"></div>
             <div class="field-group" style="margin-top:12px;">
               <label>Background Ability Increases</label>
