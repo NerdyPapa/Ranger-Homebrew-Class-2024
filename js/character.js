@@ -212,8 +212,39 @@ function setCallingSkill(index, skillName) {
 
 function setWeaponMaster(weaponName) {
   character.weaponMaster = weaponName;
+  
+  // AUTO-FILL: Populate first weapon slot with the selected weapon master
+  if (weaponName && WEAPONS_DATABASE[weaponName]) {
+    const wpn = WEAPONS_DATABASE[weaponName];
+    
+    // Determine if using DEX or STR
+    const hasFinesse = wpn.properties.some(p => p.toLowerCase().includes('finesse'));
+    const hasLight = wpn.properties.some(p => p.toLowerCase().includes('light'));
+    const hasThrown = wpn.properties.some(p => p.toLowerCase().includes('thrown'));
+    const usesDex = hasFinesse || hasLight || hasThrown;
+    
+    const abilMod = usesDex ? getMod(getScore('dex')) : getMod(getScore('str'));
+    const profBonus = LEVEL_DATA[character.level].profBonus;
+    const toHit = abilMod + profBonus;
+    
+    // Build damage string
+    let damageString = `${wpn.damage}`;
+    if (abilMod !== 0) {
+      damageString += abilMod >= 0 ? `+${abilMod}` : `${abilMod}`;
+    }
+    damageString += ` ${wpn.damageType}`;
+    
+    // Auto-fill first weapon slot
+    character.weapons[0] = {
+      name: weaponName,
+      mod: toHit,
+      dmg: damageString
+    };
+  }
+  
   updateCharacter();
 }
+
 
 // ========================================
 // NEW: EXPERTISE SELECTION (LEVEL 9)
@@ -286,10 +317,10 @@ function setArmor(armorName) {
   if (warnings) {
     let warnText = '';
     if (armorInfo.category === 'Heavy' && !hasHeavyArmorProficiency()) {
-      warnText += '<div style="color:#856404; font-size:11px; background:#fff3cd; padding:6px; border-radius:4px; margin-top:4px;">⚠️ Heavy armor requires proficiency (Warden or Heavily Armored feat).</div>';
+      warnText += '<div style="color:#856404; font-size:11px; background:#fff3cd; padding:6px; border-radius:4px; margin-top:4px;">âš ï¸ Heavy armor requires proficiency (Warden or Heavily Armored feat).</div>';
     }
     if (armorInfo.str > 0 && getScore('str') < armorInfo.str) {
-      warnText += '<div style="color:#856404; font-size:11px; background:#fff3cd; padding:6px; border-radius:4px; margin-top:4px;">⚠️ This armor requires STR ' + armorInfo.str + '. You have STR ' + getScore('str') + '. Speed reduced by 10 ft.</div>';
+      warnText += '<div style="color:#856404; font-size:11px; background:#fff3cd; padding:6px; border-radius:4px; margin-top:4px;">âš ï¸ This armor requires STR ' + armorInfo.str + '. You have STR ' + getScore('str') + '. Speed reduced by 10 ft.</div>';
     }
     warnings.innerHTML = warnText;
   }
@@ -455,8 +486,8 @@ function setBackground(name) {
   character.background = name;
   character.originFeat = BACKGROUNDS[name]?.originFeat || null;
   character.backgroundASI = { mode: 'twoPlusOne', plus2: '', plus1: '' };
-  setHTML('featBgName', name || '—');
-  setHTML('originFeatName', character.originFeat || '—');
+  setHTML('featBgName', name || 'â€”');
+  setHTML('originFeatName', character.originFeat || 'â€”');
   renderOriginFeatDesc();
   renderBgASISelectors();
   updateCharacter();
