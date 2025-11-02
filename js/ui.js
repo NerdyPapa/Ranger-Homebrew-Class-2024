@@ -311,7 +311,7 @@ function renderSpellsSection() {
   });
   
   if (html === '') {
-    html = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No spells selected yet. Choose your calling spells from the spell selection dropdowns in the Calling Features section.</p>';
+    html = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No spells selected yet. Choose your spells from:<br>• <strong>Calling Features</strong> section (for spellcasting features)<br>• <strong>Instincts</strong> section (for instincts that grant spells)<br>• <strong>Origin Feat</strong> section (for Magic Initiate feats)</p>';
   }
   
   container.innerHTML = html;
@@ -374,10 +374,175 @@ function renderInstinctSelectors() {
         ${available.map(inst => `<option value="${inst.name}" ${selected === inst.name ? 'selected' : ''}>${inst.name}</option>`).join('')}
       </select>
       ${selectedInst ? `<div class="feature-description" style="margin-top:8px;">${selectedInst.desc}</div>` : ''}
+      <div id="instinctSpells_${i}"></div>
     </div>`;
   }
   
   container.innerHTML = html;
+  
+  // Render spell selections for instincts that grant spells
+  for (let i = 0; i < totalInstincts; i++) {
+    const selected = character.selectedInstincts[i];
+    if (selected && SPELL_SOURCES[selected]) {
+      renderInstinctSpellSelection(i, selected);
+    }
+  }
+}
+
+// Helper function to render spell selection UI for an instinct
+function renderInstinctSpellSelection(instinctIndex, instinctName) {
+  const container = document.getElementById(`instinctSpells_${instinctIndex}`);
+  if (!container) return;
+  
+  const spellSource = SPELL_SOURCES[instinctName];
+  if (!spellSource) return;
+  
+  // Initialize spell storage for this instinct if needed
+  if (!character.selectedSpells.instincts[instinctName]) {
+    character.selectedSpells.instincts[instinctName] = { cantrips: [], level1: [] };
+  }
+  
+  let html = '<div style="margin-top:10px; padding:10px; background:#f0f8ff; border-radius:4px; border-left:3px solid #4a90e2;">';
+  html += '<strong>Spell Selection</strong><br>';
+  
+  // Render cantrip selections
+  if (spellSource.cantrips > 0) {
+    const cantripList = CANTRIPS[spellSource.cantripList] || [];
+    for (let i = 0; i < spellSource.cantrips; i++) {
+      const selectedCantrip = character.selectedSpells.instincts[instinctName].cantrips[i] || '';
+      html += `<div style="margin-top:8px;">
+        <label style="font-size:0.9em;">Cantrip ${i + 1} (${spellSource.cantripList}):</label>
+        <select class="feat-select" onchange="setInstinctSpell('${instinctName}', 'cantrips', ${i}, this.value)" style="width:100%; margin-top:3px;">
+          <option value="">-- Choose Cantrip --</option>
+          ${cantripList.map(spell => `<option value="${spell}" ${selectedCantrip === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+        </select>
+      </div>`;
+    }
+  }
+  
+  // Render level 1 spell selections
+  if (spellSource.level1 > 0) {
+    const level1List = LEVEL1_SPELLS[spellSource.level1List] || [];
+    for (let i = 0; i < spellSource.level1; i++) {
+      const selectedSpell = character.selectedSpells.instincts[instinctName].level1[i] || '';
+      html += `<div style="margin-top:8px;">
+        <label style="font-size:0.9em;">1st-Level Spell ${i + 1} (${spellSource.level1List}):</label>
+        <select class="feat-select" onchange="setInstinctSpell('${instinctName}', 'level1', ${i}, this.value)" style="width:100%; margin-top:3px;">
+          <option value="">-- Choose Spell --</option>
+          ${level1List.map(spell => `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+        </select>
+      </div>`;
+    }
+  }
+  
+  // Show fixed spells if any
+  if (spellSource.fixedSpells) {
+    html += `<div style="margin-top:8px; font-size:0.9em; color:#555;">
+      <strong>Always Known:</strong> ${spellSource.fixedSpells.join(', ')}
+    </div>`;
+  }
+  
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// Helper function to save instinct spell selection
+function setInstinctSpell(instinctName, spellLevel, index, spellName) {
+  if (!character.selectedSpells.instincts[instinctName]) {
+    character.selectedSpells.instincts[instinctName] = { cantrips: [], level1: [] };
+  }
+  character.selectedSpells.instincts[instinctName][spellLevel][index] = spellName;
+  renderSpellsSection();
+}
+
+// Helper function to render spell selection for calling spellcasting features
+function renderCallingSpellSelection(featureLevel, callingKey) {
+  const container = document.getElementById(`callingSpellsFeature_${featureLevel}`);
+  if (!container) return;
+  
+  let html = '<div style="margin-top:15px; padding:10px; background:#f0f8ff; border-radius:4px; border-left:3px solid #4a90e2;">';
+  html += '<strong>Spell Selection</strong><br>';
+  
+  // Determine spell lists based on calling
+  let cantripList = 'ranger';
+  let spellList = 'ranger';
+  let cantripCount = 2;
+  
+  if (callingKey === 'mystic') {
+    cantripList = 'druid';
+    spellList = 'ranger'; // Mystic can choose from Ranger or Druid
+    html += '<div style="margin-top:8px; font-size:0.85em; color:#555;"><em>Choose from Ranger or Druid spell lists</em></div>';
+  } else if (callingKey === 'excavator') {
+    cantripList = 'cleric';
+    spellList = 'cleric';
+    html += '<div style="margin-top:8px; font-size:0.85em; color:#555;"><em>Choose from Cleric spell list</em></div>';
+  } else if (callingKey === 'wayfarer') {
+    cantripList = 'druid';
+    spellList = 'druid';
+    html += '<div style="margin-top:8px; font-size:0.85em; color:#555;"><em>Choose from Druid spell list</em></div>';
+  }
+  
+  // Render cantrip selections (for level 1 spellcasting features)
+  if (featureLevel === 1) {
+    const availableCantrips = [...new Set([...(CANTRIPS['ranger'] || []), ...(CANTRIPS['druid'] || [])])];
+    
+    for (let i = 0; i < cantripCount; i++) {
+      const selectedCantrip = character.selectedSpells.calling.cantrips[i] || '';
+      html += `<div style="margin-top:8px;">
+        <label style="font-size:0.9em; font-weight:600;">Cantrip ${i + 1}:</label>
+        <select class="feat-select" onchange="setCallingSpell('cantrips', ${i}, this.value)" style="width:100%; margin-top:3px;">
+          <option value="">-- Choose Cantrip --</option>`;
+      
+      availableCantrips.sort().forEach(spell => {
+        html += `<option value="${spell}" ${selectedCantrip === spell ? 'selected' : ''}>${spell}</option>`;
+      });
+      
+      html += `</select></div>`;
+    }
+  }
+  
+  // Render level 1 spell selections (show based on available slots)
+  const slots = SLOT_PROGRESSION[character.level];
+  const spellLevels = ['level1', 'level2', 'level3', 'level4', 'level5'];
+  const spellLabels = ['1st', '2nd', '3rd', '4th', '5th'];
+  
+  for (let slotLevel = 0; slotLevel < slots.length; slotLevel++) {
+    if (slots[slotLevel] > 0 && slotLevel === 0) { // Only show 1st level for now
+      const availableSpells = [...new Set([...(LEVEL1_SPELLS['ranger'] || []), ...(LEVEL1_SPELLS['druid'] || [])])];
+      const spellCount = Math.max(2, slots[slotLevel]); // At least 2 spells to choose
+      
+      html += `<div style="margin-top:12px; padding-top:8px; border-top:1px solid #ccc;">
+        <div style="font-weight:600; margin-bottom:5px;">${spellLabels[slotLevel]}-Level Spells</div>`;
+      
+      for (let i = 0; i < spellCount; i++) {
+        const selectedSpell = character.selectedSpells.calling[spellLevels[slotLevel]][i] || '';
+        html += `<div style="margin-top:6px;">
+          <label style="font-size:0.85em;">Spell ${i + 1}:</label>
+          <select class="feat-select" onchange="setCallingSpell('${spellLevels[slotLevel]}', ${i}, this.value)" style="width:100%; margin-top:2px;">
+            <option value="">-- Choose Spell --</option>`;
+        
+        availableSpells.sort().forEach(spell => {
+          html += `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`;
+        });
+        
+        html += `</select></div>`;
+      }
+      
+      html += '</div>';
+    }
+  }
+  
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// Helper function to save calling spell selection
+function setCallingSpell(spellLevel, index, spellName) {
+  if (!character.selectedSpells.calling[spellLevel]) {
+    character.selectedSpells.calling[spellLevel] = [];
+  }
+  character.selectedSpells.calling[spellLevel][index] = spellName;
+  renderSpellsSection();
 }
 
 // ========================================
@@ -542,40 +707,20 @@ function renderFeaturesAndTraits() {
       
       // Render spell selection UI for spellcasting features
       if (feature.spellcasting || feature.spellChoices) {
-        callingHTML += '<div style="margin-top:15px; padding:10px; background:#f0f8ff; border-radius:4px; border-left:3px solid #4a90e2;">';
-        callingHTML += '<strong>Spell Selection</strong><br>';
-        
-        if (feature.spellcasting) {
-          // Full spellcasting feature (Mystic, Excavator)
-          callingHTML += '<div style="margin-top:8px; font-size:0.9em; color:#555;">';
-          callingHTML += 'Choose your spells from the Ranger and Druid spell lists.<br>';
-          callingHTML += '<em>More spell selection options coming soon.</em>';
-          callingHTML += '</div>';
-        }
-        
-        if (feature.spellChoices) {
-          // Specific spell choices (Wayfarer's Pathbound Magic)
-          callingHTML += '<div style="margin-top:8px;">';
-          callingHTML += `Choose ${feature.spellChoices.count || 1} ${feature.spellChoices.spellList || 'Druid'} spell:<br>`;
-          callingHTML += '<select class="feat-select" style="margin-top:5px; width:100%;">';
-          callingHTML += '<option value="">-- Choose Spell --</option>';
-          // Add spell options (this would need to be populated from SPELLS_DB)
-          const spellList = feature.spellChoices.spellList || 'Druid';
-          const exampleSpells = ['Animal Friendship', 'Charm Person', 'Cure Wounds', 'Detect Magic', 'Entangle', 'Faerie Fire', 'Goodberry', 'Healing Word', 'Jump', 'Longstrider', 'Speak with Animals', 'Thunderwave'];
-          exampleSpells.forEach(spell => {
-            callingHTML += `<option value="${spell}">${spell}</option>`;
-          });
-          callingHTML += '</select>';
-          callingHTML += '</div>';
-        }
-        
-        callingHTML += '</div>';
+        callingHTML += '<div id="callingSpellsFeature_' + feature.level + '"></div>';
       }
       
       callingHTML += '</div>';
     });
     
     callingContainer.innerHTML = callingHTML || '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">No Calling features unlocked yet.</p>';
+    
+    // After rendering HTML, add spell selection UIs
+    unlocked.forEach(feature => {
+      if (feature.spellcasting) {
+        renderCallingSpellSelection(feature.level, callingKey);
+      }
+    });
   } else {
     callingContainer.innerHTML = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">Select a Calling to see features.</p>';
   }
