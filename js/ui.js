@@ -139,6 +139,7 @@ function renderSkills() {
   const maxProf = levelData.skillProfs;
   const maxExpert = character.level >= 9 ? 2 : 0;
   const instinctProfs = getInstinctSkillProfs();
+  const callingProfs = getCallingSkillProfs();
   
   let profCount = 0, expertCount = 0;
   Object.values(character.skills).forEach(s => {
@@ -150,7 +151,8 @@ function renderSkills() {
     const abilMod = getMod(getScore(skill.ability));
     const skillData = character.skills[skill.name];
     const hasInstinctProf = instinctProfs.includes(skill.name);
-    const isActuallyProficient = skillData.prof || hasInstinctProf;
+    const hasCallingProf = callingProfs.includes(skill.name);
+    const isActuallyProficient = skillData.prof || hasInstinctProf || hasCallingProf;
     
     let modifier = abilMod;
     if (isActuallyProficient) modifier += profBonus;
@@ -159,11 +161,11 @@ function renderSkills() {
     const modStr = modifier >= 0 ? `+${modifier}` : `${modifier}`;
     const profDisabled = (!skillData.prof && profCount >= maxProf);
     const expertDisabled = (!skillData.expert && (expertCount >= maxExpert || !isActuallyProficient || character.level < 9));
-    const profLabel = hasInstinctProf ? '✓ (Instinct)' : '';
+    const profLabel = hasInstinctProf ? '✓ (Instinct)' : (hasCallingProf ? '✓ (Calling)' : '');
     
     return `<div class="skill-item">
       <div class="skill-checkboxes">
-        <input type="checkbox" class="skill-checkbox" ${skillData.prof ? 'checked' : ''} ${profDisabled || hasInstinctProf ? 'disabled' : ''} onchange="toggleSkillProf('${skill.name}')" title="Proficient">
+        <input type="checkbox" class="skill-checkbox" ${skillData.prof ? 'checked' : ''} ${profDisabled || hasInstinctProf || hasCallingProf ? 'disabled' : ''} onchange="toggleSkillProf('${skill.name}')" title="Proficient">
         <input type="checkbox" class="skill-checkbox" ${skillData.expert ? 'checked' : ''} ${expertDisabled ? 'disabled' : ''} onchange="toggleSkillExpert('${skill.name}')" title="Expertise">
       </div>
       <span class="skill-name">${skill.name} (${skill.ability.toUpperCase()}) ${profLabel}</span>
