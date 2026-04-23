@@ -38,7 +38,7 @@ function updateCharacter() {
   renderFeaturesAndTraits();
   renderActions();
   renderEquipment();
-  renderAdaptiveCastingSetup();
+  renderAdaptiveCasting();
   renderSpellsSection();
 }
 

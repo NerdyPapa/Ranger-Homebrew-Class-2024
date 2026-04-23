@@ -754,7 +754,7 @@ const DATABASE = {
         }
       ]
     },
-    mystic: {
+        mystic: {
       name: "Mystic",
       primaryStat: "wis",
       features: [
@@ -1609,7 +1609,6 @@ const INSTINCTS_DB = {
     }
   ]
 };
-
 // ========================================
 // SPELL LISTS & SPELL SOURCES
 // ========================================
@@ -1636,17 +1635,6 @@ const LEVEL1_SPELLS = {
   paladin: ["Bless", "Command", "Cure Wounds", "Heroism", "Protection from Evil and Good", "Searing Smite", "Shield of Faith", "Wrathful Smite"]
 };
 
-const LEVEL2_SPELLS = {
-  ranger: ["Aid", "Barkskin", "Darkvision", "Enhance Ability", "Lesser Restoration", "Locate Object", "Pass without Trace", "Silence", "Spike Growth"],
-  cleric: ["Aid", "Augury", "Calm Emotions", "Hold Person", "Lesser Restoration", "Prayer of Healing", "Silence", "Spiritual Weapon", "Warding Bond", "Zone of Truth", "Seal of Record", "Brand of Judgment", "Kindled Bond"],
-  druid: ["Barkskin", "Darkvision", "Enhance Ability", "Flame Blade", "Gust of Wind", "Lesser Restoration", "Moonbeam", "Pass without Trace", "Spike Growth"],
-  wizard: ["Arcane Lock", "Blur", "Darkvision", "Invisibility", "Knock", "Levitate", "Mirror Image", "Misty Step", "See Invisibility"],
-  bard: ["Calm Emotions", "Enhance Ability", "Hold Person", "Invisibility", "Lesser Restoration", "Mirror Image", "Shatter", "Suggestion"],
-  sorcerer: ["Blur", "Darkvision", "Hold Person", "Invisibility", "Levitate", "Mirror Image", "Misty Step", "Scorching Ray"],
-  warlock: ["Darkness", "Hold Person", "Invisibility", "Mirror Image", "Misty Step", "Shatter", "Suggestion"],
-  paladin: ["Aid", "Find Steed", "Lesser Restoration", "Magic Weapon", "Prayer of Healing", "Zone of Truth"]
-};
-
 const SPELL_SOURCES = {
   "Bloodmarked": { cantrips: 1, level1: 1, cantripList: "sorcerer", level1List: "warlock" },
   "Druidic Warrior": { cantrips: 2, level1: 1, cantripList: "druid", level1List: "druid" },
@@ -1662,6 +1650,5 @@ const SPELL_SOURCES = {
 if (typeof globalThis !== 'undefined') {
   globalThis.CANTRIPS = CANTRIPS;
   globalThis.LEVEL1_SPELLS = LEVEL1_SPELLS;
-  globalThis.LEVEL2_SPELLS = LEVEL2_SPELLS;
   globalThis.SPELL_SOURCES = SPELL_SOURCES;
 }
