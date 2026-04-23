@@ -270,26 +270,6 @@ function setExpertise(index, skillName) {
 }
 
 // ========================================
-// NEW: SPELL SELECTION FOR SPELLCASTING CALLINGS
-// ========================================
-
-function setCallingSpell(level, index, spellName) {
-  if (!character.selectedSpells.calling) {
-    character.selectedSpells.calling = {
-      cantrips: [], level1: [], level2: [], level3: [], level4: [], level5: []
-    };
-  }
-  
-  const key = level === 0 ? 'cantrips' : `level${level}`;
-  if (!character.selectedSpells.calling[key]) {
-    character.selectedSpells.calling[key] = [];
-  }
-  
-  character.selectedSpells.calling[key][index] = spellName;
-  updateCharacter();
-}
-
-// ========================================
 // ARMOR & AC CALCULATIONS
 // ========================================
 
@@ -418,6 +398,13 @@ function getInstinctSkillProfs() {
     if (n === "Wild Charm") profs.push("Animal Handling");
   });
   return profs;
+}
+
+function getCallingSkillProfs() {
+  if (character.calling === "mystic" && character.level >= 1) {
+    return ["Arcana", "Religion"];
+  }
+  return [];
 }
 
 function toggleSkillProf(name) {

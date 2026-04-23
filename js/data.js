@@ -761,15 +761,13 @@ const DATABASE = {
         { 
           level: 1, 
           name: "Bonus Proficiencies", 
-          description: "Choose two skills from: Arcana and Nature. You may use a weapon, druidic focus, or arcane focus as your spellcasting focus.",
-          skillChoices: ["Arcana", "Nature"],
-          pickCount: 2,
+          description: "You gain proficiency in Arcana and Religion. You may use a weapon, holy symbol, or arcane focus as your spellcasting focus.",
           actionType: null
         },
         { 
           level: 1, 
           name: "Primal Casting", 
-          description: "You are a half-caster whose magic draws from both the natural and arcane worlds. You prepare and cast spells using your Adaptive Edge slots, which also serve as your spell slots. Wisdom is your spellcasting ability. You can prepare spells from the Ranger or Cleric lists. Your Spell Save DC equals 8 + your Proficiency Bonus + your Wisdom modifier. You can cast any Ranger or Druid spell you know as a ritual if that spell has the ritual tag.",
+          description: "You are a half-caster whose magic draws from both the natural and arcane worlds. You prepare and cast spells using your Adaptive Edge slots, which also serve as your spell slots.\n-  Spellcasting Ability: Wisdom.\n-  Shared Slots: Your Adaptive Edge slots are also your spell slots, used for spells and Mystic Calling features.\n-  Spell Lists: You can prepare spells from the Ranger or Cleric lists.\n-  Spell Save DC = 8 + Proficiency Bonus + Wisdom modifier.\n-  Spell Attack modifier = Proficiency Bonus + Wisdom modifier.\n-  Casting with Adaptive Edges: You can cast spells of a level equal to or lower than your highest available Adaptive Edge slot.\n-  Ritual Casting: You can cast any Ranger or Cleric spell you know as a ritual if that spell has the ritual tag.\n-  Focus and Components: You can use a weapon, holy symbol, or arcane focus as a spellcasting focus. You ignore non-costly material components while using such a focus.",
           spellcasting: true,
           actionType: null
         },
@@ -1105,6 +1103,41 @@ const DATABASE = {
           name: "Nightfall's Fury", 
           description: "When you hit a creature with a weapon attack, you can expend an Adaptive Edge slot to deal extra radiant damage. The extra damage is 1d8 per slot level (maximum 5d8). If the target is a celestial, fiend, or aberration, the attack deals an additional 1d8 radiant damage (maximum 6d8). You can use this feature once per turn.",
           actionType: null
+        }
+      ]
+    },
+    mariner: {
+      name: "Mariner",
+      features: [
+        { 
+          level: 3, 
+          name: "Sea-Blessed Navigator", 
+          description: "You gain a swim speed equal to your walking speed and proficiency in Water Vehicles. While on or near open water, you have advantage on Wisdom (Survival) checks made to navigate and track weather changes.",
+          actionType: null
+        },
+        { 
+          level: 3, 
+          name: "Tidal Mark", 
+          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to mark a creature you can see within 60 feet until the end of your next turn. The next time you or an ally hits that creature with an attack, it takes an extra 1d8 cold or lightning damage (your choice).",
+          actionType: "bonus"
+        },
+        { 
+          level: 7, 
+          name: "Undertow Step", 
+          description: "As a reaction when a creature ends its movement within 10 feet of you, you can expend a 2nd-level Adaptive Edge slot to move up to half your speed without provoking opportunity attacks. If you end this movement adjacent to that creature, you can force it to make a Strength saving throw (DC = 8 + proficiency bonus + Wisdom modifier) or be pulled up to 10 feet in a direction of your choice.",
+          actionType: "reaction"
+        },
+        { 
+          level: 11, 
+          name: "Stormwake Assault", 
+          description: "Once per turn when you hit with a weapon attack, you can expend a 3rd-level Adaptive Edge slot to unleash a stormwake. The target takes an extra 2d8 lightning damage, and one creature of your choice within 10 feet of the target takes lightning damage equal to your Wisdom modifier (minimum 1).",
+          actionType: null
+        },
+        { 
+          level: 15, 
+          name: "Captain of the Tempest", 
+          description: "As an action, you can expend a 4th-level Adaptive Edge slot to surround yourself with surging wind and spray for 1 minute (concentration). During this time, you gain resistance to lightning and cold damage, and difficult terrain caused by water or weather does not cost you extra movement. Once on each of your turns, when you hit with a weapon attack, you can push the target up to 10 feet.",
+          actionType: "action"
         }
       ]
     },
@@ -1576,3 +1609,59 @@ const INSTINCTS_DB = {
     }
   ]
 };
+
+// ========================================
+// SPELL LISTS & SPELL SOURCES
+// ========================================
+
+const CANTRIPS = {
+  ranger: ["Druidcraft", "Guidance", "Mending", "Poison Spray", "Produce Flame", "Resistance", "Shillelagh", "Thorn Whip"],
+  druid: ["Druidcraft", "Guidance", "Mending", "Poison Spray", "Produce Flame", "Resistance", "Shillelagh", "Thorn Whip"],
+  cleric: ["Guidance", "Light", "Mending", "Resistance", "Sacred Flame", "Spare the Dying", "Thaumaturgy", "Toll the Dead"],
+  wizard: ["Mage Hand", "Minor Illusion", "Prestidigitation", "Ray of Frost", "Fire Bolt", "Chill Touch", "Message", "Light"],
+  bard: ["Vicious Mockery", "Mage Hand", "Minor Illusion", "Prestidigitation", "Message", "Light"],
+  sorcerer: ["Fire Bolt", "Minor Illusion", "Mage Hand", "Message", "Ray of Frost", "Shocking Grasp", "Chill Touch"],
+  warlock: ["Eldritch Blast", "Mage Hand", "Minor Illusion", "Chill Touch", "Poison Spray", "Prestidigitation"],
+  paladin: ["Light", "Thaumaturgy", "Sacred Flame", "Resistance"]
+};
+
+const LEVEL1_SPELLS = {
+  ranger: ["Cure Wounds", "Detect Magic", "Ensnaring Strike", "Fog Cloud", "Goodberry", "Hail of Thorns", "Hunter's Mark", "Longstrider", "Speak with Animals", "Zephyr Strike"],
+  druid: ["Animal Friendship", "Charm Person", "Cure Wounds", "Detect Magic", "Entangle", "Faerie Fire", "Goodberry", "Healing Word", "Longstrider", "Thunderwave"],
+  cleric: ["Bless", "Command", "Cure Wounds", "Detect Evil and Good", "Detect Magic", "Guiding Bolt", "Healing Word", "Protection from Evil and Good", "Sanctuary", "Shield of Faith"],
+  wizard: ["Burning Hands", "Detect Magic", "Disguise Self", "Find Familiar", "Mage Armor", "Magic Missile", "Shield", "Sleep", "Tasha's Hideous Laughter"],
+  bard: ["Bane", "Charm Person", "Cure Wounds", "Disguise Self", "Dissonant Whispers", "Faerie Fire", "Healing Word", "Heroism", "Sleep", "Tasha's Hideous Laughter"],
+  sorcerer: ["Burning Hands", "Chromatic Orb", "Disguise Self", "Mage Armor", "Magic Missile", "Shield", "Sleep", "Thunderwave"],
+  warlock: ["Armor of Agathys", "Charm Person", "Hex", "Hellish Rebuke", "Protection from Evil and Good", "Unseen Servant"],
+  paladin: ["Bless", "Command", "Cure Wounds", "Heroism", "Protection from Evil and Good", "Searing Smite", "Shield of Faith", "Wrathful Smite"]
+};
+
+const LEVEL2_SPELLS = {
+  ranger: ["Aid", "Barkskin", "Darkvision", "Enhance Ability", "Lesser Restoration", "Locate Object", "Pass without Trace", "Silence", "Spike Growth"],
+  cleric: ["Aid", "Augury", "Calm Emotions", "Hold Person", "Lesser Restoration", "Prayer of Healing", "Silence", "Spiritual Weapon", "Warding Bond", "Zone of Truth", "Seal of Record", "Brand of Judgment", "Kindled Bond"],
+  druid: ["Barkskin", "Darkvision", "Enhance Ability", "Flame Blade", "Gust of Wind", "Lesser Restoration", "Moonbeam", "Pass without Trace", "Spike Growth"],
+  wizard: ["Arcane Lock", "Blur", "Darkvision", "Invisibility", "Knock", "Levitate", "Mirror Image", "Misty Step", "See Invisibility"],
+  bard: ["Calm Emotions", "Enhance Ability", "Hold Person", "Invisibility", "Lesser Restoration", "Mirror Image", "Shatter", "Suggestion"],
+  sorcerer: ["Blur", "Darkvision", "Hold Person", "Invisibility", "Levitate", "Mirror Image", "Misty Step", "Scorching Ray"],
+  warlock: ["Darkness", "Hold Person", "Invisibility", "Mirror Image", "Misty Step", "Shatter", "Suggestion"],
+  paladin: ["Aid", "Find Steed", "Lesser Restoration", "Magic Weapon", "Prayer of Healing", "Zone of Truth"]
+};
+
+const SPELL_SOURCES = {
+  "Bloodmarked": { cantrips: 1, level1: 1, cantripList: "sorcerer", level1List: "warlock" },
+  "Druidic Warrior": { cantrips: 2, level1: 1, cantripList: "druid", level1List: "druid" },
+  "Sacred Oath": { cantrips: 1, level1: 1, cantripList: "cleric", level1List: "paladin" },
+  "Spell Lore": { cantrips: 1, level1: 1, cantripList: "wizard", level1List: "bard" },
+  "Wild Charm": { cantrips: 1, level1: 1, cantripList: "druid", level1List: "druid" },
+  "Hunter's Mark": { cantrips: 0, level1: 0, fixedSpells: ["Hunter's Mark"] },
+  "Battle Hymn": { cantrips: 0, level1: 0, fixedSpells: ["Vicious Mockery"] },
+  "Warding Thorns": { cantrips: 0, level1: 0, fixedSpells: ["Shield"] }
+};
+
+// Expose spell tables on the global object for cross-file access safety.
+if (typeof globalThis !== 'undefined') {
+  globalThis.CANTRIPS = CANTRIPS;
+  globalThis.LEVEL1_SPELLS = LEVEL1_SPELLS;
+  globalThis.LEVEL2_SPELLS = LEVEL2_SPELLS;
+  globalThis.SPELL_SOURCES = SPELL_SOURCES;
+}
