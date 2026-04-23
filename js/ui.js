@@ -225,7 +225,7 @@ function getCallingMaxSpellLevel() {
   return maxLevel;
 }
 
-function renderAdaptiveCastingSetup() {
+ function renderAdaptiveCastingSetup() {
   const title = document.getElementById('adaptiveCastingSetupTitle');
   const container = document.getElementById('adaptiveCastingSetup');
   if (!title || !container) return;
@@ -331,6 +331,12 @@ function renderSpellsSection() {
       });
     }
   }
+
+  // Add spells from general feat auto-grants and feat spell picks
+  const featSpells = getFeatAutoAndChoiceSpells();
+  featSpells.cantrips.forEach(spell => spell && allSpells.cantrips.push(spell));
+  featSpells.level1.forEach(spell => spell && allSpells.level1.push(spell));
+  featSpells.level2.forEach(spell => spell && allSpells.level2.push(spell));
   
   // Add spells from instincts
   if (character.selectedSpells && character.selectedSpells.instincts) {
@@ -624,6 +630,23 @@ function setCallingSpell(spellLevel, index, spellName) {
     character.selectedSpells.calling[spellLevel] = [];
   }
   character.selectedSpells.calling[spellLevel][index] = spellName;
+  renderSpellsSection();
+}
+
+function setOriginFeatSpell(spellLevel, index, spellName) {
+  if (!character.selectedSpells.originFeat) {
+    character.selectedSpells.originFeat = { cantrips: [], level1: [] };
+  }
+  if (!character.selectedSpells.originFeat[spellLevel]) {
+    character.selectedSpells.originFeat[spellLevel] = [];
+  }
+  character.selectedSpells.originFeat[spellLevel][index] = spellName;
+  renderSpellsSection();
+}
+
+function setGeneralFeatSpellChoice(key, spellName) {
+  if (!character.selectedSpells.featChoices) character.selectedSpells.featChoices = {};
+  character.selectedSpells.featChoices[key] = spellName;
   renderSpellsSection();
 }
 
@@ -946,12 +969,84 @@ function renderEquipment() {
 function renderGeneralFeatDesc(level) {
   const key = character.generalFeats[level] || "Ability Score Improvement";
   const text = GENERAL_FEAT_DESC[key] || "—";
-  setHTML('featDesc' + level, text);
+  const holder = document.getElementById('featDesc' + level);
+  if (!holder) return;
+
+  let html = text;
+  const { level1Spells } = getSpellDataTables();
+  const allLevel1 = [...new Set(Object.values(level1Spells).flat())].sort();
+
+  if (key === 'Fey Touched') {
+    const feyChoices = allLevel1.filter(sp => ['Charm Person', 'Command', 'Heroism', 'Sleep', "Tasha's Hideous Laughter"].includes(sp));
+    const selected = character.selectedSpells?.featChoices?.feyTouchedLevel1 || '';
+    html += `<div style="margin-top:8px;">
+      <label style="display:block; font-weight:600; margin-bottom:4px;">Fey Touched Spell (1st-level)</label>
+      <select class="feat-select" onchange="setGeneralFeatSpellChoice('feyTouchedLevel1', this.value)">
+        <option value="">-- Choose Spell --</option>
+        ${feyChoices.map(spell => `<option value="${spell}" ${selected === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+      </select>
+      <div class="feat-note" style="margin-top:4px;">Automatically granted: <strong>Misty Step</strong>.</div>
+    </div>`;
+  }
+
+  if (key === 'Shadow Touched') {
+    const shadowChoices = allLevel1.filter(sp => ['Disguise Self', 'False Life', 'Cause Fear'].includes(sp));
+    const selected = character.selectedSpells?.featChoices?.shadowTouchedLevel1 || '';
+    html += `<div style="margin-top:8px;">
+      <label style="display:block; font-weight:600; margin-bottom:4px;">Shadow Touched Spell (1st-level)</label>
+      <select class="feat-select" onchange="setGeneralFeatSpellChoice('shadowTouchedLevel1', this.value)">
+        <option value="">-- Choose Spell --</option>
+        ${shadowChoices.map(spell => `<option value="${spell}" ${selected === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+      </select>
+      <div class="feat-note" style="margin-top:4px;">Automatically granted: <strong>Invisibility</strong>.</div>
+    </div>`;
+  }
+
+  holder.innerHTML = html;
 }
 
 function renderOriginFeatDesc() {
   const name = character.originFeat;
-  document.getElementById('originFeatDesc').textContent = name ? (ORIGIN_FEAT_DESC[name] || "—") : "—";
+  const container = document.getElementById('originFeatDesc');
+  if (!container) return;
+  let html = name ? (ORIGIN_FEAT_DESC[name] || "—") : "—";
+  const listKey = getMagicInitiateListKey(name);
+
+  if (listKey) {
+    const { cantrips, level1Spells } = getSpellDataTables();
+    const cantripOptions = (cantrips[listKey] || []).slice().sort();
+    const level1Options = (level1Spells[listKey] || []).slice().sort();
+    const c0 = character.selectedSpells?.originFeat?.cantrips?.[0] || '';
+    const c1 = character.selectedSpells?.originFeat?.cantrips?.[1] || '';
+    const s0 = character.selectedSpells?.originFeat?.level1?.[0] || '';
+
+    html += `<div style="margin-top:8px; padding:10px; background:#f0f8ff; border-radius:4px; border-left:3px solid #4a90e2;">
+      <strong>${name} Spell Selection</strong>
+      <div style="margin-top:8px;">
+        <label style="font-size:0.9em;">Cantrip 1</label>
+        <select class="feat-select" onchange="setOriginFeatSpell('cantrips', 0, this.value)">
+          <option value="">-- Choose Cantrip --</option>
+          ${cantripOptions.map(spell => `<option value="${spell}" ${c0 === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+        </select>
+      </div>
+      <div style="margin-top:8px;">
+        <label style="font-size:0.9em;">Cantrip 2</label>
+        <select class="feat-select" onchange="setOriginFeatSpell('cantrips', 1, this.value)">
+          <option value="">-- Choose Cantrip --</option>
+          ${cantripOptions.map(spell => `<option value="${spell}" ${c1 === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+        </select>
+      </div>
+      <div style="margin-top:8px;">
+        <label style="font-size:0.9em;">1st-Level Spell</label>
+        <select class="feat-select" onchange="setOriginFeatSpell('level1', 0, this.value)">
+          <option value="">-- Choose Spell --</option>
+          ${level1Options.map(spell => `<option value="${spell}" ${s0 === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+        </select>
+      </div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
 }
 
 function renderEpicBoonDesc() {

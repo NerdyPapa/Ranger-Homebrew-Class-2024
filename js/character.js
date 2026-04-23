@@ -58,7 +58,8 @@ let character = {
   selectedSpells: {
     originFeat: { cantrips: [], level1: [] },
     instincts: {},
-    calling: { cantrips: [], level1: [], level2: [], level3: [], level4: [], level5: [] }
+    calling: { cantrips: [], level1: [], level2: [], level3: [], level4: [], level5: [] },
+    featChoices: {}
   },
   // NEW TRACKING PROPERTIES
   rangerSkillChoices: [],
