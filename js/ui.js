@@ -290,6 +290,7 @@ function renderAdaptiveCastingSetup() {
 function renderSpellsSection() {
   const container = document.getElementById('spellsSection');
   const spellTitle = document.getElementById('spellsTitle');
+  const { spellDetails } = getSpellDataTables();
   
   // Collect all spells from all sources FIRST to see if we have any
   const allSpells = {
@@ -370,10 +371,23 @@ function renderSpellsSection() {
       const uniqueSpells = [...new Set(spells)];
       
       uniqueSpells.forEach(spellName => {
+        const details = spellDetails[spellName];
+        let descriptionHtml = '<em>Spell details available in rulebook or Spell Descriptions document.</em>';
+        if (details) {
+          descriptionHtml = `
+            <div><strong>${details.levelSchool || ''}</strong>${details.domain ? ` • <strong>Domain:</strong> ${details.domain}` : ''}</div>
+            <div><strong>Casting Time:</strong> ${details.castingTime || '—'}</div>
+            <div><strong>Range:</strong> ${details.range || '—'}</div>
+            <div><strong>Components:</strong> ${details.components || '—'}</div>
+            <div><strong>Duration:</strong> ${details.duration || '—'}</div>
+            <div style="margin-top:6px;">${details.description || ''}</div>
+            ${details.atHigherLevels ? `<div style="margin-top:6px;"><strong>At Higher Levels:</strong> ${details.atHigherLevels}</div>` : ''}
+          `;
+        }
         html += `<div class="feature-item">
           <div class="feature-title">${spellName}</div>
           <div class="feature-description">
-            <em>Spell details available in rulebook or Spell Descriptions document.</em>
+            ${descriptionHtml}
           </div>
         </div>`;
       });
