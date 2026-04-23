@@ -407,18 +407,6 @@ function getCallingSkillProfs() {
   return [];
 }
 
-function toggleSkillProf(name) {
-  const s = character.skills[name];
-  s.prof = !s.prof;
-  if (!s.prof) s.expert = false;
-  renderSkills();
-}
-
-function toggleSkillExpert(name) {
-  character.skills[name].expert = !character.skills[name].expert;
-  renderSkills();
-}
-
 // ========================================
 // INSTINCT MANAGEMENT
 // ========================================
