@@ -754,22 +754,20 @@ const DATABASE = {
         }
       ]
     },
-    mystic: {
+        mystic: {
       name: "Mystic",
       primaryStat: "wis",
       features: [
         { 
           level: 1, 
           name: "Bonus Proficiencies", 
-          description: "Choose two skills from: Arcana and Nature. You may use a weapon, druidic focus, or arcane focus as your spellcasting focus.",
-          skillChoices: ["Arcana", "Nature"],
-          pickCount: 2,
+          description: "You gain proficiency in Arcana and Religion. You may use a weapon, holy symbol, or arcane focus as your spellcasting focus.",
           actionType: null
         },
         { 
           level: 1, 
           name: "Primal Casting", 
-          description: "You are a half-caster whose magic draws from both the natural and arcane worlds. You prepare and cast spells using your Adaptive Edge slots, which also serve as your spell slots. Wisdom is your spellcasting ability. You can prepare spells from the Ranger or Cleric lists. Your Spell Save DC equals 8 + your Proficiency Bonus + your Wisdom modifier. You can cast any Ranger or Druid spell you know as a ritual if that spell has the ritual tag.",
+          description: "You are a half-caster whose magic draws from both the natural and arcane worlds. You prepare and cast spells using your Adaptive Edge slots, which also serve as your spell slots.\n-  Spellcasting Ability: Wisdom.\n-  Shared Slots: Your Adaptive Edge slots are also your spell slots, used for spells and Mystic Calling features.\n-  Spell Lists: You can prepare spells from the Ranger or Cleric lists.\n-  Spell Save DC = 8 + Proficiency Bonus + Wisdom modifier.\n-  Spell Attack modifier = Proficiency Bonus + Wisdom modifier.\n-  Casting with Adaptive Edges: You can cast spells of a level equal to or lower than your highest available Adaptive Edge slot.\n-  Ritual Casting: You can cast any Ranger or Cleric spell you know as a ritual if that spell has the ritual tag.\n-  Focus and Components: You can use a weapon, holy symbol, or arcane focus as a spellcasting focus. You ignore non-costly material components while using such a focus.",
           spellcasting: true,
           actionType: null
         },
