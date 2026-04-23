@@ -206,14 +206,11 @@ function renderSlots() {
 function getSpellDataTables() {
   const cantrips = (typeof CANTRIPS !== 'undefined') ? CANTRIPS : ((typeof globalThis !== 'undefined' && globalThis.CANTRIPS) ? globalThis.CANTRIPS : {});
   const level1Spells = (typeof LEVEL1_SPELLS !== 'undefined') ? LEVEL1_SPELLS : ((typeof globalThis !== 'undefined' && globalThis.LEVEL1_SPELLS) ? globalThis.LEVEL1_SPELLS : {});
-  const level2Spells = (typeof LEVEL2_SPELLS !== 'undefined') ? LEVEL2_SPELLS : ((typeof globalThis !== 'undefined' && globalThis.LEVEL2_SPELLS) ? globalThis.LEVEL2_SPELLS : {});
   const spellSources = (typeof SPELL_SOURCES !== 'undefined') ? SPELL_SOURCES : ((typeof globalThis !== 'undefined' && globalThis.SPELL_SOURCES) ? globalThis.SPELL_SOURCES : {});
-  const spellDetails = (typeof SPELL_DETAILS !== 'undefined') ? SPELL_DETAILS : ((typeof globalThis !== 'undefined' && globalThis.SPELL_DETAILS) ? globalThis.SPELL_DETAILS : {});
-  return { cantrips, level1Spells, level2Spells, spellSources, spellDetails };
+  return { cantrips, level1Spells, spellSources };
 }
 
 function getCallingSpellPools(callingKey) {
-  if (callingKey === 'mystic') return { cantripPools: ['ranger', 'cleric'], spellPools: ['ranger', 'cleric'] };
   if (callingKey === 'excavator') return { cantripPools: ['cleric'], spellPools: ['cleric'] };
   if (callingKey === 'wayfarer') return { cantripPools: ['druid'], spellPools: ['druid'] };
   return { cantripPools: ['ranger', 'druid'], spellPools: ['ranger', 'druid'] };
@@ -228,41 +225,7 @@ function getCallingMaxSpellLevel() {
   return maxLevel;
 }
 
-function getMagicInitiateListKey(featName) {
-  if (featName === 'Magic Initiate (Cleric)') return 'cleric';
-  if (featName === 'Magic Initiate (Druid)') return 'druid';
-  if (featName === 'Magic Initiate (Wizard)') return 'wizard';
-  return null;
-}
-
-function getFeatAutoAndChoiceSpells() {
-  const featSpells = { cantrips: [], level1: [], level2: [] };
-
-  // Origin feat spell picks (e.g., Magic Initiate)
-  if (character.selectedSpells?.originFeat?.cantrips) {
-    character.selectedSpells.originFeat.cantrips.forEach(spell => spell && featSpells.cantrips.push(spell));
-  }
-  if (character.selectedSpells?.originFeat?.level1) {
-    character.selectedSpells.originFeat.level1.forEach(spell => spell && featSpells.level1.push(spell));
-  }
-
-  // General feat auto-grants and choices (currently supported)
-  const allGeneralFeats = [4, 8, 12, 16].map(level => character.generalFeats?.[level]).filter(Boolean);
-  if (allGeneralFeats.includes('Fey Touched')) {
-    featSpells.level2.push('Misty Step');
-    const selected = character.selectedSpells?.featChoices?.feyTouchedLevel1;
-    if (selected) featSpells.level1.push(selected);
-  }
-  if (allGeneralFeats.includes('Shadow Touched')) {
-    featSpells.level2.push('Invisibility');
-    const selected = character.selectedSpells?.featChoices?.shadowTouchedLevel1;
-    if (selected) featSpells.level1.push(selected);
-  }
-
-  return featSpells;
-}
-
-function renderAdaptiveCastingSetup() {
+ function renderAdaptiveCastingSetup() {
   const title = document.getElementById('adaptiveCastingSetupTitle');
   const container = document.getElementById('adaptiveCastingSetup');
   if (!title || !container) return;
@@ -278,7 +241,7 @@ function renderAdaptiveCastingSetup() {
   container.style.display = 'block';
   
   const pools = getCallingSpellPools(character.calling);
-  const { cantrips, level1Spells, level2Spells } = getSpellDataTables();
+  const { cantrips, level1Spells } = getSpellDataTables();
   const cantripOptions = [...new Set(pools.cantripPools.flatMap(pool => cantrips[pool] || []))].sort();
   const maxSpellLevel = getCallingMaxSpellLevel();
   const levelKeys = ['level1', 'level2', 'level3', 'level4', 'level5'];
@@ -302,11 +265,7 @@ function renderAdaptiveCastingSetup() {
   for (let i = 0; i < maxSpellLevel; i++) {
     const key = levelKeys[i];
     const choicesAtLevel = Math.max(2, (SLOT_PROGRESSION[character.level] || [])[i] || 0);
-    const levelOptions = [...new Set(pools.spellPools.flatMap(pool => {
-      if (i === 0) return level1Spells[pool] || [];
-      if (i === 1) return level2Spells[pool] || [];
-      return [];
-    }))].sort();
+    const levelOptions = [...new Set(pools.spellPools.flatMap(pool => (i === 0 ? (level1Spells[pool] || []) : [])))].sort();
     
     for (let pick = 0; pick < choicesAtLevel; pick++) {
       const selectedSpell = character.selectedSpells.calling[key]?.[pick] || '';
@@ -322,11 +281,6 @@ function renderAdaptiveCastingSetup() {
   
   html += '</div></div>';
   container.innerHTML = html;
-}
-
-// Backward compatibility for older main.js references seen in cached deployments.
-function renderAdaptiveCasting() {
-  renderAdaptiveCastingSetup();
 }
 
 // ========================================
@@ -618,15 +572,10 @@ function renderCallingSpellSelection(featureLevel, callingKey) {
   let html = '<div style="margin-top:15px; padding:10px; background:#f0f8ff; border-radius:4px; border-left:3px solid #4a90e2;">';
   html += '<strong>Spell Selection</strong><br>';
   
-  const slotLevel = Math.min(4, Math.max(0, Math.floor((featureLevel - 1) / 4)));
-  const { cantrips, level1Spells, level2Spells } = getSpellDataTables();
+  const { cantrips, level1Spells } = getSpellDataTables();
   const pools = getCallingSpellPools(callingKey);
   const availableCantrips = [...new Set(pools.cantripPools.flatMap(pool => cantrips[pool] || []))].sort();
-  const availableSpells = [...new Set(pools.spellPools.flatMap(pool => {
-    if (slotLevel === 0) return level1Spells[pool] || [];
-    if (slotLevel === 1) return level2Spells[pool] || [];
-    return [];
-  }))].sort();
+  const availableSpells = [...new Set(pools.spellPools.flatMap(pool => level1Spells[pool] || []))].sort();
   const cantripCount = 2;
   
   // Render cantrip selections (for level 1 spellcasting features)
@@ -647,6 +596,7 @@ function renderCallingSpellSelection(featureLevel, callingKey) {
   }
   
   // Render level 1 spell selections (show based on available slots)
+  const slotLevel = Math.min(4, Math.max(0, Math.floor((featureLevel - 1) / 4)));
   const spellLevels = ['level1', 'level2', 'level3', 'level4', 'level5'];
   const spellLabels = ['1st', '2nd', '3rd', '4th', '5th'];
   const spellCount = 1;

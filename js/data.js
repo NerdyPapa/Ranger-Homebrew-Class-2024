@@ -754,7 +754,7 @@ const DATABASE = {
         }
       ]
     },
-    mystic: {
+        mystic: {
       name: "Mystic",
       primaryStat: "wis",
       features: [
@@ -1111,33 +1111,33 @@ const DATABASE = {
       features: [
         { 
           level: 3, 
-          name: "Sea Legs", 
-          description: "You gain a swimming speed and a climbing speed equal to your walking speed. You gain proficiency with Navigator's Tools and one additional tool of your choice from the following: Carpenter's Tools, Woodcarver's Tools, Weaver's Tools, or Cartographer's Tools. If you already have proficiency with Navigator's Tools, you may choose an additional tool from that list instead. You have advantage on saving throws against being knocked prone. When you are prone, standing up costs only 5 feet of movement instead of half your speed.",
+          name: "Sea-Blessed Navigator", 
+          description: "You gain a swim speed equal to your walking speed and proficiency in Water Vehicles. While on or near open water, you have advantage on Wisdom (Survival) checks made to navigate and track weather changes.",
           actionType: null
         },
         { 
           level: 3, 
-          name: "Boarding Action", 
-          description: "When you move at least 10 feet in a straight line toward a creature and then hit it with a melee weapon attack on the same turn, you can invoke one Boarding Action effect. Save DC = 8 + your proficiency bonus + your Strength or Dexterity modifier (chosen when you gain this feature).\n- Windfall: Push the target up to 10 feet away in a straight line (no save).\n- Keel Over: Target must succeed on a saving throw or be knocked prone.\n- Deep Lash: Target takes additional damage equal to your proficiency bonus.\n- Rigging Strike: Target is grappled by you; it can escape using an action with Strength (Athletics) or Dexterity (Acrobatics) against the same DC.\n- Cut and Run: The weapon gains the Nick property for this attack.\nYou can use Boarding Action a number of times equal to your proficiency bonus, regaining all uses on a short or long rest. You can also expend a 1st-level Adaptive Edge slot to use Boarding Action when you have no free uses remaining. When you expend a 3rd-level Adaptive Edge slot, you can apply two Boarding Action effects to the same attack instead of one.",
-          actionType: null
+          name: "Tidal Mark", 
+          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to mark a creature you can see within 60 feet until the end of your next turn. The next time you or an ally hits that creature with an attack, it takes an extra 1d8 cold or lightning damage (your choice).",
+          actionType: "bonus"
         },
         { 
           level: 7, 
-          name: "Dark Waters", 
-          description: "You gain proficiency in two skills of your choice. Additionally, you gain expertise in one skill in which you are proficient (your proficiency bonus is doubled for ability checks using that skill). You can hold your breath for a number of minutes equal to 10 × your Constitution modifier (minimum 10 minutes). Conditions such as rain, fog, murky water, and other forms of light obscurement do not hinder your vision out to a range of 60 feet.",
-          actionType: null
-        },
-        { 
-          level: 11, 
-          name: "Unshakable Crewmate", 
-          description: "You cannot be grappled or restrained while you are conscious. Additionally, when an ally within 30 feet of you is forced to make a Strength or Dexterity saving throw, you can use your reaction and expend a 2nd-level or higher Adaptive Edge slot to grant that creature advantage on the saving throw, or to grant that creature temporary hit points equal to your Wisdom modifier + your proficiency bonus.",
+          name: "Undertow Step", 
+          description: "As a reaction when a creature ends its movement within 10 feet of you, you can expend a 2nd-level Adaptive Edge slot to move up to half your speed without provoking opportunity attacks. If you end this movement adjacent to that creature, you can force it to make a Strength saving throw (DC = 8 + proficiency bonus + Wisdom modifier) or be pulled up to 10 feet in a direction of your choice.",
           actionType: "reaction"
         },
         { 
-          level: 15, 
-          name: "Old Salt", 
-          description: "When you fail a saving throw, you can expend a 4th-level or higher Adaptive Edge slot to choose to succeed instead. When you do, you also gain one of the following benefits of your choice: (1) gain advantage on your next attack roll, ability check, or saving throw, or (2) gain temporary hit points equal to your Ranger level.",
+          level: 11, 
+          name: "Stormwake Assault", 
+          description: "Once per turn when you hit with a weapon attack, you can expend a 3rd-level Adaptive Edge slot to unleash a stormwake. The target takes an extra 2d8 lightning damage, and one creature of your choice within 10 feet of the target takes lightning damage equal to your Wisdom modifier (minimum 1).",
           actionType: null
+        },
+        { 
+          level: 15, 
+          name: "Captain of the Tempest", 
+          description: "As an action, you can expend a 4th-level Adaptive Edge slot to surround yourself with surging wind and spray for 1 minute (concentration). During this time, you gain resistance to lightning and cold damage, and difficult terrain caused by water or weather does not cost you extra movement. Once on each of your turns, when you hit with a weapon attack, you can push the target up to 10 feet.",
+          actionType: "action"
         }
       ]
     },
@@ -1609,7 +1609,6 @@ const INSTINCTS_DB = {
     }
   ]
 };
-
 // ========================================
 // SPELL LISTS & SPELL SOURCES
 // ========================================
@@ -1636,17 +1635,6 @@ const LEVEL1_SPELLS = {
   paladin: ["Bless", "Command", "Cure Wounds", "Heroism", "Protection from Evil and Good", "Searing Smite", "Shield of Faith", "Wrathful Smite"]
 };
 
-const LEVEL2_SPELLS = {
-  ranger: ["Aid", "Barkskin", "Darkvision", "Enhance Ability", "Lesser Restoration", "Locate Object", "Pass without Trace", "Silence", "Spike Growth"],
-  cleric: ["Aid", "Augury", "Calm Emotions", "Hold Person", "Lesser Restoration", "Prayer of Healing", "Silence", "Spiritual Weapon", "Warding Bond", "Zone of Truth", "Seal of Record", "Brand of Judgment", "Kindled Bond"],
-  druid: ["Barkskin", "Darkvision", "Enhance Ability", "Flame Blade", "Gust of Wind", "Lesser Restoration", "Moonbeam", "Pass without Trace", "Spike Growth"],
-  wizard: ["Arcane Lock", "Blur", "Darkvision", "Invisibility", "Knock", "Levitate", "Mirror Image", "Misty Step", "See Invisibility"],
-  bard: ["Calm Emotions", "Enhance Ability", "Hold Person", "Invisibility", "Lesser Restoration", "Mirror Image", "Shatter", "Suggestion"],
-  sorcerer: ["Blur", "Darkvision", "Hold Person", "Invisibility", "Levitate", "Mirror Image", "Misty Step", "Scorching Ray"],
-  warlock: ["Darkness", "Hold Person", "Invisibility", "Mirror Image", "Misty Step", "Shatter", "Suggestion"],
-  paladin: ["Aid", "Find Steed", "Lesser Restoration", "Magic Weapon", "Prayer of Healing", "Zone of Truth"]
-};
-
 const SPELL_SOURCES = {
   "Bloodmarked": { cantrips: 1, level1: 1, cantripList: "sorcerer", level1List: "warlock" },
   "Druidic Warrior": { cantrips: 2, level1: 1, cantripList: "druid", level1List: "druid" },
@@ -1658,270 +1646,9 @@ const SPELL_SOURCES = {
   "Warding Thorns": { cantrips: 0, level1: 0, fixedSpells: ["Shield"] }
 };
 
-const SPELL_DETAILS = {
-  // Cantrips
-  "Druidcraft": {
-    levelSchool: "Cantrip Transmutation",
-    castingTime: "1 action",
-    range: "30 feet",
-    components: "V, S",
-    duration: "Instantaneous",
-    description: "Create a minor nature effect, such as predicting weather, making a flower bloom, creating a sensory effect, or lighting/snuffing a tiny flame."
-  },
-  "Guidance": {
-    levelSchool: "Cantrip Divination",
-    castingTime: "1 action",
-    range: "Touch",
-    components: "V, S",
-    duration: "Concentration, up to 1 minute",
-    description: "Target adds 1d4 to one ability check of its choice before the spell ends."
-  },
-  "Mending": {
-    levelSchool: "Cantrip Transmutation",
-    castingTime: "1 minute",
-    range: "Touch",
-    components: "V, S, M",
-    duration: "Instantaneous",
-    description: "Repairs a single break or tear in an object you touch."
-  },
-  "Poison Spray": {
-    levelSchool: "Cantrip Conjuration",
-    castingTime: "1 action",
-    range: "10 feet",
-    components: "V, S",
-    duration: "Instantaneous",
-    description: "Target makes a Constitution save or takes poison damage."
-  },
-  "Produce Flame": {
-    levelSchool: "Cantrip Conjuration",
-    castingTime: "1 action",
-    range: "Self/30 feet",
-    components: "V, S",
-    duration: "10 minutes",
-    description: "A flame appears in your hand, shedding light; you can hurl it to deal fire damage."
-  },
-  "Resistance": {
-    levelSchool: "Cantrip Abjuration",
-    castingTime: "1 action",
-    range: "Touch",
-    components: "V, S, M",
-    duration: "Concentration, up to 1 minute",
-    description: "Target adds 1d4 to one saving throw of its choice before the spell ends."
-  },
-  "Shillelagh": {
-    levelSchool: "Cantrip Transmutation",
-    castingTime: "Bonus action",
-    range: "Touch",
-    components: "V, S, M",
-    duration: "1 minute",
-    description: "Imbues a club or quarterstaff; attacks use your spellcasting ability and damage die becomes d8."
-  },
-  "Thorn Whip": {
-    levelSchool: "Cantrip Transmutation",
-    castingTime: "1 action",
-    range: "30 feet",
-    components: "V, S, M",
-    duration: "Instantaneous",
-    description: "Make a melee spell attack dealing piercing damage and pull the target up to 10 feet closer."
-  },
-  "Light": {
-    levelSchool: "Cantrip Evocation",
-    castingTime: "1 action",
-    range: "Touch",
-    components: "V, M",
-    duration: "1 hour",
-    description: "Object you touch sheds bright light in a 20-foot radius and dim light for 20 feet more."
-  },
-  "Sacred Flame": {
-    levelSchool: "Cantrip Evocation",
-    castingTime: "1 action",
-    range: "60 feet",
-    components: "V, S",
-    duration: "Instantaneous",
-    description: "Target makes a Dexterity save or takes radiant damage."
-  },
-  "Spare the Dying": {
-    levelSchool: "Cantrip Necromancy",
-    castingTime: "1 action",
-    range: "Touch",
-    components: "V, S",
-    duration: "Instantaneous",
-    description: "A living creature at 0 hit points becomes stable."
-  },
-  "Thaumaturgy": {
-    levelSchool: "Cantrip Transmutation",
-    castingTime: "1 action",
-    range: "30 feet",
-    components: "V",
-    duration: "Up to 1 minute",
-    description: "Create minor supernatural effects such as booming voice, flickering flames, tremors, or opening doors/windows."
-  },
-  "Toll the Dead": {
-    levelSchool: "Cantrip Necromancy",
-    castingTime: "1 action",
-    range: "60 feet",
-    components: "V, S",
-    duration: "Instantaneous",
-    description: "Target makes a Wisdom save or takes necrotic damage (increases if target is missing hit points)."
-  },
-  "Vicious Mockery": {
-    levelSchool: "Cantrip Enchantment",
-    castingTime: "1 action",
-    range: "60 feet",
-    components: "V",
-    duration: "Instantaneous",
-    description: "Target makes a Wisdom save or takes psychic damage and has disadvantage on its next attack roll."
-  },
-  "Mage Hand": {
-    levelSchool: "Cantrip Conjuration",
-    castingTime: "1 action",
-    range: "30 feet",
-    components: "V, S",
-    duration: "1 minute",
-    description: "Creates a spectral hand that can manipulate objects within limits."
-  },
-  "Minor Illusion": {
-    levelSchool: "Cantrip Illusion",
-    castingTime: "1 action",
-    range: "30 feet",
-    components: "S, M",
-    duration: "1 minute",
-    description: "Creates a sound or image illusion within range."
-  },
-  "Prestidigitation": {
-    levelSchool: "Cantrip Transmutation",
-    castingTime: "1 action",
-    range: "10 feet",
-    components: "V, S",
-    duration: "Up to 1 hour",
-    description: "Performs minor magical tricks for sensory effects, cleaning, marking, lighting/snuffing, and other harmless utility effects."
-  },
-  "Ray of Frost": {
-    levelSchool: "Cantrip Evocation",
-    castingTime: "1 action",
-    range: "60 feet",
-    components: "V, S",
-    duration: "Instantaneous",
-    description: "Ranged spell attack deals cold damage and reduces target speed until your next turn."
-  },
-  "Fire Bolt": {
-    levelSchool: "Cantrip Evocation",
-    castingTime: "1 action",
-    range: "120 feet",
-    components: "V, S",
-    duration: "Instantaneous",
-    description: "Ranged spell attack dealing fire damage; can ignite unattended flammable objects."
-  },
-  "Chill Touch": {
-    levelSchool: "Cantrip Necromancy",
-    castingTime: "1 action",
-    range: "120 feet",
-    components: "V, S",
-    duration: "1 round",
-    description: "Ranged spell attack deals necrotic damage; target cannot regain hit points until your next turn."
-  },
-  "Message": {
-    levelSchool: "Cantrip Transmutation",
-    castingTime: "1 action",
-    range: "120 feet",
-    components: "V, S, M",
-    duration: "1 round",
-    description: "Whisper a short message to a creature; it can reply in a whisper only you hear."
-  },
-  "Eldritch Blast": {
-    levelSchool: "Cantrip Evocation",
-    castingTime: "1 action",
-    range: "120 feet",
-    components: "V, S",
-    duration: "Instantaneous",
-    description: "Ranged spell attack dealing force damage."
-  },
-
-  // 1st-level spells
-  "Cure Wounds": { levelSchool: "1st-level Evocation", castingTime: "1 action", range: "Touch", components: "V, S", duration: "Instantaneous", description: "A creature you touch regains hit points." },
-  "Detect Magic": { levelSchool: "1st-level Divination (Ritual)", castingTime: "1 action", range: "Self", components: "V, S", duration: "Concentration, up to 10 minutes", description: "Sense the presence of magic within 30 feet." },
-  "Ensnaring Strike": { levelSchool: "1st-level Conjuration", castingTime: "Bonus action", range: "Self", components: "V", duration: "Concentration, up to 1 minute", description: "Next weapon hit restrains target with magical vines on a failed Strength save and deals ongoing piercing damage." },
-  "Fog Cloud": { levelSchool: "1st-level Conjuration", castingTime: "1 action", range: "120 feet", components: "V, S", duration: "Concentration, up to 1 hour", description: "Creates a heavily obscured sphere of fog." },
-  "Goodberry": { levelSchool: "1st-level Transmutation", castingTime: "1 action", range: "Touch", components: "V, S, M", duration: "Instantaneous", description: "Creates berries that heal and provide nourishment." },
-  "Hail of Thorns": { levelSchool: "1st-level Conjuration", castingTime: "Bonus action", range: "Self", components: "V", duration: "Concentration, up to 1 minute", description: "Next ranged weapon hit deals extra piercing damage in a small area (Dexterity save for half)." },
-  "Hunter's Mark": { levelSchool: "1st-level Divination", castingTime: "Bonus action", range: "90 feet", components: "V", duration: "Concentration, up to 1 hour", description: "Mark a target to deal extra weapon damage whenever you hit it and gain tracking advantages." },
-  "Longstrider": { levelSchool: "1st-level Transmutation", castingTime: "1 action", range: "Touch", components: "V, S, M", duration: "1 hour", description: "Target's speed increases by 10 feet." },
-  "Speak with Animals": { levelSchool: "1st-level Divination (Ritual)", castingTime: "1 action", range: "Self", components: "V, S", duration: "10 minutes", description: "You can comprehend and verbally communicate with beasts." },
-  "Zephyr Strike": { levelSchool: "1st-level Transmutation", castingTime: "Bonus action", range: "Self", components: "V", duration: "Concentration, up to 1 minute", description: "You move without provoking opportunity attacks; once before spell ends, gain advantage on one weapon attack that deals extra force damage and boosts speed." },
-  "Animal Friendship": { levelSchool: "1st-level Enchantment", castingTime: "1 action", range: "30 feet", components: "V, S, M", duration: "24 hours", description: "Convince a beast that you mean it no harm on a failed Wisdom save." },
-  "Charm Person": { levelSchool: "1st-level Enchantment", castingTime: "1 action", range: "30 feet", components: "V, S", duration: "1 hour", description: "Humanoid makes a Wisdom save or is charmed by you." },
-  "Entangle": { levelSchool: "1st-level Conjuration", castingTime: "1 action", range: "90 feet", components: "V, S", duration: "Concentration, up to 1 minute", description: "Grasping plants restrain creatures in an area on failed Strength saves." },
-  "Faerie Fire": { levelSchool: "1st-level Evocation", castingTime: "1 action", range: "60 feet", components: "V", duration: "Concentration, up to 1 minute", description: "Outlined targets grant advantage to attacks against them and cannot benefit from invisibility." },
-  "Healing Word": { levelSchool: "1st-level Evocation", castingTime: "Bonus action", range: "60 feet", components: "V", duration: "Instantaneous", description: "A creature you can see regains hit points." },
-  "Thunderwave": { levelSchool: "1st-level Evocation", castingTime: "1 action", range: "Self (15-foot cube)", components: "V, S", duration: "Instantaneous", description: "Wave of thunder damages and pushes creatures away on failed Constitution saves." },
-  "Bless": { levelSchool: "1st-level Enchantment", castingTime: "1 action", range: "30 feet", components: "V, S, M", duration: "Concentration, up to 1 minute", description: "Up to three creatures add 1d4 to attacks and saving throws." },
-  "Command": { levelSchool: "1st-level Enchantment", castingTime: "1 action", range: "60 feet", components: "V", duration: "1 round", description: "One creature follows a one-word command on failed Wisdom save." },
-  "Detect Evil and Good": { levelSchool: "1st-level Divination", castingTime: "1 action", range: "Self", components: "V, S", duration: "Concentration, up to 10 minutes", description: "Sense aberrations, celestials, elementals, fey, fiends, and undead nearby." },
-  "Guiding Bolt": { levelSchool: "1st-level Evocation", castingTime: "1 action", range: "120 feet", components: "V, S", duration: "1 round", description: "Ranged spell attack deals radiant damage; next attack against target before your next turn has advantage." },
-  "Protection from Evil and Good": { levelSchool: "1st-level Abjuration", castingTime: "1 action", range: "Touch", components: "V, S, M", duration: "Concentration, up to 10 minutes", description: "Protects target against specific creature types, imposing disadvantage and blocking charm/frighten/possession effects." },
-  "Sanctuary": { levelSchool: "1st-level Abjuration", castingTime: "Bonus action", range: "30 feet", components: "V, S, M", duration: "1 minute", description: "Attackers targeting warded creature must pass a Wisdom save or choose a new target/lose attack." },
-  "Shield of Faith": { levelSchool: "1st-level Abjuration", castingTime: "Bonus action", range: "60 feet", components: "V, S, M", duration: "Concentration, up to 10 minutes", description: "Target gains +2 bonus to AC." },
-
-  // 2nd-level spells
-  "Aid": { levelSchool: "2nd-level Abjuration", castingTime: "1 action", range: "30 feet", components: "V, S, M", duration: "8 hours", description: "Up to three creatures' hit point maximum and current hit points increase." },
-  "Barkskin": { levelSchool: "2nd-level Transmutation", castingTime: "1 action", range: "Touch", components: "V, S, M", duration: "Concentration, up to 1 hour", description: "Target's skin hardens; AC cannot be less than 16." },
-  "Darkvision": { levelSchool: "2nd-level Transmutation", castingTime: "1 action", range: "Touch", components: "V, S, M", duration: "8 hours", description: "Grants darkvision out to 60 feet." },
-  "Enhance Ability": { levelSchool: "2nd-level Transmutation", castingTime: "1 action", range: "Touch", components: "V, S, M", duration: "Concentration, up to 1 hour", description: "Target gains advantage on checks with one ability and extra benefit based on chosen option." },
-  "Lesser Restoration": { levelSchool: "2nd-level Abjuration", castingTime: "1 action", range: "Touch", components: "V, S", duration: "Instantaneous", description: "Ends one disease or one blinded, deafened, paralyzed, or poisoned condition." },
-  "Locate Object": { levelSchool: "2nd-level Divination", castingTime: "1 action", range: "Self", components: "V, S, M", duration: "Concentration, up to 10 minutes", description: "Sense direction to a familiar object within 1,000 feet." },
-  "Pass without Trace": { levelSchool: "2nd-level Abjuration", castingTime: "1 action", range: "Self", components: "V, S, M", duration: "Concentration, up to 1 hour", description: "You and nearby creatures gain +10 to Stealth checks and leave no tracks." },
-  "Silence": { levelSchool: "2nd-level Illusion (Ritual)", castingTime: "1 action", range: "120 feet", components: "V, S", duration: "Concentration, up to 10 minutes", description: "Creates a sphere where no sound is created or passes through." },
-  "Spike Growth": { levelSchool: "2nd-level Transmutation", castingTime: "1 action", range: "150 feet", components: "V, S, M", duration: "Concentration, up to 10 minutes", description: "Camouflaged spikes make terrain difficult and deal piercing damage when creatures move through it." },
-  "Augury": { levelSchool: "2nd-level Divination (Ritual)", castingTime: "1 minute", range: "Self", components: "V, S, M", duration: "Instantaneous", description: "Receive an omen about results of a specific course of action in the next 30 minutes." },
-  "Calm Emotions": { levelSchool: "2nd-level Enchantment", castingTime: "1 action", range: "60 feet", components: "V, S", duration: "Concentration, up to 1 minute", description: "Suppress charm/fear or make creatures indifferent in an area." },
-  "Hold Person": { levelSchool: "2nd-level Enchantment", castingTime: "1 action", range: "60 feet", components: "V, S, M", duration: "Concentration, up to 1 minute", description: "Humanoid makes Wisdom save or is paralyzed; repeats save each turn." },
-  "Prayer of Healing": { levelSchool: "2nd-level Evocation", castingTime: "10 minutes", range: "30 feet", components: "V", duration: "Instantaneous", description: "Up to six creatures of your choice regain hit points." },
-  "Spiritual Weapon": { levelSchool: "2nd-level Evocation", castingTime: "Bonus action", range: "60 feet", components: "V, S", duration: "1 minute", description: "Creates floating weapon that makes force-damage melee spell attacks as a bonus action." },
-  "Warding Bond": { levelSchool: "2nd-level Abjuration", castingTime: "1 action", range: "Touch", components: "V, S, M", duration: "1 hour", description: "Target gains +1 AC and saving throws and resistance to all damage; you take matching damage." },
-  "Zone of Truth": { levelSchool: "2nd-level Enchantment", castingTime: "1 action", range: "60 feet", components: "V, S", duration: "10 minutes", description: "Creatures in a sphere cannot knowingly speak lies on failed Charisma saves." },
-  "Misty Step": { levelSchool: "2nd-level Conjuration", castingTime: "Bonus action", range: "Self", components: "V", duration: "Instantaneous", description: "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see." },
-  "Invisibility": { levelSchool: "2nd-level Illusion", castingTime: "1 action", range: "Touch", components: "V, S, M", duration: "Concentration, up to 1 hour", description: "A creature you touch becomes invisible until the spell ends or it attacks/casts a spell." },
-  "Shield": { levelSchool: "1st-level Abjuration", castingTime: "1 reaction", range: "Self", components: "V, S", duration: "1 round", description: "Gain +5 AC until start of your next turn, including against the triggering attack." },
-  "Disguise Self": { levelSchool: "1st-level Illusion", castingTime: "1 action", range: "Self", components: "V, S", duration: "1 hour", description: "Change your appearance, including clothing and gear, for the duration." },
-  "Sleep": { levelSchool: "1st-level Enchantment", castingTime: "1 action", range: "90 feet", components: "V, S, M", duration: "1 minute", description: "Puts creatures in an area into magical slumber, starting with lowest current hit points." },
-  "Heroism": { levelSchool: "1st-level Enchantment", castingTime: "1 action", range: "Touch", components: "V, S", duration: "Concentration, up to 1 minute", description: "Willing creature becomes immune to frightened and gains temporary hit points each turn." },
-  "Tasha's Hideous Laughter": { levelSchool: "1st-level Enchantment", castingTime: "1 action", range: "30 feet", components: "V, S, M", duration: "Concentration, up to 1 minute", description: "Target falls prone and is incapacitated with laughter on a failed Wisdom save." },
-
-  "Seal of Record": {
-    levelSchool: "2nd-level Abjuration",
-    castingTime: "1 action",
-    range: "Touch",
-    components: "V, S, M (a drop of ink and a pinch of ash)",
-    duration: "8 hours",
-    domain: "Foundation",
-    description: "You touch a creature and inscribe an invisible sigil of doctrinal warding upon them. For the duration, the creature cannot be compelled to speak falsehoods or reveal information against its will by magical means. The creature is immune to any spell or effect that would force it to answer questions, speak truthfully, or divulge information (such as Zone of Truth or similar compulsions). The creature is aware of any such attempt when it is blocked. Additionally, if the creature is targeted by a Divination spell of 3rd level or lower during the duration, you are immediately aware that the attempt was made, though you do not learn the identity of the caster."
-  },
-  "Brand of Judgment": {
-    levelSchool: "2nd-level Evocation",
-    castingTime: "1 reaction (when a creature you can see within 60 feet deals damage to a creature other than you)",
-    range: "60 feet",
-    components: "V, S",
-    duration: "Instantaneous",
-    domain: "Purification",
-    description: "You condemn the attacker for the harm it has inflicted. The creature must make a Wisdom saving throw. On a failure, it takes 2d8 radiant damage and has disadvantage on attack rolls against creatures other than you until the start of your next turn. On a success, the creature takes half damage and suffers no disadvantage.",
-    atHigherLevels: "When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for each slot level above 2nd."
-  },
-  "Kindled Bond": {
-    levelSchool: "2nd-level Divination",
-    castingTime: "1 action",
-    range: "30 feet",
-    components: "V, S, M (a lit flame)",
-    duration: "1 hour",
-    domain: "Spirit",
-    description: "You focus on a flame and forge a telepathic link among up to a number of willing creatures equal to your Wisdom modifier within range, psychically connecting each creature to all the others for the duration. Creatures that cannot communicate in any language are unaffected by this spell. Until the spell ends, linked creatures can communicate telepathically through the bond whether or not they share a common language. The communication functions as long as linked creatures remain within 120 feet of you. A creature that moves beyond this range is temporarily disconnected from the bond but rejoins automatically upon returning to range."
-  }
-};
-
 // Expose spell tables on the global object for cross-file access safety.
 if (typeof globalThis !== 'undefined') {
   globalThis.CANTRIPS = CANTRIPS;
   globalThis.LEVEL1_SPELLS = LEVEL1_SPELLS;
-  globalThis.LEVEL2_SPELLS = LEVEL2_SPELLS;
   globalThis.SPELL_SOURCES = SPELL_SOURCES;
-  globalThis.SPELL_DETAILS = SPELL_DETAILS;
 }
