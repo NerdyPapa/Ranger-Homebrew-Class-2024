@@ -1576,3 +1576,46 @@ const INSTINCTS_DB = {
     }
   ]
 };
+// ========================================
+// SPELL LISTS & SPELL SOURCES
+// ========================================
+
+const CANTRIPS = {
+  ranger: ["Druidcraft", "Guidance", "Mending", "Poison Spray", "Produce Flame", "Resistance", "Shillelagh", "Thorn Whip"],
+  druid: ["Druidcraft", "Guidance", "Mending", "Poison Spray", "Produce Flame", "Resistance", "Shillelagh", "Thorn Whip"],
+  cleric: ["Guidance", "Light", "Mending", "Resistance", "Sacred Flame", "Spare the Dying", "Thaumaturgy", "Toll the Dead"],
+  wizard: ["Mage Hand", "Minor Illusion", "Prestidigitation", "Ray of Frost", "Fire Bolt", "Chill Touch", "Message", "Light"],
+  bard: ["Vicious Mockery", "Mage Hand", "Minor Illusion", "Prestidigitation", "Message", "Light"],
+  sorcerer: ["Fire Bolt", "Minor Illusion", "Mage Hand", "Message", "Ray of Frost", "Shocking Grasp", "Chill Touch"],
+  warlock: ["Eldritch Blast", "Mage Hand", "Minor Illusion", "Chill Touch", "Poison Spray", "Prestidigitation"],
+  paladin: ["Light", "Thaumaturgy", "Sacred Flame", "Resistance"]
+};
+
+const LEVEL1_SPELLS = {
+  ranger: ["Cure Wounds", "Detect Magic", "Ensnaring Strike", "Fog Cloud", "Goodberry", "Hail of Thorns", "Hunter's Mark", "Longstrider", "Speak with Animals", "Zephyr Strike"],
+  druid: ["Animal Friendship", "Charm Person", "Cure Wounds", "Detect Magic", "Entangle", "Faerie Fire", "Goodberry", "Healing Word", "Longstrider", "Thunderwave"],
+  cleric: ["Bless", "Command", "Cure Wounds", "Detect Evil and Good", "Detect Magic", "Guiding Bolt", "Healing Word", "Protection from Evil and Good", "Sanctuary", "Shield of Faith"],
+  wizard: ["Burning Hands", "Detect Magic", "Disguise Self", "Find Familiar", "Mage Armor", "Magic Missile", "Shield", "Sleep", "Tasha's Hideous Laughter"],
+  bard: ["Bane", "Charm Person", "Cure Wounds", "Disguise Self", "Dissonant Whispers", "Faerie Fire", "Healing Word", "Heroism", "Sleep", "Tasha's Hideous Laughter"],
+  sorcerer: ["Burning Hands", "Chromatic Orb", "Disguise Self", "Mage Armor", "Magic Missile", "Shield", "Sleep", "Thunderwave"],
+  warlock: ["Armor of Agathys", "Charm Person", "Hex", "Hellish Rebuke", "Protection from Evil and Good", "Unseen Servant"],
+  paladin: ["Bless", "Command", "Cure Wounds", "Heroism", "Protection from Evil and Good", "Searing Smite", "Shield of Faith", "Wrathful Smite"]
+};
+
+const SPELL_SOURCES = {
+  "Bloodmarked": { cantrips: 1, level1: 1, cantripList: "sorcerer", level1List: "warlock" },
+  "Druidic Warrior": { cantrips: 2, level1: 1, cantripList: "druid", level1List: "druid" },
+  "Sacred Oath": { cantrips: 1, level1: 1, cantripList: "cleric", level1List: "paladin" },
+  "Spell Lore": { cantrips: 1, level1: 1, cantripList: "wizard", level1List: "bard" },
+  "Wild Charm": { cantrips: 1, level1: 1, cantripList: "druid", level1List: "druid" },
+  "Hunter's Mark": { cantrips: 0, level1: 0, fixedSpells: ["Hunter's Mark"] },
+  "Battle Hymn": { cantrips: 0, level1: 0, fixedSpells: ["Vicious Mockery"] },
+  "Warding Thorns": { cantrips: 0, level1: 0, fixedSpells: ["Shield"] }
+};
+
+// Expose spell tables on the global object for cross-file access safety.
+if (typeof globalThis !== 'undefined') {
+  globalThis.CANTRIPS = CANTRIPS;
+  globalThis.LEVEL1_SPELLS = LEVEL1_SPELLS;
+  globalThis.SPELL_SOURCES = SPELL_SOURCES;
+}
