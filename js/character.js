@@ -420,16 +420,11 @@ function getInstinctSkillProfs() {
   return profs;
 }
 
-function toggleSkillProf(name) {
-  const s = character.skills[name];
-  s.prof = !s.prof;
-  if (!s.prof) s.expert = false;
-  renderSkills();
-}
-
-function toggleSkillExpert(name) {
-  character.skills[name].expert = !character.skills[name].expert;
-  renderSkills();
+function getCallingSkillProfs() {
+  if (character.calling === "mystic" && character.level >= 1) {
+    return ["Arcana", "Religion"];
+  }
+  return [];
 }
 
 // ========================================
