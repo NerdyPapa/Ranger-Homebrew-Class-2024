@@ -58,7 +58,8 @@ let character = {
   selectedSpells: {
     originFeat: { cantrips: [], level1: [] },
     instincts: {},
-    calling: { cantrips: [], level1: [], level2: [], level3: [], level4: [], level5: [] }
+    calling: { cantrips: [], level1: [], level2: [], level3: [], level4: [], level5: [] },
+    featChoices: {}
   },
   // NEW TRACKING PROPERTIES
   rangerSkillChoices: [],
@@ -68,7 +69,14 @@ let character = {
 };
 
 // Initialize all skills with proficiency/expertise tracking
-SKILLS.forEach(s => character.skills[s.name] = { prof: false, expert: false });
+const skillsList = (typeof SKILLS !== 'undefined') ? SKILLS : (typeof globalThis !== 'undefined' ? globalThis.SKILLS : undefined);
+if (Array.isArray(skillsList)) {
+  skillsList.forEach(s => {
+    character.skills[s.name] = { prof: false, expert: false };
+  });
+} else {
+  console.error('[Ranger Sheet] SKILLS is not available. Did js/data.js fail to load?');
+}
 
 // ========================================
 // HELPER FUNCTIONS
@@ -270,26 +278,6 @@ function setExpertise(index, skillName) {
 }
 
 // ========================================
-// NEW: SPELL SELECTION FOR SPELLCASTING CALLINGS
-// ========================================
-
-function setCallingSpell(level, index, spellName) {
-  if (!character.selectedSpells.calling) {
-    character.selectedSpells.calling = {
-      cantrips: [], level1: [], level2: [], level3: [], level4: [], level5: []
-    };
-  }
-  
-  const key = level === 0 ? 'cantrips' : `level${level}`;
-  if (!character.selectedSpells.calling[key]) {
-    character.selectedSpells.calling[key] = [];
-  }
-  
-  character.selectedSpells.calling[key][index] = spellName;
-  updateCharacter();
-}
-
-// ========================================
 // ARMOR & AC CALCULATIONS
 // ========================================
 
@@ -420,6 +408,13 @@ function getInstinctSkillProfs() {
   return profs;
 }
 
+function getCallingSkillProfs() {
+  if (character.calling === "mystic" && character.level >= 1) {
+    return ["Arcana", "Religion"];
+  }
+  return [];
+}
+
 function toggleSkillProf(name) {
   const s = character.skills[name];
   s.prof = !s.prof;
@@ -515,11 +510,7 @@ function pickGeneralFeat(level, value) {
   if (value && value.includes("Fighting Style Feat")) {
     character.fsFeats["(ASI choice)"] = value;
   }
-  renderGeneralFeatDesc(level);
-  renderFeatASIControls(level);
-  renderCombatStats();
-  renderAbilityScores();
-  renderSkills();
+  updateCharacter();
 }
 
 function setFeatASI(level) {

@@ -2,6 +2,16 @@
 // MAIN INITIALIZATION & UPDATE
 // ========================================
 
+const APP_BUILD = '2026-04-24-3';
+
+function hasCoreDataLoaded() {
+  const speciesList = (typeof SPECIES_LIST !== 'undefined') ? SPECIES_LIST : (typeof globalThis !== 'undefined' ? globalThis.SPECIES_LIST : undefined);
+  const backgrounds = (typeof BACKGROUNDS !== 'undefined') ? BACKGROUNDS : (typeof globalThis !== 'undefined' ? globalThis.BACKGROUNDS : undefined);
+  const generalFeats = (typeof GENERAL_FEATS !== 'undefined') ? GENERAL_FEATS : (typeof globalThis !== 'undefined' ? globalThis.GENERAL_FEATS : undefined);
+  const epicBoons = (typeof EPIC_BOONS !== 'undefined') ? EPIC_BOONS : (typeof globalThis !== 'undefined' ? globalThis.EPIC_BOONS : undefined);
+  return !!(speciesList && backgrounds && generalFeats && epicBoons);
+}
+
 function initSelectors() {
   // Initialize level selector (1-20)
   const lvlSel = document.getElementById('levelSelect');
@@ -30,6 +40,11 @@ function initSelectors() {
 }
 
 function updateCharacter() {
+  if (!hasCoreDataLoaded()) {
+    console.error('[Ranger Sheet] Update skipped because core data is unavailable.');
+    return;
+  }
+
   renderAbilityScores();
   renderCombatStats();
   renderSkills();
@@ -38,6 +53,7 @@ function updateCharacter() {
   renderFeaturesAndTraits();
   renderActions();
   renderEquipment();
+  renderAdaptiveCastingSetup();
   renderSpellsSection();
 }
 
@@ -46,6 +62,12 @@ function updateCharacter() {
 // ========================================
 
 (function init() {
+  console.info(`[Ranger Sheet] Build ${APP_BUILD}`);
+  if (!hasCoreDataLoaded()) {
+    console.error('[Ranger Sheet] Core data failed to load. Please hard refresh and verify js/data.js loads successfully.');
+    return;
+  }
+
   initSelectors();
   setBackground(character.background);
   
