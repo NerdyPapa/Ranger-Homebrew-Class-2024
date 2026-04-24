@@ -1113,9 +1113,6 @@ const DATABASE = {
           level: 3, 
           name: "Sea Legs", 
           description: "You gain a swimming speed and a climbing speed equal to your walking speed. You gain proficiency with Navigator's Tools and one additional tool of your choice from the following: Carpenter's Tools, Woodcarver's Tools, Weaver's Tools, or Cartographer's Tools. If you already have proficiency with Navigator's Tools, you may choose an additional tool from that list instead. You have advantage on saving throws against being knocked prone. When you are prone, standing up costs only 5 feet of movement instead of half your speed.",
-          name: "Sea-Blessed Navigator", 
-          description: "You gain a swim speed equal to your walking speed and proficiency in Water Vehicles. While on or near open water, you have advantage on Wisdom (Survival) checks made to navigate and track weather changes.",
-          actionType: null
         },
         { 
           level: 3, 
@@ -1140,27 +1137,7 @@ const DATABASE = {
           name: "Old Salt", 
           description: "When you fail a saving throw, you can expend a 4th-level or higher Adaptive Edge slot to choose to succeed instead. When you do, you also gain one of the following benefits of your choice: (1) gain advantage on your next attack roll, ability check, or saving throw, or (2) gain temporary hit points equal to your Ranger level.",
           actionType: null
-          name: "Tidal Mark", 
-          description: "As a bonus action, you can expend a 1st-level Adaptive Edge slot to mark a creature you can see within 60 feet until the end of your next turn. The next time you or an ally hits that creature with an attack, it takes an extra 1d8 cold or lightning damage (your choice).",
           actionType: "bonus"
-        },
-        { 
-          level: 7, 
-          name: "Undertow Step", 
-          description: "As a reaction when a creature ends its movement within 10 feet of you, you can expend a 2nd-level Adaptive Edge slot to move up to half your speed without provoking opportunity attacks. If you end this movement adjacent to that creature, you can force it to make a Strength saving throw (DC = 8 + proficiency bonus + Wisdom modifier) or be pulled up to 10 feet in a direction of your choice.",
-          actionType: "reaction"
-        },
-        { 
-          level: 11, 
-          name: "Stormwake Assault", 
-          description: "Once per turn when you hit with a weapon attack, you can expend a 3rd-level Adaptive Edge slot to unleash a stormwake. The target takes an extra 2d8 lightning damage, and one creature of your choice within 10 feet of the target takes lightning damage equal to your Wisdom modifier (minimum 1).",
-          actionType: null
-        },
-        { 
-          level: 15, 
-          name: "Captain of the Tempest", 
-          description: "As an action, you can expend a 4th-level Adaptive Edge slot to surround yourself with surging wind and spray for 1 minute (concentration). During this time, you gain resistance to lightning and cold damage, and difficult terrain caused by water or weather does not cost you extra movement. Once on each of your turns, when you hit with a weapon attack, you can push the target up to 10 feet.",
-          actionType: "action"
         }
       ]
     },
