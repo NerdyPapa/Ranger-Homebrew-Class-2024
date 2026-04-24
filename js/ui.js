@@ -899,7 +899,18 @@ function renderFeaturesAndTraits() {
   const subclassContainer = document.getElementById('subclassFeatures');
   if (subclassKey && DATABASE.subclasses[subclassKey] && lvl >= 3) {
     const sc = DATABASE.subclasses[subclassKey];
-    const unlocked = sc.features.filter(f => f.level <= lvl);
+    let unlocked = sc.features.filter(f => f.level <= lvl);
+
+    // Defensive cleanup for accidental merge artifacts in subclass data.
+    // Mariner should only expose these canonical feature names.
+    if (subclassKey === 'mariner') {
+      const marinerFeatureOrder = ['Sea Legs', 'Boarding Action', 'Dark Waters', 'Unshakable Crewmate', 'Old Salt'];
+      const marinerAllowed = new Set(marinerFeatureOrder);
+      unlocked = unlocked
+        .filter(f => marinerAllowed.has(f.name))
+        .sort((a, b) => marinerFeatureOrder.indexOf(a.name) - marinerFeatureOrder.indexOf(b.name));
+    }
+
     subclassContainer.innerHTML = unlocked.length ?
       unlocked.map(f => `<div class="feature-item">
         <div class="feature-title">${f.name} (${f.level}${getOrdinal(f.level)} Level)</div>
