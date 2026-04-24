@@ -1106,13 +1106,14 @@ const DATABASE = {
         }
       ]
     },
-    mariner: {
+       mariner: {
       name: "Mariner",
       features: [
         { 
           level: 3, 
           name: "Sea Legs", 
           description: "You gain a swimming speed and a climbing speed equal to your walking speed. You gain proficiency with Navigator's Tools and one additional tool of your choice from the following: Carpenter's Tools, Woodcarver's Tools, Weaver's Tools, or Cartographer's Tools. If you already have proficiency with Navigator's Tools, you may choose an additional tool from that list instead. You have advantage on saving throws against being knocked prone. When you are prone, standing up costs only 5 feet of movement instead of half your speed.",
+          actionType: null
         },
         { 
           level: 3, 
@@ -1137,7 +1138,6 @@ const DATABASE = {
           name: "Old Salt", 
           description: "When you fail a saving throw, you can expend a 4th-level or higher Adaptive Edge slot to choose to succeed instead. When you do, you also gain one of the following benefits of your choice: (1) gain advantage on your next attack roll, ability check, or saving throw, or (2) gain temporary hit points equal to your Ranger level.",
           actionType: null
-          actionType: "bonus"
         }
       ]
     },
