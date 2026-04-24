@@ -262,7 +262,7 @@ function getFeatAutoAndChoiceSpells() {
   return featSpells;
 }
 
-ffunction renderAdaptiveCastingSetup() {
+function renderAdaptiveCastingSetup() {
   const title = document.getElementById('adaptiveCastingSetupTitle');
   const container = document.getElementById('adaptiveCastingSetup');
   if (!title || !container) return;

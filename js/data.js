@@ -165,7 +165,7 @@ const ORIGIN_FEAT_DESC = {
   "Savage Attacker": "-  Once per turn when you hit with a weapon, roll its damage dice twice and use either result.",
   "Skilled": "-  Gain proficiency in any combination of three skills or tools.\n-  Repeatable.",
   "Tavern Brawler": "-  Unarmed Strike deals 1d4 + STR (bludgeoning) instead of normal.\n-  Reroll 1s on unarmed damage.\n-  Proficiency with improvised weapons.\n-  Push 5 ft when you hit with Unarmed Strike as part of Attack (1/turn).",
-  "Tough": "-  Increase max HP by 2 Ã— character level when taken; +2 HP per level thereafter."
+  "Tough": "-  Increase max HP by 2 × character level when taken; +2 HP per level thereafter."
 };
 
 const GENERAL_FEATS = [
@@ -204,7 +204,7 @@ const GENERAL_FEAT_DESC = {
   "Lightly Armored": "-  +1 STR or DEX.\n-  Gain Light armor & Shield training.",
   "Mage Slayer": "-  +1 STR or DEX.\n-  Creatures you damage have Disadvantage on Concentration saves.\n-  1/Short or Long Rest: succeed on INT/WIS/CHA save instead after failing.",
   "Martial Weapon Training": "-  +1 STR or DEX.\n-  Gain Martial weapon proficiency.",
-  "Medium Armor Master": "-  +1 STR or DEX.\n-  While in Medium armor and DEX â‰¥16, add +3 DEX (not +2) to AC.",
+  "Medium Armor Master": "-  +1 STR or DEX.\n-  While in Medium armor and DEX ≥16, add +3 DEX (not +2) to AC.",
   "Moderately Armored": "-  +1 STR or DEX.\n-  Gain Medium armor training.",
   "Mounted Combatant": "-  +1 STR/DEX/WIS.\n-  Advantage on attacks vs. unmounted creatures smaller than your mount within 5 ft of mount; Evasion-like for mount; redirect hit on mount to you.",
   "Observant": "-  +1 INT or WIS.\n-  Gain proficiency (or Expertise if proficient) in Insight/Investigation/Perception (choose one).\n-  Search as Bonus Action.",

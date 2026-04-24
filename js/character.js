@@ -305,10 +305,10 @@ function setArmor(armorName) {
   if (warnings) {
     let warnText = '';
     if (armorInfo.category === 'Heavy' && !hasHeavyArmorProficiency()) {
-      warnText += '<div style="color:#856404; font-size:11px; background:#fff3cd; padding:6px; border-radius:4px; margin-top:4px;">âš ï¸ Heavy armor requires proficiency (Warden or Heavily Armored feat).</div>';
+      warnText += '<div style="color:#856404; font-size:11px; background:#fff3cd; padding:6px; border-radius:4px; margin-top:4px;">⚠️ Heavy armor requires proficiency (Warden or Heavily Armored feat).</div>';
     }
     if (armorInfo.str > 0 && getScore('str') < armorInfo.str) {
-      warnText += '<div style="color:#856404; font-size:11px; background:#fff3cd; padding:6px; border-radius:4px; margin-top:4px;">âš ï¸ This armor requires STR ' + armorInfo.str + '. You have STR ' + getScore('str') + '. Speed reduced by 10 ft.</div>';
+      warnText += '<div style="color:#856404; font-size:11px; background:#fff3cd; padding:6px; border-radius:4px; margin-top:4px;">⚠️ This armor requires STR ' + armorInfo.str + '. You have STR ' + getScore('str') + '. Speed reduced by 10 ft.</div>';
     }
     warnings.innerHTML = warnText;
   }
@@ -481,8 +481,8 @@ function setBackground(name) {
   character.background = name;
   character.originFeat = BACKGROUNDS[name]?.originFeat || null;
   character.backgroundASI = { mode: 'twoPlusOne', plus2: '', plus1: '' };
-  setHTML('featBgName', name || 'â€”');
-  setHTML('originFeatName', character.originFeat || 'â€”');
+  setHTML('featBgName', name || '—');
+  setHTML('originFeatName', character.originFeat || '—');
   renderOriginFeatDesc();
   renderBgASISelectors();
   updateCharacter();
