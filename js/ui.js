@@ -139,6 +139,7 @@ function renderSkills() {
   const maxProf = levelData.skillProfs;
   const maxExpert = character.level >= 9 ? 2 : 0;
   const instinctProfs = getInstinctSkillProfs();
+  const callingProfs = getCallingSkillProfs();
   
   let profCount = 0, expertCount = 0;
   Object.values(character.skills).forEach(s => {
@@ -150,7 +151,8 @@ function renderSkills() {
     const abilMod = getMod(getScore(skill.ability));
     const skillData = character.skills[skill.name];
     const hasInstinctProf = instinctProfs.includes(skill.name);
-    const isActuallyProficient = skillData.prof || hasInstinctProf;
+    const hasCallingProf = callingProfs.includes(skill.name);
+    const isActuallyProficient = skillData.prof || hasInstinctProf || hasCallingProf;
     
     let modifier = abilMod;
     if (isActuallyProficient) modifier += profBonus;
@@ -159,11 +161,11 @@ function renderSkills() {
     const modStr = modifier >= 0 ? `+${modifier}` : `${modifier}`;
     const profDisabled = (!skillData.prof && profCount >= maxProf);
     const expertDisabled = (!skillData.expert && (expertCount >= maxExpert || !isActuallyProficient || character.level < 9));
-    const profLabel = hasInstinctProf ? '✓ (Instinct)' : '';
+    const profLabel = hasInstinctProf ? '✓ (Instinct)' : (hasCallingProf ? '✓ (Calling)' : '');
     
     return `<div class="skill-item">
       <div class="skill-checkboxes">
-        <input type="checkbox" class="skill-checkbox" ${skillData.prof ? 'checked' : ''} ${profDisabled || hasInstinctProf ? 'disabled' : ''} onchange="toggleSkillProf('${skill.name}')" title="Proficient">
+        <input type="checkbox" class="skill-checkbox" ${skillData.prof ? 'checked' : ''} ${profDisabled || hasInstinctProf || hasCallingProf ? 'disabled' : ''} onchange="toggleSkillProf('${skill.name}')" title="Proficient">
         <input type="checkbox" class="skill-checkbox" ${skillData.expert ? 'checked' : ''} ${expertDisabled ? 'disabled' : ''} onchange="toggleSkillExpert('${skill.name}')" title="Expertise">
       </div>
       <span class="skill-name">${skill.name} (${skill.ability.toUpperCase()}) ${profLabel}</span>
@@ -201,6 +203,132 @@ function renderSlots() {
   }).filter(Boolean).join('');
 }
 
+function getSpellDataTables() {
+  const cantrips = (typeof CANTRIPS !== 'undefined') ? CANTRIPS : ((typeof globalThis !== 'undefined' && globalThis.CANTRIPS) ? globalThis.CANTRIPS : {});
+  const level1Spells = (typeof LEVEL1_SPELLS !== 'undefined') ? LEVEL1_SPELLS : ((typeof globalThis !== 'undefined' && globalThis.LEVEL1_SPELLS) ? globalThis.LEVEL1_SPELLS : {});
+  const level2Spells = (typeof LEVEL2_SPELLS !== 'undefined') ? LEVEL2_SPELLS : ((typeof globalThis !== 'undefined' && globalThis.LEVEL2_SPELLS) ? globalThis.LEVEL2_SPELLS : {});
+  const spellSources = (typeof SPELL_SOURCES !== 'undefined') ? SPELL_SOURCES : ((typeof globalThis !== 'undefined' && globalThis.SPELL_SOURCES) ? globalThis.SPELL_SOURCES : {});
+  const spellDetails = (typeof SPELL_DETAILS !== 'undefined') ? SPELL_DETAILS : ((typeof globalThis !== 'undefined' && globalThis.SPELL_DETAILS) ? globalThis.SPELL_DETAILS : {});
+  return { cantrips, level1Spells, level2Spells, spellSources, spellDetails };
+}
+
+function getCallingSpellPools(callingKey) {
+  if (callingKey === 'mystic') return { cantripPools: ['ranger', 'cleric'], spellPools: ['ranger', 'cleric'] };
+  if (callingKey === 'excavator') return { cantripPools: ['cleric'], spellPools: ['cleric'] };
+  if (callingKey === 'wayfarer') return { cantripPools: ['druid'], spellPools: ['druid'] };
+  return { cantripPools: ['ranger', 'druid'], spellPools: ['ranger', 'druid'] };
+}
+
+function getCallingMaxSpellLevel() {
+  const slots = SLOT_PROGRESSION[character.level] || [];
+  let maxLevel = 1;
+  slots.forEach((count, index) => {
+    if (count > 0) maxLevel = index + 1;
+  });
+  return maxLevel;
+}
+
+function getMagicInitiateListKey(featName) {
+  if (featName === 'Magic Initiate (Cleric)') return 'cleric';
+  if (featName === 'Magic Initiate (Druid)') return 'druid';
+  if (featName === 'Magic Initiate (Wizard)') return 'wizard';
+  return null;
+}
+
+function getFeatAutoAndChoiceSpells() {
+  const featSpells = { cantrips: [], level1: [], level2: [] };
+
+  // Origin feat spell picks (e.g., Magic Initiate)
+  if (character.selectedSpells?.originFeat?.cantrips) {
+    character.selectedSpells.originFeat.cantrips.forEach(spell => spell && featSpells.cantrips.push(spell));
+  }
+  if (character.selectedSpells?.originFeat?.level1) {
+    character.selectedSpells.originFeat.level1.forEach(spell => spell && featSpells.level1.push(spell));
+  }
+
+  // General feat auto-grants and choices (currently supported)
+  const allGeneralFeats = [4, 8, 12, 16].map(level => character.generalFeats?.[level]).filter(Boolean);
+  if (allGeneralFeats.includes('Fey Touched')) {
+    featSpells.level2.push('Misty Step');
+    const selected = character.selectedSpells?.featChoices?.feyTouchedLevel1;
+    if (selected) featSpells.level1.push(selected);
+  }
+  if (allGeneralFeats.includes('Shadow Touched')) {
+    featSpells.level2.push('Invisibility');
+    const selected = character.selectedSpells?.featChoices?.shadowTouchedLevel1;
+    if (selected) featSpells.level1.push(selected);
+  }
+
+  return featSpells;
+}
+
+function renderAdaptiveCastingSetup() {
+  const title = document.getElementById('adaptiveCastingSetupTitle');
+  const container = document.getElementById('adaptiveCastingSetup');
+  if (!title || !container) return;
+  
+  const spellcasters = ['mystic', 'wayfarer', 'excavator'];
+  if (!character.calling || !spellcasters.includes(character.calling)) {
+    title.style.display = 'none';
+    container.style.display = 'none';
+    return;
+  }
+  
+  title.style.display = 'block';
+  container.style.display = 'block';
+  
+  const pools = getCallingSpellPools(character.calling);
+  const { cantrips, level1Spells, level2Spells } = getSpellDataTables();
+  const cantripOptions = [...new Set(pools.cantripPools.flatMap(pool => cantrips[pool] || []))].sort();
+  const maxSpellLevel = getCallingMaxSpellLevel();
+  const levelKeys = ['level1', 'level2', 'level3', 'level4', 'level5'];
+  const labels = ['1st', '2nd', '3rd', '4th', '5th'];
+  
+  let html = '<div class="casting-setup-card"><h3>Choose Prepared Spells</h3>';
+  html += '<p>These selections power your Adaptive Edge Casting section below.</p>';
+  
+  html += '<div class="spell-selection-grid">';
+  for (let i = 0; i < 2; i++) {
+    const selectedCantrip = character.selectedSpells.calling.cantrips[i] || '';
+    html += `<div class="spell-selection-field">
+      <label>Cantrip ${i + 1}</label>
+      <select class="feat-select" onchange="setCallingSpell('cantrips', ${i}, this.value)">
+        <option value="">-- Choose Cantrip --</option>
+        ${cantripOptions.map(spell => `<option value="${spell}" ${selectedCantrip === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+      </select>
+    </div>`;
+  }
+  
+  for (let i = 0; i < maxSpellLevel; i++) {
+    const key = levelKeys[i];
+    const choicesAtLevel = Math.max(2, (SLOT_PROGRESSION[character.level] || [])[i] || 0);
+    const levelOptions = [...new Set(pools.spellPools.flatMap(pool => {
+      if (i === 0) return level1Spells[pool] || [];
+      if (i === 1) return level2Spells[pool] || [];
+      return [];
+    }))].sort();
+    
+    for (let pick = 0; pick < choicesAtLevel; pick++) {
+      const selectedSpell = character.selectedSpells.calling[key]?.[pick] || '';
+      html += `<div class="spell-selection-field">
+        <label>${labels[i]}-Level Spell ${pick + 1}</label>
+        <select class="feat-select" onchange="setCallingSpell('${key}', ${pick}, this.value)">
+          <option value="">-- Choose Spell --</option>
+          ${levelOptions.map(spell => `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+        </select>
+      </div>`;
+    }
+  }
+  
+  html += '</div></div>';
+  container.innerHTML = html;
+}
+
+// Backward compatibility for older main.js references seen in cached deployments.
+function renderAdaptiveCasting() {
+  renderAdaptiveCastingSetup();
+}
+
 // ========================================
 // SPELLS SECTION RENDERING (NEW: ORGANIZED BY LEVEL)
 // ========================================
@@ -208,6 +336,7 @@ function renderSlots() {
 function renderSpellsSection() {
   const container = document.getElementById('spellsSection');
   const spellTitle = document.getElementById('spellsTitle');
+  const { spellDetails } = getSpellDataTables();
   
   // Collect all spells from all sources FIRST to see if we have any
   const allSpells = {
@@ -248,6 +377,12 @@ function renderSpellsSection() {
       });
     }
   }
+
+  // Add spells from general feat auto-grants and feat spell picks
+  const featSpells = getFeatAutoAndChoiceSpells();
+  featSpells.cantrips.forEach(spell => spell && allSpells.cantrips.push(spell));
+  featSpells.level1.forEach(spell => spell && allSpells.level1.push(spell));
+  featSpells.level2.forEach(spell => spell && allSpells.level2.push(spell));
   
   // Add spells from instincts
   if (character.selectedSpells && character.selectedSpells.instincts) {
@@ -288,10 +423,23 @@ function renderSpellsSection() {
       const uniqueSpells = [...new Set(spells)];
       
       uniqueSpells.forEach(spellName => {
+        const details = spellDetails[spellName];
+        let descriptionHtml = '<em>Spell details available in rulebook or Spell Descriptions document.</em>';
+        if (details) {
+          descriptionHtml = `
+            <div><strong>${details.levelSchool || ''}</strong>${details.domain ? ` • <strong>Domain:</strong> ${details.domain}` : ''}</div>
+            <div><strong>Casting Time:</strong> ${details.castingTime || '—'}</div>
+            <div><strong>Range:</strong> ${details.range || '—'}</div>
+            <div><strong>Components:</strong> ${details.components || '—'}</div>
+            <div><strong>Duration:</strong> ${details.duration || '—'}</div>
+            <div style="margin-top:6px;">${details.description || ''}</div>
+            ${details.atHigherLevels ? `<div style="margin-top:6px;"><strong>At Higher Levels:</strong> ${details.atHigherLevels}</div>` : ''}
+          `;
+        }
         html += `<div class="feature-item">
           <div class="feature-title">${spellName}</div>
           <div class="feature-description">
-            <em>Spell details available in rulebook or Spell Descriptions document.</em>
+            ${descriptionHtml}
           </div>
         </div>`;
       });
@@ -331,6 +479,7 @@ function renderInstinctSelectors() {
   const container = document.getElementById('instinctsSelection');
   const levelData = LEVEL_DATA[character.level];
   const totalInstincts = levelData.instincts;
+  const { spellSources } = getSpellDataTables();
   
   if (totalInstincts === 0) {
     container.innerHTML = '<p style="padding:15px; background:#f9f9f9; border-radius:4px;">Instincts are available from Level 2 onwards.</p>';
@@ -388,7 +537,7 @@ function renderInstinctSelectors() {
   // Render spell selections for instincts that grant spells
   for (let i = 0; i < totalInstincts; i++) {
     const selected = character.selectedInstincts[i];
-    if (selected && SPELL_SOURCES[selected]) {
+    if (selected && spellSources[selected]) {
       renderInstinctSpellSelection(i, selected);
     }
   }
@@ -399,7 +548,8 @@ function renderInstinctSpellSelection(instinctIndex, instinctName) {
   const container = document.getElementById(`instinctSpells_${instinctIndex}`);
   if (!container) return;
   
-  const spellSource = SPELL_SOURCES[instinctName];
+  const { cantrips, level1Spells, spellSources } = getSpellDataTables();
+  const spellSource = spellSources[instinctName];
   if (!spellSource) return;
   
   // Initialize spell storage for this instinct if needed
@@ -412,7 +562,7 @@ function renderInstinctSpellSelection(instinctIndex, instinctName) {
   
   // Render cantrip selections
   if (spellSource.cantrips > 0) {
-    const cantripList = CANTRIPS[spellSource.cantripList] || [];
+    const cantripList = cantrips[spellSource.cantripList] || [];
     for (let i = 0; i < spellSource.cantrips; i++) {
       const selectedCantrip = character.selectedSpells.instincts[instinctName].cantrips[i] || '';
       html += `<div style="margin-top:8px;">
@@ -427,7 +577,7 @@ function renderInstinctSpellSelection(instinctIndex, instinctName) {
   
   // Render level 1 spell selections
   if (spellSource.level1 > 0) {
-    const level1List = LEVEL1_SPELLS[spellSource.level1List] || [];
+    const level1List = level1Spells[spellSource.level1List] || [];
     for (let i = 0; i < spellSource.level1; i++) {
       const selectedSpell = character.selectedSpells.instincts[instinctName].level1[i] || '';
       html += `<div style="margin-top:8px;">
@@ -468,29 +618,19 @@ function renderCallingSpellSelection(featureLevel, callingKey) {
   let html = '<div style="margin-top:15px; padding:10px; background:#f0f8ff; border-radius:4px; border-left:3px solid #4a90e2;">';
   html += '<strong>Spell Selection</strong><br>';
   
-  // Determine spell lists based on calling
-  let cantripList = 'ranger';
-  let spellList = 'ranger';
-  let cantripCount = 2;
-  
-  if (callingKey === 'mystic') {
-    cantripList = 'druid';
-    spellList = 'ranger'; // Mystic can choose from Ranger or Druid
-    html += '<div style="margin-top:8px; font-size:0.85em; color:#555;"><em>Choose from Ranger or Druid spell lists</em></div>';
-  } else if (callingKey === 'excavator') {
-    cantripList = 'cleric';
-    spellList = 'cleric';
-    html += '<div style="margin-top:8px; font-size:0.85em; color:#555;"><em>Choose from Cleric spell list</em></div>';
-  } else if (callingKey === 'wayfarer') {
-    cantripList = 'druid';
-    spellList = 'druid';
-    html += '<div style="margin-top:8px; font-size:0.85em; color:#555;"><em>Choose from Druid spell list</em></div>';
-  }
+  const slotLevel = Math.min(4, Math.max(0, Math.floor((featureLevel - 1) / 4)));
+  const { cantrips, level1Spells, level2Spells } = getSpellDataTables();
+  const pools = getCallingSpellPools(callingKey);
+  const availableCantrips = [...new Set(pools.cantripPools.flatMap(pool => cantrips[pool] || []))].sort();
+  const availableSpells = [...new Set(pools.spellPools.flatMap(pool => {
+    if (slotLevel === 0) return level1Spells[pool] || [];
+    if (slotLevel === 1) return level2Spells[pool] || [];
+    return [];
+  }))].sort();
+  const cantripCount = 2;
   
   // Render cantrip selections (for level 1 spellcasting features)
   if (featureLevel === 1) {
-    const availableCantrips = [...new Set([...(CANTRIPS['ranger'] || []), ...(CANTRIPS['druid'] || [])])];
-    
     for (let i = 0; i < cantripCount; i++) {
       const selectedCantrip = character.selectedSpells.calling.cantrips[i] || '';
       html += `<div style="margin-top:8px;">
@@ -498,7 +638,7 @@ function renderCallingSpellSelection(featureLevel, callingKey) {
         <select class="feat-select" onchange="setCallingSpell('cantrips', ${i}, this.value)" style="width:100%; margin-top:3px;">
           <option value="">-- Choose Cantrip --</option>`;
       
-      availableCantrips.sort().forEach(spell => {
+      availableCantrips.forEach(spell => {
         html += `<option value="${spell}" ${selectedCantrip === spell ? 'selected' : ''}>${spell}</option>`;
       });
       
@@ -507,35 +647,28 @@ function renderCallingSpellSelection(featureLevel, callingKey) {
   }
   
   // Render level 1 spell selections (show based on available slots)
-  const slots = SLOT_PROGRESSION[character.level];
   const spellLevels = ['level1', 'level2', 'level3', 'level4', 'level5'];
   const spellLabels = ['1st', '2nd', '3rd', '4th', '5th'];
+  const spellCount = 1;
   
-  for (let slotLevel = 0; slotLevel < slots.length; slotLevel++) {
-    if (slots[slotLevel] > 0 && slotLevel === 0) { // Only show 1st level for now
-      const availableSpells = [...new Set([...(LEVEL1_SPELLS['ranger'] || []), ...(LEVEL1_SPELLS['druid'] || [])])];
-      const spellCount = Math.max(2, slots[slotLevel]); // At least 2 spells to choose
-      
-      html += `<div style="margin-top:12px; padding-top:8px; border-top:1px solid #ccc;">
-        <div style="font-weight:600; margin-bottom:5px;">${spellLabels[slotLevel]}-Level Spells</div>`;
-      
-      for (let i = 0; i < spellCount; i++) {
-        const selectedSpell = character.selectedSpells.calling[spellLevels[slotLevel]][i] || '';
-        html += `<div style="margin-top:6px;">
-          <label style="font-size:0.85em;">Spell ${i + 1}:</label>
-          <select class="feat-select" onchange="setCallingSpell('${spellLevels[slotLevel]}', ${i}, this.value)" style="width:100%; margin-top:2px;">
-            <option value="">-- Choose Spell --</option>`;
-        
-        availableSpells.sort().forEach(spell => {
-          html += `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`;
-        });
-        
-        html += `</select></div>`;
-      }
-      
-      html += '</div>';
-    }
+  html += `<div style="margin-top:12px; padding-top:8px; border-top:1px solid #ccc;">
+    <div style="font-weight:600; margin-bottom:5px;">${spellLabels[slotLevel]}-Level Spell Choice</div>`;
+  
+  for (let i = 0; i < spellCount; i++) {
+    const selectedSpell = character.selectedSpells.calling[spellLevels[slotLevel]][i] || '';
+    html += `<div style="margin-top:6px;">
+      <label style="font-size:0.85em;">Spell ${i + 1}:</label>
+      <select class="feat-select" onchange="setCallingSpell('${spellLevels[slotLevel]}', ${i}, this.value)" style="width:100%; margin-top:2px;">
+        <option value="">-- Choose Spell --</option>`;
+    
+    availableSpells.forEach(spell => {
+      html += `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`;
+    });
+    
+    html += `</select></div>`;
   }
+  
+  html += '</div>';
   
   html += '</div>';
   container.innerHTML = html;
@@ -548,6 +681,23 @@ function setCallingSpell(spellLevel, index, spellName) {
   }
   character.selectedSpells.calling[spellLevel][index] = spellName;
   renderSpellsSection();
+}
+
+function setOriginFeatSpell(spellLevel, index, spellName) {
+  if (!character.selectedSpells.originFeat) {
+    character.selectedSpells.originFeat = { cantrips: [], level1: [] };
+  }
+  if (!character.selectedSpells.originFeat[spellLevel]) {
+    character.selectedSpells.originFeat[spellLevel] = [];
+  }
+  character.selectedSpells.originFeat[spellLevel][index] = spellName;
+  updateCharacter();
+}
+
+function setGeneralFeatSpellChoice(key, spellName) {
+  if (!character.selectedSpells.featChoices) character.selectedSpells.featChoices = {};
+  character.selectedSpells.featChoices[key] = spellName;
+  updateCharacter();
 }
 
 // ========================================
@@ -722,7 +872,7 @@ function renderFeaturesAndTraits() {
     
     // After rendering HTML, add spell selection UIs
     unlocked.forEach(feature => {
-      if (feature.spellcasting) {
+      if (feature.spellcasting || feature.spellChoices) {
         renderCallingSpellSelection(feature.level, callingKey);
       }
     });
@@ -734,7 +884,18 @@ function renderFeaturesAndTraits() {
   const subclassContainer = document.getElementById('subclassFeatures');
   if (subclassKey && DATABASE.subclasses[subclassKey] && lvl >= 3) {
     const sc = DATABASE.subclasses[subclassKey];
-    const unlocked = sc.features.filter(f => f.level <= lvl);
+    let unlocked = sc.features.filter(f => f.level <= lvl);
+
+    // Defensive cleanup for accidental merge artifacts in subclass data.
+    // Mariner should only expose these canonical feature names.
+    if (subclassKey === 'mariner') {
+      const marinerFeatureOrder = ['Sea Legs', 'Boarding Action', 'Dark Waters', 'Unshakable Crewmate', 'Old Salt'];
+      const marinerAllowed = new Set(marinerFeatureOrder);
+      unlocked = unlocked
+        .filter(f => marinerAllowed.has(f.name))
+        .sort((a, b) => marinerFeatureOrder.indexOf(a.name) - marinerFeatureOrder.indexOf(b.name));
+    }
+
     subclassContainer.innerHTML = unlocked.length ?
       unlocked.map(f => `<div class="feature-item">
         <div class="feature-title">${f.name} (${f.level}${getOrdinal(f.level)} Level)</div>
@@ -869,12 +1030,84 @@ function renderEquipment() {
 function renderGeneralFeatDesc(level) {
   const key = character.generalFeats[level] || "Ability Score Improvement";
   const text = GENERAL_FEAT_DESC[key] || "—";
-  setHTML('featDesc' + level, text);
+  const holder = document.getElementById('featDesc' + level);
+  if (!holder) return;
+
+  let html = text;
+  const { level1Spells } = getSpellDataTables();
+  const allLevel1 = [...new Set(Object.values(level1Spells).flat())].sort();
+
+  if (key === 'Fey Touched') {
+    const feyChoices = allLevel1.filter(sp => ['Charm Person', 'Command', 'Heroism', 'Sleep', "Tasha's Hideous Laughter"].includes(sp));
+    const selected = character.selectedSpells?.featChoices?.feyTouchedLevel1 || '';
+    html += `<div style="margin-top:8px;">
+      <label style="display:block; font-weight:600; margin-bottom:4px;">Fey Touched Spell (1st-level)</label>
+      <select class="feat-select" onchange="setGeneralFeatSpellChoice('feyTouchedLevel1', this.value)">
+        <option value="">-- Choose Spell --</option>
+        ${feyChoices.map(spell => `<option value="${spell}" ${selected === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+      </select>
+      <div class="feat-note" style="margin-top:4px;">Automatically granted: <strong>Misty Step</strong>.</div>
+    </div>`;
+  }
+
+  if (key === 'Shadow Touched') {
+    const shadowChoices = allLevel1.filter(sp => ['Disguise Self', 'False Life', 'Cause Fear'].includes(sp));
+    const selected = character.selectedSpells?.featChoices?.shadowTouchedLevel1 || '';
+    html += `<div style="margin-top:8px;">
+      <label style="display:block; font-weight:600; margin-bottom:4px;">Shadow Touched Spell (1st-level)</label>
+      <select class="feat-select" onchange="setGeneralFeatSpellChoice('shadowTouchedLevel1', this.value)">
+        <option value="">-- Choose Spell --</option>
+        ${shadowChoices.map(spell => `<option value="${spell}" ${selected === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+      </select>
+      <div class="feat-note" style="margin-top:4px;">Automatically granted: <strong>Invisibility</strong>.</div>
+    </div>`;
+  }
+
+  holder.innerHTML = html;
 }
 
 function renderOriginFeatDesc() {
   const name = character.originFeat;
-  document.getElementById('originFeatDesc').textContent = name ? (ORIGIN_FEAT_DESC[name] || "—") : "—";
+  const container = document.getElementById('originFeatDesc');
+  if (!container) return;
+  let html = name ? (ORIGIN_FEAT_DESC[name] || "—") : "—";
+  const listKey = getMagicInitiateListKey(name);
+
+  if (listKey) {
+    const { cantrips, level1Spells } = getSpellDataTables();
+    const cantripOptions = (cantrips[listKey] || []).slice().sort();
+    const level1Options = (level1Spells[listKey] || []).slice().sort();
+    const c0 = character.selectedSpells?.originFeat?.cantrips?.[0] || '';
+    const c1 = character.selectedSpells?.originFeat?.cantrips?.[1] || '';
+    const s0 = character.selectedSpells?.originFeat?.level1?.[0] || '';
+
+    html += `<div style="margin-top:8px; padding:10px; background:#f0f8ff; border-radius:4px; border-left:3px solid #4a90e2;">
+      <strong>${name} Spell Selection</strong>
+      <div style="margin-top:8px;">
+        <label style="font-size:0.9em;">Cantrip 1</label>
+        <select class="feat-select" onchange="setOriginFeatSpell('cantrips', 0, this.value)">
+          <option value="">-- Choose Cantrip --</option>
+          ${cantripOptions.map(spell => `<option value="${spell}" ${c0 === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+        </select>
+      </div>
+      <div style="margin-top:8px;">
+        <label style="font-size:0.9em;">Cantrip 2</label>
+        <select class="feat-select" onchange="setOriginFeatSpell('cantrips', 1, this.value)">
+          <option value="">-- Choose Cantrip --</option>
+          ${cantripOptions.map(spell => `<option value="${spell}" ${c1 === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+        </select>
+      </div>
+      <div style="margin-top:8px;">
+        <label style="font-size:0.9em;">1st-Level Spell</label>
+        <select class="feat-select" onchange="setOriginFeatSpell('level1', 0, this.value)">
+          <option value="">-- Choose Spell --</option>
+          ${level1Options.map(spell => `<option value="${spell}" ${s0 === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+        </select>
+      </div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
 }
 
 function renderEpicBoonDesc() {
