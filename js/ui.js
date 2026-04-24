@@ -214,6 +214,11 @@ function getSpellDataTables() {
 
 function getCallingSpellPools(callingKey) {
   if (callingKey === 'mystic') return { cantripPools: ['ranger', 'cleric'], spellPools: ['ranger', 'cleric'] };
+  const spellSources = (typeof SPELL_SOURCES !== 'undefined') ? SPELL_SOURCES : ((typeof globalThis !== 'undefined' && globalThis.SPELL_SOURCES) ? globalThis.SPELL_SOURCES : {});
+  return { cantrips, level1Spells, spellSources };
+}
+
+function getCallingSpellPools(callingKey) {
   if (callingKey === 'excavator') return { cantripPools: ['cleric'], spellPools: ['cleric'] };
   if (callingKey === 'wayfarer') return { cantripPools: ['druid'], spellPools: ['druid'] };
   return { cantripPools: ['ranger', 'druid'], spellPools: ['ranger', 'druid'] };
@@ -263,6 +268,7 @@ function getFeatAutoAndChoiceSpells() {
 }
 
 function renderAdaptiveCastingSetup() {
+ function renderAdaptiveCastingSetup() {
   const title = document.getElementById('adaptiveCastingSetupTitle');
   const container = document.getElementById('adaptiveCastingSetup');
   if (!title || !container) return;
@@ -279,6 +285,7 @@ function renderAdaptiveCastingSetup() {
   
   const pools = getCallingSpellPools(character.calling);
   const { cantrips, level1Spells, level2Spells } = getSpellDataTables();
+  const { cantrips, level1Spells } = getSpellDataTables();
   const cantripOptions = [...new Set(pools.cantripPools.flatMap(pool => cantrips[pool] || []))].sort();
   const maxSpellLevel = getCallingMaxSpellLevel();
   const levelKeys = ['level1', 'level2', 'level3', 'level4', 'level5'];
@@ -307,6 +314,7 @@ function renderAdaptiveCastingSetup() {
       if (i === 1) return level2Spells[pool] || [];
       return [];
     }))].sort();
+    const levelOptions = [...new Set(pools.spellPools.flatMap(pool => (i === 0 ? (level1Spells[pool] || []) : [])))].sort();
     
     for (let pick = 0; pick < choicesAtLevel; pick++) {
       const selectedSpell = character.selectedSpells.calling[key]?.[pick] || '';
@@ -627,6 +635,10 @@ function renderCallingSpellSelection(featureLevel, callingKey) {
     if (slotLevel === 1) return level2Spells[pool] || [];
     return [];
   }))].sort();
+  const { cantrips, level1Spells } = getSpellDataTables();
+  const pools = getCallingSpellPools(callingKey);
+  const availableCantrips = [...new Set(pools.cantripPools.flatMap(pool => cantrips[pool] || []))].sort();
+  const availableSpells = [...new Set(pools.spellPools.flatMap(pool => level1Spells[pool] || []))].sort();
   const cantripCount = 2;
   
   // Render cantrip selections (for level 1 spellcasting features)
@@ -647,6 +659,7 @@ function renderCallingSpellSelection(featureLevel, callingKey) {
   }
   
   // Render level 1 spell selections (show based on available slots)
+  const slotLevel = Math.min(4, Math.max(0, Math.floor((featureLevel - 1) / 4)));
   const spellLevels = ['level1', 'level2', 'level3', 'level4', 'level5'];
   const spellLabels = ['1st', '2nd', '3rd', '4th', '5th'];
   const spellCount = 1;
@@ -692,12 +705,14 @@ function setOriginFeatSpell(spellLevel, index, spellName) {
   }
   character.selectedSpells.originFeat[spellLevel][index] = spellName;
   updateCharacter();
+  renderSpellsSection();
 }
 
 function setGeneralFeatSpellChoice(key, spellName) {
   if (!character.selectedSpells.featChoices) character.selectedSpells.featChoices = {};
   character.selectedSpells.featChoices[key] = spellName;
   updateCharacter();
+  renderSpellsSection();
 }
 
 // ========================================
