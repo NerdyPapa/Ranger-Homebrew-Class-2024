@@ -2,6 +2,13 @@
 // MAIN INITIALIZATION & UPDATE
 // ========================================
 
+const APP_BUILD = '2026-04-24-3';
+
+function hasCoreDataLoaded() {
+  const requiredGlobals = ['SPECIES_LIST', 'BACKGROUNDS', 'GENERAL_FEATS', 'EPIC_BOONS'];
+  return requiredGlobals.every(name => typeof globalThis[name] !== 'undefined');
+}
+
 function initSelectors() {
   // Initialize level selector (1-20)
   const lvlSel = document.getElementById('levelSelect');
@@ -38,6 +45,7 @@ function updateCharacter() {
   renderFeaturesAndTraits();
   renderActions();
   renderEquipment();
+  renderAdaptiveCastingSetup();
   renderSpellsSection();
 }
 
@@ -46,6 +54,12 @@ function updateCharacter() {
 // ========================================
 
 (function init() {
+  console.info(`[Ranger Sheet] Build ${APP_BUILD}`);
+  if (!hasCoreDataLoaded()) {
+    console.error('[Ranger Sheet] Core data failed to load. Please hard refresh and verify js/data.js loads successfully.');
+    return;
+  }
+
   initSelectors();
   setBackground(character.background);
   
