@@ -8,8 +8,14 @@
 // ========================================
 
 function renderAbilityScores() {
+  const abilitiesList = (typeof ABILITIES !== 'undefined') ? ABILITIES : (typeof globalThis !== 'undefined' ? globalThis.ABILITIES : undefined);
+  if (!Array.isArray(abilitiesList)) {
+    console.error('[Ranger Sheet] renderAbilityScores skipped because ABILITIES is unavailable.');
+    return;
+  }
+
   const container = document.getElementById('abilityScores');
-  const abilities = ABILITIES;
+  const abilities = abilitiesList;
   const names = abilities.map(a => ABILITY_LABELS[a]);
   const profBonus = LEVEL_DATA[character.level].profBonus;
   

@@ -37,6 +37,11 @@ function initSelectors() {
 }
 
 function updateCharacter() {
+  if (!hasCoreDataLoaded()) {
+    console.error('[Ranger Sheet] Update skipped because core data is unavailable.');
+    return;
+  }
+
   renderAbilityScores();
   renderCombatStats();
   renderSkills();

@@ -69,7 +69,14 @@ let character = {
 };
 
 // Initialize all skills with proficiency/expertise tracking
-SKILLS.forEach(s => character.skills[s.name] = { prof: false, expert: false });
+const skillsList = (typeof SKILLS !== 'undefined') ? SKILLS : (typeof globalThis !== 'undefined' ? globalThis.SKILLS : undefined);
+if (Array.isArray(skillsList)) {
+  skillsList.forEach(s => {
+    character.skills[s.name] = { prof: false, expert: false };
+  });
+} else {
+  console.error('[Ranger Sheet] SKILLS is not available. Did js/data.js fail to load?');
+}
 
 // ========================================
 // HELPER FUNCTIONS
