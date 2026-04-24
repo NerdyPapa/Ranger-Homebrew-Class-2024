@@ -383,7 +383,7 @@ function renderSpellsSection() {
   featSpells.level1.forEach(spell => spell && allSpells.level1.push(spell));
   featSpells.level2.forEach(spell => spell && allSpells.level2.push(spell));
   
-  // Add spells from instincts
+  // Add chosen spells from instincts
   if (character.selectedSpells && character.selectedSpells.instincts) {
     Object.values(character.selectedSpells.instincts).forEach(instSpells => {
       if (instSpells) {
@@ -400,7 +400,24 @@ function renderSpellsSection() {
       }
     });
   }
-  
+
+  // Add fixed spells granted by instincts (e.g. Beast Speech → Speak with Animals)
+  const { spellSources, cantrips: cantripData } = getSpellDataTables();
+  character.selectedInstincts.forEach(instinctName => {
+    if (!instinctName) return;
+    const src = spellSources[instinctName];
+    if (src && src.fixedSpells) {
+      src.fixedSpells.forEach(spell => {
+        const isCantrip = Object.values(cantripData).some(list => Array.isArray(list) && list.includes(spell));
+        if (isCantrip) {
+          allSpells.cantrips.push(spell);
+        } else {
+          allSpells.level1.push(spell);
+        }
+      });
+    }
+  });
+
   // Render organized by level
   let html = '';
   
@@ -546,22 +563,76 @@ function renderInstinctSelectors() {
 function renderInstinctSpellSelection(instinctIndex, instinctName) {
   const container = document.getElementById(`instinctSpells_${instinctIndex}`);
   if (!container) return;
-  
+
   const { cantrips, level1Spells, spellSources } = getSpellDataTables();
   const spellSource = spellSources[instinctName];
   if (!spellSource) return;
-  
+
   // Initialize spell storage for this instinct if needed
   if (!character.selectedSpells.instincts[instinctName]) {
-    character.selectedSpells.instincts[instinctName] = { cantrips: [], level1: [] };
+    character.selectedSpells.instincts[instinctName] = { mode: null, cantrips: [], level1: [] };
   }
-  
+
   let html = '<div style="margin-top:10px; padding:10px; background:#f0f8ff; border-radius:4px; border-left:3px solid #4a90e2;">';
+
+  // Fixed spells — just display, no choice needed
+  if (spellSource.fixedSpells) {
+    html += `<div style="font-size:0.9em; color:#555;">
+      <strong>Always Known:</strong> ${spellSource.fixedSpells.join(', ')}
+    </div>`;
+    html += '</div>';
+    container.innerHTML = html;
+    return;
+  }
+
+  // OR-choice instincts: player picks EITHER cantrip(s) OR a 1st-level spell
+  if (spellSource.orChoice) {
+    const currentMode = character.selectedSpells.instincts[instinctName].mode || null;
+    const cantripLabel = spellSource.cantrips > 1 ? `${spellSource.cantrips} Cantrips` : '1 Cantrip';
+
+    html += `<strong>Spell Selection (choose one option)</strong>
+      <div style="margin-top:8px;">
+        <select class="feat-select" onchange="setInstinctSpellMode('${instinctName}', this.value)">
+          <option value="">-- Choose what to learn --</option>
+          <option value="cantrips" ${currentMode === 'cantrips' ? 'selected' : ''}>${cantripLabel} (${spellSource.cantripList})</option>
+          <option value="level1" ${currentMode === 'level1' ? 'selected' : ''}>1st-Level Spell (${spellSource.level1List})</option>
+        </select>
+      </div>`;
+
+    if (currentMode === 'cantrips') {
+      const cantripList = (cantrips[spellSource.cantripList] || []).slice().sort();
+      for (let i = 0; i < spellSource.cantrips; i++) {
+        const selected = character.selectedSpells.instincts[instinctName].cantrips[i] || '';
+        html += `<div style="margin-top:8px;">
+          <label style="font-size:0.9em;">Cantrip ${spellSource.cantrips > 1 ? i + 1 : ''}</label>
+          <select class="feat-select" onchange="setInstinctSpell('${instinctName}', 'cantrips', ${i}, this.value)" style="width:100%; margin-top:3px;">
+            <option value="">-- Choose Cantrip --</option>
+            ${cantripList.map(sp => `<option value="${sp}" ${selected === sp ? 'selected' : ''}>${sp}</option>`).join('')}
+          </select>
+        </div>`;
+      }
+    } else if (currentMode === 'level1') {
+      const spellList = (level1Spells[spellSource.level1List] || []).slice().sort();
+      const selected = character.selectedSpells.instincts[instinctName].level1[0] || '';
+      html += `<div style="margin-top:8px;">
+        <label style="font-size:0.9em;">1st-Level Spell</label>
+        <select class="feat-select" onchange="setInstinctSpell('${instinctName}', 'level1', 0, this.value)" style="width:100%; margin-top:3px;">
+          <option value="">-- Choose Spell --</option>
+          ${spellList.map(sp => `<option value="${sp}" ${selected === sp ? 'selected' : ''}>${sp}</option>`).join('')}
+        </select>
+      </div>`;
+    }
+
+    html += '</div>';
+    container.innerHTML = html;
+    return;
+  }
+
+  // Standard (non-OR) choosable cantrips and spells
   html += '<strong>Spell Selection</strong><br>';
-  
-  // Render cantrip selections
+
   if (spellSource.cantrips > 0) {
-    const cantripList = cantrips[spellSource.cantripList] || [];
+    const cantripList = (cantrips[spellSource.cantripList] || []).slice().sort();
     for (let i = 0; i < spellSource.cantrips; i++) {
       const selectedCantrip = character.selectedSpells.instincts[instinctName].cantrips[i] || '';
       html += `<div style="margin-top:8px;">
@@ -573,10 +644,9 @@ function renderInstinctSpellSelection(instinctIndex, instinctName) {
       </div>`;
     }
   }
-  
-  // Render level 1 spell selections
+
   if (spellSource.level1 > 0) {
-    const level1List = level1Spells[spellSource.level1List] || [];
+    const level1List = (level1Spells[spellSource.level1List] || []).slice().sort();
     for (let i = 0; i < spellSource.level1; i++) {
       const selectedSpell = character.selectedSpells.instincts[instinctName].level1[i] || '';
       html += `<div style="margin-top:8px;">
@@ -588,14 +658,7 @@ function renderInstinctSpellSelection(instinctIndex, instinctName) {
       </div>`;
     }
   }
-  
-  // Show fixed spells if any
-  if (spellSource.fixedSpells) {
-    html += `<div style="margin-top:8px; font-size:0.9em; color:#555;">
-      <strong>Always Known:</strong> ${spellSource.fixedSpells.join(', ')}
-    </div>`;
-  }
-  
+
   html += '</div>';
   container.innerHTML = html;
 }

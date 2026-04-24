@@ -586,6 +586,28 @@ function assignAbility(ability, value) {
 }
 
 // ========================================
+// INSTINCT SPELL MODE (OR-choice instincts)
+// ========================================
+
+// Called when player chooses "cantrips" or "level1" for an OR-choice instinct
+function setInstinctSpellMode(instinctName, mode) {
+  if (!character.selectedSpells.instincts[instinctName]) {
+    character.selectedSpells.instincts[instinctName] = { mode: null, cantrips: [], level1: [] };
+  }
+  const prev = character.selectedSpells.instincts[instinctName].mode;
+  character.selectedSpells.instincts[instinctName].mode = mode || null;
+  // Clear the selections from whichever mode we're leaving
+  if (prev === 'cantrips' || mode === 'level1') {
+    character.selectedSpells.instincts[instinctName].cantrips = [];
+  }
+  if (prev === 'level1' || mode === 'cantrips') {
+    character.selectedSpells.instincts[instinctName].level1 = [];
+  }
+  renderInstinctSelectors();
+  renderSpellsSection();
+}
+
+// ========================================
 // SLOT MANAGEMENT
 // ========================================
 

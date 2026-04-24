@@ -1648,14 +1648,16 @@ const LEVEL2_SPELLS = {
 };
 
 const SPELL_SOURCES = {
-  "Bloodmarked": { cantrips: 1, level1: 1, cantripList: "sorcerer", level1List: "warlock" },
-  "Druidic Warrior": { cantrips: 2, level1: 1, cantripList: "druid", level1List: "druid" },
-  "Sacred Oath": { cantrips: 1, level1: 1, cantripList: "cleric", level1List: "paladin" },
-  "Spell Lore": { cantrips: 1, level1: 1, cantripList: "wizard", level1List: "bard" },
-  "Wild Charm": { cantrips: 1, level1: 1, cantripList: "druid", level1List: "druid" },
-  "Hunter's Mark": { cantrips: 0, level1: 0, fixedSpells: ["Hunter's Mark"] },
-  "Battle Hymn": { cantrips: 0, level1: 0, fixedSpells: ["Vicious Mockery"] },
-  "Warding Thorns": { cantrips: 0, level1: 0, fixedSpells: ["Shield"] }
+  // orChoice: true means the player picks cantrips OR a spell, not both
+  "Beast Speech":    { fixedSpells: ["Speak with Animals"] },
+  "Bloodmarked":     { orChoice: true, cantrips: 1, cantripList: "sorcerer", level1: 1, level1List: "warlock" },
+  "Druidic Warrior": { orChoice: true, cantrips: 2, cantripList: "druid",    level1: 1, level1List: "druid" },
+  "Sacred Oath":     { orChoice: true, cantrips: 1, cantripList: "cleric",   level1: 1, level1List: "paladin" },
+  "Spell Lore":      { orChoice: true, cantrips: 1, cantripList: "wizard",   level1: 1, level1List: "bard" },
+  "Wild Charm":      { orChoice: true, cantrips: 1, cantripList: "druid",    level1: 1, level1List: "druid" },
+  "Hunter's Mark":   { fixedSpells: ["Hunter's Mark"] },
+  "Battle Hymn":     { fixedSpells: ["Vicious Mockery"] },
+  "Warding Thorns":  { fixedSpells: ["Shield"] }
 };
 
 const SPELL_DETAILS = {
@@ -1924,5 +1926,4 @@ if (typeof globalThis !== 'undefined') {
   globalThis.LEVEL2_SPELLS = LEVEL2_SPELLS;
   globalThis.SPELL_SOURCES = SPELL_SOURCES;
   globalThis.SPELL_DETAILS = SPELL_DETAILS;
-  globalThis.SPELL_SOURCES = SPELL_SOURCES;
 }
