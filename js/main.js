@@ -5,11 +5,8 @@
 const APP_BUILD = '2026-04-24-3';
 
 function hasCoreDataLoaded() {
-  const speciesList = (typeof SPECIES_LIST !== 'undefined') ? SPECIES_LIST : (typeof globalThis !== 'undefined' ? globalThis.SPECIES_LIST : undefined);
-  const backgrounds = (typeof BACKGROUNDS !== 'undefined') ? BACKGROUNDS : (typeof globalThis !== 'undefined' ? globalThis.BACKGROUNDS : undefined);
-  const generalFeats = (typeof GENERAL_FEATS !== 'undefined') ? GENERAL_FEATS : (typeof globalThis !== 'undefined' ? globalThis.GENERAL_FEATS : undefined);
-  const epicBoons = (typeof EPIC_BOONS !== 'undefined') ? EPIC_BOONS : (typeof globalThis !== 'undefined' ? globalThis.EPIC_BOONS : undefined);
-  return !!(speciesList && backgrounds && generalFeats && epicBoons);
+  const requiredGlobals = ['SPECIES_LIST', 'BACKGROUNDS', 'GENERAL_FEATS', 'EPIC_BOONS'];
+  return requiredGlobals.every(name => typeof globalThis[name] !== 'undefined');
 }
 
 function initSelectors() {
@@ -54,6 +51,7 @@ function updateCharacter() {
   renderActions();
   renderEquipment();
   renderAdaptiveCastingSetup();
+  renderAdaptiveCasting();
   renderSpellsSection();
 }
 
