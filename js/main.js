@@ -5,8 +5,12 @@
 const APP_BUILD = '2026-04-24-3';
 
 function hasCoreDataLoaded() {
-  const requiredGlobals = ['SPECIES_LIST', 'BACKGROUNDS', 'GENERAL_FEATS', 'EPIC_BOONS'];
-  return requiredGlobals.every(name => typeof globalThis[name] !== 'undefined');
+  return (
+    typeof SPECIES_LIST !== 'undefined' &&
+    typeof BACKGROUNDS !== 'undefined' &&
+    typeof GENERAL_FEATS !== 'undefined' &&
+    typeof EPIC_BOONS !== 'undefined'
+  );
 }
 
 function initSelectors() {
