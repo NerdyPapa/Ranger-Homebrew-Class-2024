@@ -262,7 +262,7 @@ function getFeatAutoAndChoiceSpells() {
   return featSpells;
 }
 
-function renderAdaptiveCastingSetup() {
+ffunction renderAdaptiveCastingSetup() {
   const title = document.getElementById('adaptiveCastingSetupTitle');
   const container = document.getElementById('adaptiveCastingSetup');
   if (!title || !container) return;
@@ -318,12 +318,11 @@ function renderAdaptiveCastingSetup() {
         </select>
       </div>`;
     }
-      }
+  }
   
   html += '</div></div>';
   container.innerHTML = html;
 }
-
 // Backward compatibility for older main.js references seen in cached deployments.
 function renderAdaptiveCasting() {
   renderAdaptiveCastingSetup();
