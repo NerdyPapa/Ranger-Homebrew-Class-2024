@@ -1648,16 +1648,18 @@ const LEVEL2_SPELLS = {
 };
 
 const SPELL_SOURCES = {
-  // orChoice: true means the player picks cantrips OR a spell, not both
-  "Beast Speech":    { fixedSpells: ["Speak with Animals"] },
-  "Bloodmarked":     { orChoice: true, cantrips: 1, cantripList: "sorcerer", level1: 1, level1List: "warlock" },
-  "Druidic Warrior": { orChoice: true, cantrips: 2, cantripList: "druid",    level1: 1, level1List: "druid" },
-  "Sacred Oath":     { orChoice: true, cantrips: 1, cantripList: "cleric",   level1: 1, level1List: "paladin" },
-  "Spell Lore":      { orChoice: true, cantrips: 1, cantripList: "wizard",   level1: 1, level1List: "bard" },
-  "Wild Charm":      { orChoice: true, cantrips: 1, cantripList: "druid",    level1: 1, level1List: "druid" },
-  "Hunter's Mark":   { fixedSpells: ["Hunter's Mark"] },
-  "Battle Hymn":     { fixedSpells: ["Vicious Mockery"] },
-  "Warding Thorns":  { fixedSpells: ["Shield"] }
+  // orChoice: true means the player picks cantrips OR a 1st-level spell, not both
+  // lists: array of spell-list keys to draw from (combined pool for both cantrips and spells)
+  "Beast Speech":      { fixedSpells: ["Speak with Animals"] },
+  "Bloodmarked":       { orChoice: true, cantrips: 1, level1: 1, lists: ["sorcerer", "warlock"] },
+  "Druidic Warrior":   { orChoice: true, cantrips: 2, level1: 1, lists: ["druid"] },
+  "Nature's Denizen":  { fixedSpells: ["Commune with Nature"] },
+  "Sacred Oath":       { orChoice: true, cantrips: 1, level1: 1, lists: ["cleric", "paladin"] },
+  "Spell Lore":        { orChoice: true, cantrips: 1, level1: 1, lists: ["wizard", "bard"] },
+  "Wild Charm":        { orChoice: true, cantrips: 1, level1: 1, lists: ["druid"] },
+  "Hunter's Mark":     { fixedSpells: ["Hunter's Mark"] },
+  "Battle Hymn":       { fixedSpells: ["Vicious Mockery"] },
+  "Warding Thorns":    { fixedSpells: ["Shield"] }
 };
 
 const SPELL_DETAILS = {

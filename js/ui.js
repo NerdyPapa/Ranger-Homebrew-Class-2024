@@ -589,36 +589,39 @@ function renderInstinctSpellSelection(instinctIndex, instinctName) {
   if (spellSource.orChoice) {
     const currentMode = character.selectedSpells.instincts[instinctName].mode || null;
     const cantripLabel = spellSource.cantrips > 1 ? `${spellSource.cantrips} Cantrips` : '1 Cantrip';
+    const listNames = (spellSource.lists || []).map(l => l.charAt(0).toUpperCase() + l.slice(1)).join('/');
+
+    // Build combined pools from all named lists
+    const combinedCantrips = [...new Set((spellSource.lists || []).flatMap(l => cantrips[l] || []))].sort();
+    const combinedLevel1   = [...new Set((spellSource.lists || []).flatMap(l => level1Spells[l] || []))].sort();
 
     html += `<strong>Spell Selection (choose one option)</strong>
       <div style="margin-top:8px;">
         <select class="feat-select" onchange="setInstinctSpellMode('${instinctName}', this.value)">
           <option value="">-- Choose what to learn --</option>
-          <option value="cantrips" ${currentMode === 'cantrips' ? 'selected' : ''}>${cantripLabel} (${spellSource.cantripList})</option>
-          <option value="level1" ${currentMode === 'level1' ? 'selected' : ''}>1st-Level Spell (${spellSource.level1List})</option>
+          <option value="cantrips" ${currentMode === 'cantrips' ? 'selected' : ''}>${cantripLabel} (${listNames})</option>
+          <option value="level1" ${currentMode === 'level1' ? 'selected' : ''}>1st-Level Spell (${listNames})</option>
         </select>
       </div>`;
 
     if (currentMode === 'cantrips') {
-      const cantripList = (cantrips[spellSource.cantripList] || []).slice().sort();
       for (let i = 0; i < spellSource.cantrips; i++) {
         const selected = character.selectedSpells.instincts[instinctName].cantrips[i] || '';
         html += `<div style="margin-top:8px;">
-          <label style="font-size:0.9em;">Cantrip ${spellSource.cantrips > 1 ? i + 1 : ''}</label>
+          <label style="font-size:0.9em;">Cantrip${spellSource.cantrips > 1 ? ' ' + (i + 1) : ''} (${listNames})</label>
           <select class="feat-select" onchange="setInstinctSpell('${instinctName}', 'cantrips', ${i}, this.value)" style="width:100%; margin-top:3px;">
             <option value="">-- Choose Cantrip --</option>
-            ${cantripList.map(sp => `<option value="${sp}" ${selected === sp ? 'selected' : ''}>${sp}</option>`).join('')}
+            ${combinedCantrips.map(sp => `<option value="${sp}" ${selected === sp ? 'selected' : ''}>${sp}</option>`).join('')}
           </select>
         </div>`;
       }
     } else if (currentMode === 'level1') {
-      const spellList = (level1Spells[spellSource.level1List] || []).slice().sort();
       const selected = character.selectedSpells.instincts[instinctName].level1[0] || '';
       html += `<div style="margin-top:8px;">
-        <label style="font-size:0.9em;">1st-Level Spell</label>
+        <label style="font-size:0.9em;">1st-Level Spell (${listNames})</label>
         <select class="feat-select" onchange="setInstinctSpell('${instinctName}', 'level1', 0, this.value)" style="width:100%; margin-top:3px;">
           <option value="">-- Choose Spell --</option>
-          ${spellList.map(sp => `<option value="${sp}" ${selected === sp ? 'selected' : ''}>${sp}</option>`).join('')}
+          ${combinedLevel1.map(sp => `<option value="${sp}" ${selected === sp ? 'selected' : ''}>${sp}</option>`).join('')}
         </select>
       </div>`;
     }
@@ -628,32 +631,34 @@ function renderInstinctSpellSelection(instinctIndex, instinctName) {
     return;
   }
 
-  // Standard (non-OR) choosable cantrips and spells
+  // Standard (non-OR) choosable cantrips and spells — also use lists array
   html += '<strong>Spell Selection</strong><br>';
 
   if (spellSource.cantrips > 0) {
-    const cantripList = (cantrips[spellSource.cantripList] || []).slice().sort();
+    const combinedCantrips = [...new Set((spellSource.lists || []).flatMap(l => cantrips[l] || []))].sort();
+    const listNames = (spellSource.lists || []).map(l => l.charAt(0).toUpperCase() + l.slice(1)).join('/');
     for (let i = 0; i < spellSource.cantrips; i++) {
       const selectedCantrip = character.selectedSpells.instincts[instinctName].cantrips[i] || '';
       html += `<div style="margin-top:8px;">
-        <label style="font-size:0.9em;">Cantrip ${i + 1} (${spellSource.cantripList}):</label>
+        <label style="font-size:0.9em;">Cantrip ${i + 1} (${listNames}):</label>
         <select class="feat-select" onchange="setInstinctSpell('${instinctName}', 'cantrips', ${i}, this.value)" style="width:100%; margin-top:3px;">
           <option value="">-- Choose Cantrip --</option>
-          ${cantripList.map(spell => `<option value="${spell}" ${selectedCantrip === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+          ${combinedCantrips.map(spell => `<option value="${spell}" ${selectedCantrip === spell ? 'selected' : ''}>${spell}</option>`).join('')}
         </select>
       </div>`;
     }
   }
 
   if (spellSource.level1 > 0) {
-    const level1List = (level1Spells[spellSource.level1List] || []).slice().sort();
+    const combinedLevel1 = [...new Set((spellSource.lists || []).flatMap(l => level1Spells[l] || []))].sort();
+    const listNames = (spellSource.lists || []).map(l => l.charAt(0).toUpperCase() + l.slice(1)).join('/');
     for (let i = 0; i < spellSource.level1; i++) {
       const selectedSpell = character.selectedSpells.instincts[instinctName].level1[i] || '';
       html += `<div style="margin-top:8px;">
-        <label style="font-size:0.9em;">1st-Level Spell ${i + 1} (${spellSource.level1List}):</label>
+        <label style="font-size:0.9em;">1st-Level Spell ${i + 1} (${listNames}):</label>
         <select class="feat-select" onchange="setInstinctSpell('${instinctName}', 'level1', ${i}, this.value)" style="width:100%; margin-top:3px;">
           <option value="">-- Choose Spell --</option>
-          ${level1List.map(spell => `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`).join('')}
+          ${combinedLevel1.map(spell => `<option value="${spell}" ${selectedSpell === spell ? 'selected' : ''}>${spell}</option>`).join('')}
         </select>
       </div>`;
     }
